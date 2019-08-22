@@ -42,14 +42,14 @@ namespace Evopeons_API.Controllers
             return news.Reverse();
         }
         [HttpGet("{id}")]
-        public ActionResult GetProduct(int id)
+        public ActionResult GetNews(int id)
         {
-            var new1 = news.FirstOrDefault((p) => p.Id == id);
-            if (new1 == null)
+            var item = news.FirstOrDefault((p) => p.Id == id);
+            if (item == null)
             {
                 return NotFound();
             }
-            return Ok(new1);
+            return Ok(item);
         }
 
         // POST api/values
