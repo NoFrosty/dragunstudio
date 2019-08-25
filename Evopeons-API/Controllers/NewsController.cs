@@ -11,6 +11,7 @@ namespace Evopeons_API.Controllers
     [ApiController]
     public class NewsController : ControllerBase
     {
+
         News[] news = new News[]
         {
             new News
