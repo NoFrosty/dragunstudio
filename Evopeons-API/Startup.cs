@@ -1,4 +1,4 @@
-﻿using Evopeons.Data;
+﻿using Evopeons.API.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -22,13 +22,17 @@ namespace Evopeons.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            var applicationSettings = Configuration.Get<ApplicationSettings>();
+            services.AddSingleton(applicationSettings);
+            services.AddSingleton<Data.IConnectionFactory, Data.SqliteConnectionFactory>();
+            services.AddTransient<NewsService>();
+
             services.AddCors(options =>
             {
                 options.AddPolicy(MyAllowSpecificOrigins,
                 builder =>
                 {
-                    builder.AllowAnyOrigin().AllowAnyHeader()
-                                .AllowAnyMethod();
+                    builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
                 });
             });
 

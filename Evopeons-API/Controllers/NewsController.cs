@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Evopeons.API.Models;
+using Dapper;
 
 namespace Evopeons.API.Controllers
 {
@@ -11,7 +12,6 @@ namespace Evopeons.API.Controllers
     [ApiController]
     public class NewsController : ControllerBase
     {
-
         News[] news = new News[]
         {
             new News
@@ -58,16 +58,25 @@ namespace Evopeons.API.Controllers
             return Ok(item);
         }
 
+
+        public class Test
+        {
+            public string Name { get; set; }
+            public string LastName { get; set; }
+        }
+
         // POST api/values
         [HttpPost]
-        public void Post([FromBody] string value)
+        public Test Post([FromBody] Test model)
         {
+            return model;
         }
 
         // PUT api/values/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        public string Put(int id, [FromBody] string value)
         {
+            return value;
         }
 
         // DELETE api/values/5
