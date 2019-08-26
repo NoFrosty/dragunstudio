@@ -5,7 +5,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Evopeons_API
+namespace Evopeons.API
 {
     public class Helper
     {

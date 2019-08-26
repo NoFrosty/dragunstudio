@@ -1,4 +1,4 @@
-﻿using Evopeons_API.Models;
+﻿using Evopeons.API.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace Evopeons.Data

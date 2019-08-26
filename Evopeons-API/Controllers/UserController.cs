@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Evopeons_API.Models;
+using Evopeons.API.Models;
 using System.Security.Cryptography;
 
-namespace Evopeons_API.Controllers
+namespace Evopeons.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
