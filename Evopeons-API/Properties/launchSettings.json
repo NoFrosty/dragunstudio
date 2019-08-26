@@ -17,7 +17,7 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
-    "Evopeons_API": {
+    "Evopeons.API": {
       "commandName": "Project",
       "launchBrowser": true,
       "launchUrl": "api/news",
