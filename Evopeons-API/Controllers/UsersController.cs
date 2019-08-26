@@ -7,6 +7,8 @@ using Evopeons_API.Models;
 
 namespace Evopeons.API.Controllers
 {
+    [Route("api/[controller]")]
+    [ApiController]
     public class UsersController : Controller
     {
         private readonly EvopeonsDbContext _context;
@@ -15,7 +17,7 @@ namespace Evopeons.API.Controllers
         {
             _context = context;
         }
-
+        [HttpGet]
         // GET: Users
         public async Task<IActionResult> Index()
         {
