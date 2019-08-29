@@ -10,41 +10,10 @@ namespace Evopeons.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class UserController : ControllerBase
+    public class UsersController : ControllerBase
     {
         static string test = Helper.GenerateSalt(8);
-        User[] users = new User[]
-        {
-            new User
-            {
-                Id = 1,
-                UserName = "Frosty",
-                FirstName = "Calvin",
-                LastName = "Dogus",
-                Address1 = "24 Rue Simone Weil",
-                Address2 = "",
-                PostCode = "31270",
-                City = "Cugnaux",
-                Birthday = new DateTime(1996,10,03),
-                CreationDate = DateTime.Now,
-                UserRole = Role.Administrator,
-                SuspensionEnd = DateTime.MinValue,
-                Active = AccountStatus.Active,
-                LastLoginDate = DateTime.MinValue,
-                Phone = "0646138090",
-                Salt = test,
-                Password = Helper.EncodePassword("AzeR6",test)
 
-            },
-            new User
-            {
-                Id = 2,
-            },
-            new User
-            {
-                Id = 3,
-            }
-        };
         [HttpGet]
         public IEnumerable<User> GetAllUsers()
         {
