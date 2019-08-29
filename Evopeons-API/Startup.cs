@@ -1,6 +1,9 @@
-﻿using Evopeons.API.Services;
+﻿using Evopeons.API.Identity;
+using Evopeons.API.Models;
+using Evopeons.API.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -26,6 +29,11 @@ namespace Evopeons.API
             services.AddSingleton(applicationSettings);
             services.AddSingleton<Data.IConnectionFactory, Data.SqliteConnectionFactory>();
             services.AddTransient<NewsService>();
+            services.AddTransient<IUserStore<User>, UserStore>();
+            services.AddTransient<IRoleStore<UserRole>, RoleStore>();
+
+            services.AddIdentity<User, UserRole>()
+        .AddDefaultTokenProviders();
 
             services.AddCors(options =>
             {

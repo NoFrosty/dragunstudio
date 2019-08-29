@@ -17,17 +17,19 @@ namespace Evopeons.API.Controllers
         [HttpGet]
         public IEnumerable<User> GetAllUsers()
         {
-            return users;
+            return null;
         }
         [HttpGet("{pseudo}")]
         public ActionResult GetUser(string userName)
         {
+            /*
             var item = users.FirstOrDefault((p) => p.UserName == userName);
             if (item == null)
             {
                 return NotFound();
             }
-            return Ok(item);
+            */
+            return Ok(null);
         }
 
         // POST api/values
