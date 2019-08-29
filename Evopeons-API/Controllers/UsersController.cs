@@ -12,7 +12,7 @@ namespace Evopeons.API.Controllers
     [ApiController]
     public class UsersController : ControllerBase
     {
-        static string test = Helper.GenerateSalt(8);
+        static string test = PasswordGeneretor.GenerateSalt(8);
 
         [HttpGet]
         public IEnumerable<User> GetAllUsers()

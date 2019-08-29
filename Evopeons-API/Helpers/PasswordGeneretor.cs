@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Evopeons.API
 {
-    public class Helper
+    public class PasswordGeneretor
     {
         public static string GeneratePassword(int length) //length of salt    
         {
