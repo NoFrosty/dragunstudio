@@ -47,7 +47,6 @@ namespace Evopeons.API.Identity
 
         public void Dispose()
         {
-            throw new NotImplementedException();
         }
 
         public async Task<UserRole> FindByIdAsync(string roleId, CancellationToken cancellationToken)

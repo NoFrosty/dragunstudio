@@ -8,5 +8,6 @@ namespace Evopeons.API
     public class ApplicationSettings
     {
         public string ConnectionString { get; set; }
+        public string ApplicationSecretKey { get; set; }
     }
 }

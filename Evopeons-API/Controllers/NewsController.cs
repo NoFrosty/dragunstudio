@@ -6,15 +6,16 @@ using Microsoft.AspNetCore.Mvc;
 using Evopeons.API.Models;
 using Evopeons.API.Services;
 using System.Text.RegularExpressions;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Evopeons.API.Controllers
 {
-    
+    [Authorize(AuthenticationSchemes = "Bearer")]
     [Route("api/[controller]")]
     [ApiController]
     public class NewsController : ControllerBase
     {
-        NewsService newsService;
+        readonly NewsService newsService;
         public NewsController(NewsService newsService)
         {
             this.newsService = newsService;

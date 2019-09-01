@@ -1,6 +1,8 @@
-﻿using Evopeons.API.Identity;
+﻿using Evopeons.API.Entities;
+using Evopeons.API.Identity;
 using Evopeons.API.Models;
 using Evopeons.API.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
@@ -8,6 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.IdentityModel.Tokens;
 
 namespace Evopeons.API
 {
@@ -29,11 +32,31 @@ namespace Evopeons.API
             services.AddSingleton(applicationSettings);
             services.AddSingleton<Data.IConnectionFactory, Data.SqliteConnectionFactory>();
             services.AddTransient<NewsService>();
-            services.AddTransient<IUserStore<User>, UserStore>();
+            services.AddTransient<IUserStore<ApplicationUser>, UserStore>();
             services.AddTransient<IRoleStore<UserRole>, RoleStore>();
 
-            services.AddIdentity<User, UserRole>()
-        .AddDefaultTokenProviders();
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddJwtBearer(options =>
+            {
+                options.RequireHttpsMetadata = false;
+                options.SaveToken = true;
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(applicationSettings.ApplicationSecretKey)),
+                    ValidateIssuer = false,
+                    ValidateAudience = false
+                };
+            });
+
+            services.AddIdentity<ApplicationUser, UserRole>(options =>
+            {
+
+            }).AddDefaultTokenProviders();
 
             services.AddCors(options =>
             {
@@ -61,6 +84,7 @@ namespace Evopeons.API
             }
 
             app.UseCors(MyAllowSpecificOrigins);
+            app.UseAuthentication();
 
             app.UseHttpsRedirection();
             app.UseMvc();
