@@ -33,7 +33,7 @@ namespace Evopeons.API
             services.AddSingleton<Data.IConnectionFactory, Data.SqliteConnectionFactory>();
             services.AddTransient<NewsService>();
             services.AddTransient<IUserStore<ApplicationUser>, UserStore>();
-            services.AddTransient<IRoleStore<UserRole>, RoleStore>();
+            services.AddTransient<IRoleStore<ApplicationRole>, RoleStore>();
 
             services.AddAuthentication(options =>
             {
@@ -53,7 +53,7 @@ namespace Evopeons.API
                 };
             });
 
-            services.AddIdentity<ApplicationUser, UserRole>(options =>
+            services.AddIdentity<ApplicationUser, ApplicationRole>(options =>
             {
 
             }).AddDefaultTokenProviders();

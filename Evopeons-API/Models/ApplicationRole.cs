@@ -3,8 +3,8 @@ using System;
 
 namespace Evopeons.API.Models
 {
-    [Table("UserRoles")]
-    public class UserRole
+    [Table("ApplicationRole")]
+    public class ApplicationRole
     {
         public int Id { get; set; }
         public string Name { get; set; }

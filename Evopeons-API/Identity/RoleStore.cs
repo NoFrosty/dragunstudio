@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace Evopeons.API.Identity
 {
-    public class RoleStore : IRoleStore<UserRole>
+    public class RoleStore : IRoleStore<ApplicationRole>
     {
         readonly IConnectionFactory connectionFactory;
 
@@ -21,19 +21,19 @@ namespace Evopeons.API.Identity
             this.connectionFactory = connectionFactory;
         }
 
-        public async Task<IdentityResult> CreateAsync(UserRole role, CancellationToken cancellationToken)
+        public async Task<IdentityResult> CreateAsync(ApplicationRole role, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
 
             using (IDbConnection connection = connectionFactory.GetConnection())
             {
-                role.Id = await connection.InsertAsync<UserRole>(role);
+                role.Id = await connection.InsertAsync<ApplicationRole>(role);
             }
 
             return IdentityResult.Success;
         }
 
-        public async Task<IdentityResult> DeleteAsync(UserRole role, CancellationToken cancellationToken)
+        public async Task<IdentityResult> DeleteAsync(ApplicationRole role, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
 
@@ -49,60 +49,60 @@ namespace Evopeons.API.Identity
         {
         }
 
-        public async Task<UserRole> FindByIdAsync(string roleId, CancellationToken cancellationToken)
+        public async Task<ApplicationRole> FindByIdAsync(string roleId, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
 
             using (IDbConnection connection = connectionFactory.GetConnection())
             {
-                return await connection.QuerySingleOrDefaultAsync<UserRole>("SELECT * FROM UserRoles WHERE Id = '"+ roleId + "'");
+                return await connection.QuerySingleOrDefaultAsync<ApplicationRole>("SELECT * FROM UserRoles WHERE Id = '"+ roleId + "'");
             }
         }
 
-        public async Task<UserRole> FindByNameAsync(string normalizedRoleName, CancellationToken cancellationToken)
+        public async Task<ApplicationRole> FindByNameAsync(string normalizedRoleName, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
 
             using (IDbConnection connection = connectionFactory.GetConnection())
             {
-                return await connection.QuerySingleOrDefaultAsync<UserRole>("SELECT * FROM UserRoles WHERE Name = '" + normalizedRoleName + "'");
+                return await connection.QuerySingleOrDefaultAsync<ApplicationRole>("SELECT * FROM UserRoles WHERE Name = '" + normalizedRoleName + "'");
             }
         }
 
-        public Task<string> GetNormalizedRoleNameAsync(UserRole role, CancellationToken cancellationToken)
+        public Task<string> GetNormalizedRoleNameAsync(ApplicationRole role, CancellationToken cancellationToken)
         {
             return Task.FromResult(role.Name);
         }
 
-        public Task<string> GetRoleIdAsync(UserRole role, CancellationToken cancellationToken)
+        public Task<string> GetRoleIdAsync(ApplicationRole role, CancellationToken cancellationToken)
         {
             return Task.FromResult(role.Id.ToString());
         }
 
-        public Task<string> GetRoleNameAsync(UserRole role, CancellationToken cancellationToken)
+        public Task<string> GetRoleNameAsync(ApplicationRole role, CancellationToken cancellationToken)
         {
             return Task.FromResult(role.Name);
         }
 
-        public Task SetNormalizedRoleNameAsync(UserRole role, string normalizedName, CancellationToken cancellationToken)
+        public Task SetNormalizedRoleNameAsync(ApplicationRole role, string normalizedName, CancellationToken cancellationToken)
         {
             role.Name = normalizedName;
             return Task.FromResult(0);
         }
 
-        public Task SetRoleNameAsync(UserRole role, string roleName, CancellationToken cancellationToken)
+        public Task SetRoleNameAsync(ApplicationRole role, string roleName, CancellationToken cancellationToken)
         {
             role.Name = roleName;
             return Task.FromResult(0);
         }
 
-        public async Task<IdentityResult> UpdateAsync(UserRole role, CancellationToken cancellationToken)
+        public async Task<IdentityResult> UpdateAsync(ApplicationRole role, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
 
             using (IDbConnection connection = connectionFactory.GetConnection())
             {
-                await connection.UpdateAsync<UserRole>(role);
+                await connection.UpdateAsync<ApplicationRole>(role);
             }
 
             return IdentityResult.Success;
