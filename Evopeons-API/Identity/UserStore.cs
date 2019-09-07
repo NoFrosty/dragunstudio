@@ -14,9 +14,11 @@ using System.Threading.Tasks;
 namespace Evopeons.API.Identity
 {
     public class UserStore : IUserStore<ApplicationUser>, IUserEmailStore<ApplicationUser>,
-    IUserTwoFactorStore<ApplicationUser>, IUserPasswordStore<ApplicationUser>
+    IUserTwoFactorStore<ApplicationUser>, IUserPasswordStore<ApplicationUser>, IQueryableUserStore<ApplicationUser>
     {
         readonly IConnectionFactory connectionFactory;
+
+        public IQueryable<ApplicationUser> Users => (connectionFactory.GetConnection() as IDbConnection).GetAll<ApplicationUser>().AsQueryable(); 
 
         public UserStore(IConnectionFactory connectionFactory)
         {
@@ -28,7 +30,6 @@ namespace Evopeons.API.Identity
         public async Task<IdentityResult> CreateAsync(ApplicationUser user, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
-
             using (IDbConnection connection = connectionFactory.GetConnection())
             {
                 await connection.InsertAsync<ApplicationUser>(user);

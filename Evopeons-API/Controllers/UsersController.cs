@@ -20,17 +20,16 @@ namespace Evopeons.API.Controllers
         readonly UserStore userStore;
 
         public UsersController(
-            UserManager<ApplicationUser> userManager,
-            UserStore userStore)
+            UserManager<ApplicationUser> userManager)
         {
             this.userManager = userManager;
             this.userStore = userStore;
         }
 
         [HttpGet]
-        public async Task<IEnumerable<ApplicationUser>> GetAllUsers()
+        public async Task<IQueryable<ApplicationUser>> GetAllUsers()
         {
-            return await userStore.GetUsersAsync();
+            return userManager.Users;
         }
 
         [HttpGet("{pseudo}")]

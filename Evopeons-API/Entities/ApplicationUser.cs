@@ -1,4 +1,5 @@
 ﻿using Dapper.Contrib.Extensions;
+using Microsoft.AspNetCore.Identity;
 using System;
 
 namespace Evopeons.API.Entities
