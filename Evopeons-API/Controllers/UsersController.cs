@@ -47,7 +47,7 @@ namespace Evopeons.API.Controllers
 
         // POST api/values
         [HttpPost]
-        public async void RegisterNewUser([FromBody] CreateUserModel userModel)
+        public async Task<CreateUserResult> RegisterNewUser([FromBody] CreateUserModel userModel)
         {
             var user = new ApplicationUser()
             {
@@ -55,10 +55,15 @@ namespace Evopeons.API.Controllers
                 Email = userModel.Email,
                 Username = userModel.Username,
                 FirstName = userModel.FirstName,
-                LastName = userModel.LastName
+                LastName = userModel.LastName,
+                Active = AccountStatus.Active,
+                CreationDate = DateTime.Now,
+                TwoFactorEnabled = false,
             };
 
             var result = await userManager.CreateAsync(user, userModel.Password);
+
+            return new CreateUserResult() { IsSuccessfull = result.Succeeded };
         }
 
         // PUT api/values/5
