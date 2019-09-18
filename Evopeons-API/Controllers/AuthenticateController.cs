@@ -74,14 +74,10 @@ namespace Evopeons.API.Controllers
             };
             var token = tokenHandler.CreateToken(tokenDescriptor);
 
-            user.LastLoginDate = DateTime.UtcNow;
-            await userManager.UpdateAsync(user);
-
             return new Models.SignInResult()
             {
                 IsSuccessfull = true,
-                Token = tokenHandler.WriteToken(token),
-                Username = user.Username
+                Token = tokenHandler.WriteToken(token)
             };
         }
 

@@ -32,71 +32,38 @@ namespace Evopeons.API.Controllers
             return userManager.Users;
         }
 
-        [HttpGet("{username}")]
-        public ActionResult<GetUserAccountResult> GetUser(string username)
+        [HttpGet("{pseudo}")]
+        public ActionResult GetUser(string userName)
         {
-            
-            ApplicationUser user = userManager.FindByNameAsync(username).Result;
-            if (user == null)
+            /*
+            var item = users.FirstOrDefault((p) => p.UserName == userName);
+            if (item == null)
             {
                 return NotFound();
             }
-            GetUserAccountResult userResult = new GetUserAccountResult()
-            {
-                Username = NormalizeString(user.Username),
-                Address1 = user.Address1,
-                Address2 = user.Address2,
-                Birthday = user.Birthday,
-                City = user.City,
-                Email = NormalizeString(user.Email),
-                EmailConfirmed = user.EmailConfirmed,
-                FirstName = user.FirstName,
-                LastName = user.LastName,
-                PhoneNumber = user.PhoneNumber,
-                PostCode = user.PostCode,
-                TwoFactorEnabled = user.TwoFactorEnabled
-            };
-
-
-            return Ok(userResult);
+            */
+            return Ok(null);
         }
 
         // POST api/values
         [HttpPost]
         public async Task<CreateUserResult> RegisterNewUser([FromBody] CreateUserModel userModel)
         {
-            bool isEmailTaken = userManager.FindByEmailAsync(userModel.Email).Result != null;
-            bool isUsernameTaken = userManager.FindByNameAsync(userModel.Username).Result != null;
-            if(!isEmailTaken && !isUsernameTaken)
+            var user = new ApplicationUser()
             {
-                var user = new ApplicationUser()
-                {
-                    Id = Guid.NewGuid().ToString(),
-                    Email = userModel.Email,
-                    Username = userModel.Username,
-                    FirstName = userModel.FirstName,
-                    LastName = userModel.LastName,
-                    Active = AccountStatus.Active,
-                    CreationDate = DateTime.UtcNow,
-                    TwoFactorEnabled = false,
-                };
-
-                var result = await userManager.CreateAsync(user, userModel.Password);
-
-                return new CreateUserResult()
-                {
-                    IsSuccessfull = result.Succeeded,
-                    IsEmailTaken = isEmailTaken,
-                    IsUsernameTaken = isUsernameTaken
-                };
-            }
-            return new CreateUserResult()
-            {
-                IsSuccessfull = false,
-                IsEmailTaken = isEmailTaken,
-                IsUsernameTaken = isUsernameTaken
+                Id = Guid.NewGuid().ToString(),
+                Email = userModel.Email,
+                Username = userModel.Username,
+                FirstName = userModel.FirstName,
+                LastName = userModel.LastName,
+                Active = AccountStatus.Active,
+                CreationDate = DateTime.Now,
+                TwoFactorEnabled = false,
             };
 
+            var result = await userManager.CreateAsync(user, userModel.Password);
+
+            return new CreateUserResult() { IsSuccessfull = result.Succeeded };
         }
 
         // PUT api/values/5
@@ -109,11 +76,6 @@ namespace Evopeons.API.Controllers
         [HttpDelete("{id}")]
         public void Delete(int id)
         {
-        }
-
-        public string NormalizeString(string value)
-        {
-            return char.ToUpper(value[0]) + value.Substring(1).ToLower();
         }
     }
 }

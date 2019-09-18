@@ -26,7 +26,6 @@ namespace Evopeons.API.Entities
         public string Address2 { get; set; }
         public string PostCode { get; set; }
         public string City { get; set; }
-        public string Country { get; set; }
         public AccountStatus Active { get; set; }
         public DateTime SuspensionEnd { get; set; }
         public Role UserRole { get; set; }
