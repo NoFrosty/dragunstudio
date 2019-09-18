@@ -44,7 +44,7 @@ namespace Evopeons.API.Controllers
         public async Task<ActionResult> Post([FromBody] News news)
         {
             news.Slug = UrlSlugger.ToUrlSlug(news.Title);
-            news.PublishDate = DateTime.Now;
+            news.PublishDate = DateTime.UtcNow;
             await newsService.AddNews(news);
             return Ok();
         }
