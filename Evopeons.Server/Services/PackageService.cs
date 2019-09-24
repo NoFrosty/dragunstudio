@@ -72,7 +72,6 @@ namespace Evopeons.Server.Services
             {
                 foreach (ZipArchiveEntry entry in archive.Entries)
                 {
-                    entry.
                     if (!entry.FullName.Last().Equals('/'))
                     {
                         string pathFile = Path.Combine(path, entry.FullName);
