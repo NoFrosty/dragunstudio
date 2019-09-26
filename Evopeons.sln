@@ -5,9 +5,11 @@ VisualStudioVersion = 16.0.29201.188
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Evopeons.API", "Evopeons-API\Evopeons.API.csproj", "{A11CEF27-2BB1-459F-91A0-2E5E28E3A0B4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Evopeons.Server", "Evopeons.Server\Evopeons.Server.csproj", "{377C82B5-B43D-4B97-B425-6C8CAF27DF36}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Evopeons.Server", "Evopeons.Server\Evopeons.Server.csproj", "{377C82B5-B43D-4B97-B425-6C8CAF27DF36}"
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Evopeons.Common", "Evopeons.Common\Evopeons.Common.shproj", "{86C7CFF1-C473-4D8C-B3A3-D99652197CCE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Evopeons.UpdateServer", "Evopeons.UpdateServer\Evopeons.UpdateServer.csproj", "{5F4FEAF0-A08E-4F69-853A-CAAA69EB1672}"
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
@@ -26,6 +28,10 @@ Global
 		{377C82B5-B43D-4B97-B425-6C8CAF27DF36}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{377C82B5-B43D-4B97-B425-6C8CAF27DF36}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{377C82B5-B43D-4B97-B425-6C8CAF27DF36}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5F4FEAF0-A08E-4F69-853A-CAAA69EB1672}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5F4FEAF0-A08E-4F69-853A-CAAA69EB1672}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5F4FEAF0-A08E-4F69-853A-CAAA69EB1672}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5F4FEAF0-A08E-4F69-853A-CAAA69EB1672}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -9,7 +9,7 @@ namespace Evopeons.Common
 {
     public static class Utilities
     {
-        private static SHA256 sha256Hash = SHA256.Create();
+        private static readonly SHA256 sha256Hash = SHA256.Create();
 
         public static string CalculateHash(Stream stream)
         {

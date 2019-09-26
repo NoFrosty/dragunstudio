@@ -174,7 +174,7 @@ namespace Evopeons.Server.Services
                                 string p = Path.Combine(appSettings.Updates, lastVersion.ToString() + "-" + newVersion.ToString());
                                 Directory.CreateDirectory(p);
 
-                                using (FileStream outputFile =  File.Create(Path.Combine(p, entry.Name + ".gzip")))
+                                using (FileStream outputFile = File.Create(Path.Combine(p, entry.Name + ".gzip")))
                                 {
                                     using (FileStream oldFileStream = new FileStream(Path.Combine(Path.Combine(appSettings.Files, lastVersion.ToString()), entry.FullName), FileMode.Open))
                                     {
