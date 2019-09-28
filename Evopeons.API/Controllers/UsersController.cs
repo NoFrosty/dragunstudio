@@ -17,13 +17,11 @@ namespace Evopeons.API.Controllers
     public class UsersController : ControllerBase
     {
         readonly UserManager<ApplicationUser> userManager;
-        readonly UserStore userStore;
 
         public UsersController(
             UserManager<ApplicationUser> userManager)
         {
             this.userManager = userManager;
-            this.userStore = userStore;
         }
 
         [HttpGet]
@@ -97,18 +95,6 @@ namespace Evopeons.API.Controllers
                 IsUsernameTaken = isUsernameTaken
             };
 
-        }
-
-        // PUT api/values/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
-        {
-        }
-
-        // DELETE api/values/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
         }
 
         public string NormalizeString(string value)
