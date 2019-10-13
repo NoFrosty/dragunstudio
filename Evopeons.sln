@@ -7,12 +7,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Evopeons.API", "Evopeons.AP
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Evopeons.Server", "Evopeons.Server\Evopeons.Server.csproj", "{377C82B5-B43D-4B97-B425-6C8CAF27DF36}"
 EndProject
-Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Evopeons.Common", "Evopeons.Common\Evopeons.Common.shproj", "{86C7CFF1-C473-4D8C-B3A3-D99652197CCE}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EvoPackageManager", "EvoPackageManager\EvoPackageManager.csproj", "{4DEEB44E-5672-4FF4-AA39-CFA0A4BEF07D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EvoPackageManager.Tests", "EvoPackageManager.Tests\EvoPackageManager.Tests.csproj", "{6E8CCFD6-232B-4DDD-8D74-5BC016A0513D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EvoPackageManagerDemo", "EvoPackageManagerDemo\EvoPackageManagerDemo.csproj", "{B640905B-00F6-4875-AFA6-178BB9B82D68}"
 EndProject
 Global
-	GlobalSection(SharedMSBuildProjectFiles) = preSolution
-		Evopeons.Common\Evopeons.Common.projitems*{86c7cff1-c473-4d8c-b3a3-d99652197cce}*SharedItemsImports = 13
-	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
@@ -26,6 +27,18 @@ Global
 		{377C82B5-B43D-4B97-B425-6C8CAF27DF36}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{377C82B5-B43D-4B97-B425-6C8CAF27DF36}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{377C82B5-B43D-4B97-B425-6C8CAF27DF36}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4DEEB44E-5672-4FF4-AA39-CFA0A4BEF07D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4DEEB44E-5672-4FF4-AA39-CFA0A4BEF07D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4DEEB44E-5672-4FF4-AA39-CFA0A4BEF07D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4DEEB44E-5672-4FF4-AA39-CFA0A4BEF07D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6E8CCFD6-232B-4DDD-8D74-5BC016A0513D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6E8CCFD6-232B-4DDD-8D74-5BC016A0513D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6E8CCFD6-232B-4DDD-8D74-5BC016A0513D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6E8CCFD6-232B-4DDD-8D74-5BC016A0513D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B640905B-00F6-4875-AFA6-178BB9B82D68}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B640905B-00F6-4875-AFA6-178BB9B82D68}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B640905B-00F6-4875-AFA6-178BB9B82D68}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B640905B-00F6-4875-AFA6-178BB9B82D68}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -106,10 +106,8 @@ namespace Evopeons.Server.Services
         {
             foreach (string file in Directory.GetFiles(path))
             {
-                using (ZipArchive newFile = ZipFile.Open(Path.GetFileName(file), ZipArchiveMode.Create))
-                {
-                    newFile.CreateEntryFromFile(Path.GetFileName(file), Path.GetFileName(file), CompressionLevel.Optimal);
-                }
+                using ZipArchive newFile = ZipFile.Open(Path.GetFileName(file), ZipArchiveMode.Create);
+                newFile.CreateEntryFromFile(Path.GetFileName(file), Path.GetFileName(file), CompressionLevel.Optimal);
             }
 
         }
