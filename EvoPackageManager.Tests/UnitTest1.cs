@@ -1,6 +1,7 @@
 using Evorine.EvoPackageManager;
 using Moq;
 using System;
+using System.Linq;
 using Xunit;
 
 namespace EvoPackageManager.Tests
@@ -17,14 +18,14 @@ namespace EvoPackageManager.Tests
             var dataAccessMock = new Mock<DataAccess>();
             dataAccessMock.Setup(x => x.InsertApplication(It.IsAny<ApplicationInfo>())).Callback<ApplicationInfo>(x => 
             {
-                x.ApplicationId = Guid.NewGuid();
+                x.ApplicationId = Guid.NewGuid().ToString();
             });
 
             var packageManager = new PackageManager(settings, dataAccessMock.Object);
 
-            var applicationInfo = packageManager.CreateApplication("Warcraft IV");
+            var applicationInfo = packageManager.CreateApplication("Warcraft IV").Result;
             
-            Assert.NotEqual(default(Guid), applicationInfo.ApplicationId);
+            Assert.NotEqual(default(Guid).ToString(), applicationInfo.ApplicationId);
             Assert.Equal("Warcraft IV", applicationInfo.Name);
             Assert.False(applicationInfo.IsPublished);
             Assert.False(applicationInfo.InMaintenance);

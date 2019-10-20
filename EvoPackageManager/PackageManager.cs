@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Evorine.EvoPackageManager.Actions;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -57,34 +58,26 @@ namespace Evorine.EvoPackageManager
         {
             throw new NotImplementedException();
         }
-
-        public async Task<VersionInfo> GetVersion(string applicationId)
+        
+        public async Task<IEnumerable<VersionInfo>> GetVersions(string applicationId)
         {
-            return await dataAccess.GetVersion(applicationId);
+            return await dataAccess.GetVersions(applicationId);
         }
 
-        public async Task<IEnumerable<VersionInfo>> GetVersions()
-        {
-            return await dataAccess.GetVersions();
-        }
-
-        public VersionInfo CreateVersion(string applicationId, string version, Object files)
-        {
-            throw new NotImplementedException();
-        }
-
-        public async Task<VersionInfo> CreateFirstVersion(string applicationId, string version, Stream zipStream)
+        public async Task<VersionInfo> CreateVersion(string applicationId, string version, Stream zipStream)
         {
             if (version == null) throw new ArgumentNullException(nameof(version));
             if (zipStream == null) throw new ArgumentNullException(nameof(zipStream));
 
             ApplicationInfo applicationInfo = await GetApplication(applicationId);
             if(applicationInfo == null) throw new ArgumentNullException(nameof(applicationId));
-            VersionInfo checkVersion = await GetVersion(applicationId);
-            if (checkVersion != null && checkVersion.Version.Equals(version, StringComparison.OrdinalIgnoreCase))
+            IEnumerable<VersionInfo> currentVersions = await GetVersions(applicationId);
+            if (currentVersions != null && currentVersions.Any(x => x.Version.Equals(version, StringComparison.OrdinalIgnoreCase)))
             {
                 throw new ArgumentException($"A release with version '{version}' already exists!", nameof(version));
             }
+
+            var lastVersion = currentVersions.SingleOrDefault(x=>x.VersionOrder == currentVersions.Max(y => y.VersionOrder));
 
             VersionInfo versionInfo = new VersionInfo()
             {
@@ -92,7 +85,8 @@ namespace Evorine.EvoPackageManager
                 Version = version,
                 ApplicationId = applicationId,
                 IsReleased = false,
-                VersionOrder = 0
+                VersionOrder = (lastVersion?.VersionOrder ?? 0) + 1,
+                ReleaseDate = null
             };
             List<FileInfo> files = new List<FileInfo>();
 
@@ -105,24 +99,23 @@ namespace Evorine.EvoPackageManager
                 {
                     if (!entry.FullName.Last().Equals('/'))
                     {
-                        string filePath = Path.Combine(versionDirectoryPath, entry.FullName);
-                        string directoryPath = Path.GetDirectoryName(filePath);
+                        string absoluteFilePath = Path.Combine(versionDirectoryPath, entry.FullName);
+                        string absoluteDirectoryPath = Path.GetDirectoryName(absoluteFilePath);
 
-                        Directory.CreateDirectory(directoryPath);
-
-                        entry.ExtractToFile(filePath);
+                        // Makes sure directory exists & extracts file
+                        Directory.CreateDirectory(absoluteDirectoryPath);
+                        entry.ExtractToFile(absoluteFilePath);
 
                         FileInfo file = new FileInfo()
                         {
                             VersionId = versionInfo.VersionId,
                             FileId = Guid.NewGuid().ToString(),
                             FileName = entry.Name,
-                            DirectoryPath = directoryPath,
+                            DirectoryPath = Utilities.MakeRelative(absoluteDirectoryPath, versionDirectoryPath),
                             Size = entry.Length
                         };
 
-                        // Calculate extracted file hash
-                        using (Stream fileStream = File.OpenRead(filePath))
+                        using (Stream fileStream = File.OpenRead(absoluteFilePath))
                         {
                             file.Hash = Utilities.CalculateHash(fileStream);
                         }
@@ -133,7 +126,7 @@ namespace Evorine.EvoPackageManager
                         {
                             using (ZipArchive singleArchive = new ZipArchive(singleZipFileStream, ZipArchiveMode.Create, true))
                             {
-                                singleArchive.CreateEntryFromFile(filePath, entry.FullName);
+                                singleArchive.CreateEntryFromFile(absoluteFilePath, entry.FullName);
                             }
                             file.CompressedSize = singleZipFileStream.Length;
                         }
@@ -144,7 +137,110 @@ namespace Evorine.EvoPackageManager
             }
             await dataAccess.AddVersion(versionInfo);
             await dataAccess.AddFiles(files);
+            if(currentVersions.Any())
+            {
+                await CalculateUpdate(applicationInfo, lastVersion, versionInfo);
+            }
             return versionInfo;
+        }
+
+        public async Task<UpdateManifest> CalculateUpdate(ApplicationInfo application, VersionInfo versionFrom, VersionInfo versionTo)
+        {
+            IEnumerable<FileInfo> fromFiles = await dataAccess.GetFiles(versionFrom.VersionId);
+            IEnumerable<FileInfo> toFiles = await dataAccess.GetFiles(versionTo.VersionId);
+
+            var fileActions = CalculateFileActions(application.ApplicationId, fromFiles, toFiles);
+
+            var updateManifest = new UpdateManifest()
+            {
+                ApplicationId = application.ApplicationId,
+                FromVersion = versionFrom.Version,
+                FromVersionId = versionFrom.VersionId,
+                ToVersion = versionTo.Version,
+                ToVersionId = versionTo.VersionId,
+                Actions = fileActions.ToArray()
+            };
+            return updateManifest;
+        }
+
+        public IList<UpdateAction> CalculateFileActions(string applicationId, IEnumerable<FileInfo> fromFiles, IEnumerable<FileInfo> toFiles)
+        {
+            var copiedFiles = FileInfoUtilities.GetCopyFiles(fromFiles, toFiles);
+            var newFiles = FileInfoUtilities.GetNewFiles(fromFiles, toFiles);
+            var deletedFiles = FileInfoUtilities.GetDeletedFiles(fromFiles, toFiles);
+            var updateFiles = FileInfoUtilities.GetUpdateFiles(fromFiles, toFiles);
+
+            var actions = new List<UpdateAction>();
+
+            foreach (var file in newFiles)
+            {
+                var action = new CreateFileAction()
+                {
+                    NewFile = file
+                };
+                actions.Add(action);
+            }
+            foreach (var copyGroup in copiedFiles)
+            {
+                foreach (var copy in copyGroup.Value)
+                {
+                    var action = new CopyFileAction()
+                    {
+                        SourceFile = copyGroup.Key,
+                        DestinationFile = copy
+                    };
+                    actions.Add(action);
+                }
+                // Optimization: Delete in advance if file is already marked to delete
+                if (deletedFiles.Contains(copyGroup.Key))
+                {
+                    var action = new DeleteFileAction()
+                    {
+                        File = copyGroup.Key
+                    };
+                    actions.Add(action);
+                    deletedFiles = deletedFiles.Where(x => !x.Equals(copyGroup.Key));
+                }
+            }
+            foreach (var file in updateFiles)
+            {
+                var diffId = CreateDiffFiles(applicationId, file.source, file.target);
+                var action = new UpdateFileAction()
+                {
+                    OldFile = file.source,
+                    NewFile = file.target,
+                    DiffId = diffId
+                };
+                actions.Add(action);
+            }
+            foreach (var file in deletedFiles)
+            {
+                var action = new DeleteFileAction()
+                {
+                    File = file
+                };
+                actions.Add(action);
+            }
+            return actions;
+        }
+
+        public string CreateDiffFiles(string applicationId, FileInfo oldFile, FileInfo newFile)
+        {
+            var oldBuffer = File.ReadAllBytes(GetPackagesFilePath(applicationId, oldFile));
+            var newBuffer = File.ReadAllBytes(GetPackagesFilePath(applicationId, newFile));
+            var diffId = Guid.NewGuid().ToString();
+            var path = Path.Combine(GetUpdatesDirectoryPath(applicationId), diffId);
+
+            using (FileStream outputFile = File.Create(path))
+            {
+                BinaryPatchUtility.Create(oldBuffer, newBuffer, outputFile);
+            }
+
+            return diffId;
+        }
+        public Task<IEnumerable<FileInfo>> GetVersionFiles(string versionId)
+        {
+            return dataAccess.GetFiles(versionId);
         }
 
         public void DeleteVersion(Guid versionId)
@@ -186,6 +282,12 @@ namespace Evorine.EvoPackageManager
         {
             return Path.Combine(settings.RootPath, applicationId, "Updates");
         }
+
+        private string GetPackagesFilePath(string applicationId, FileInfo file)
+        {
+            return Path.Combine(GetPackagesDirectoryPath(applicationId), file.VersionId, file.RelativeFilename);
+        }
+
 
     }
 }

@@ -7,21 +7,16 @@ using System.IO.Compression;
 
 namespace Evorine.EvoPackageManager
 {
-    public static class Utilities
+    internal static class Utilities
     {
         private static readonly SHA256 sha256Hash = SHA256.Create();
 
-        public static string CalculateHash(Stream stream)
+        internal static string CalculateHash(Stream stream)
         {
             return ByteArrayToString(sha256Hash.ComputeHash(stream));
         }
 
-        public static string CalculateHash(byte[] content)
-        {
-            return ByteArrayToString(sha256Hash.ComputeHash(content));
-        }
-
-        public static string ByteArrayToString(byte[] ba)
+        internal static string ByteArrayToString(byte[] ba)
         {
             var hex = new StringBuilder(ba.Length * 2);
             foreach (byte b in ba)
@@ -29,12 +24,13 @@ namespace Evorine.EvoPackageManager
             return hex.ToString();
         }
 
-        public static void CompressGZip(Stream stream)
+        internal static string MakeRelative(string absolutePath, string filePath)
         {
-            using (GZipStream gZipStream = new GZipStream(stream, CompressionLevel.Optimal))
+            if (absolutePath.StartsWith(filePath))
             {
-                
+                return absolutePath.Substring(filePath.Length);
             }
+            throw new InvalidDataException("Unexpected error file path!");
         }
     }
 }

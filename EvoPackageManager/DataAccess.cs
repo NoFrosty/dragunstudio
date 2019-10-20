@@ -11,6 +11,7 @@ namespace Evorine.EvoPackageManager
     public class DataAccess
     {
         ConnectionStringFactory connectionStringFactory;
+
         public DataAccess(ConnectionStringFactory connectionStringFactory)
         {
             this.connectionStringFactory = connectionStringFactory;
@@ -64,11 +65,14 @@ namespace Evorine.EvoPackageManager
             }
         }
 
-        public async Task<VersionInfo> GetVersion(string applicationId)
+        public async Task<IEnumerable<VersionInfo>> GetVersions(string applicationId)
         {
             using (var connection = new SQLiteConnection(connectionStringFactory.GetConnectionString()))
             {
-                return await connection.GetAsync<VersionInfo>(applicationId);
+                return await connection.QueryAsync<VersionInfo>(
+                    "SELECT * FROM Version WHERE ApplicationId = @ApplicationId",
+                    new { ApplicationId = applicationId }
+                );
             }
         }
         
@@ -77,6 +81,17 @@ namespace Evorine.EvoPackageManager
             using (var connection = new SQLiteConnection(connectionStringFactory.GetConnectionString()))
             {
                 await connection.InsertAsync(files);
+            }
+        }
+
+        public async Task<IEnumerable<FileInfo>> GetFiles(string versionId)
+        {
+            using (var connection = new SQLiteConnection(connectionStringFactory.GetConnectionString()))
+            {
+                return await connection.QueryAsync<FileInfo>(
+                    "SELECT * FROM File WHERE VersionId = @VersionId",
+                    new { VersionId = versionId }
+                );
             }
         }
     }

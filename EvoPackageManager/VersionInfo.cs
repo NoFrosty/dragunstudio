@@ -11,7 +11,7 @@ namespace Evorine.EvoPackageManager
         public string ApplicationId { get; set; }
         public string Version { get; set; }
         public int VersionOrder { get; set; }
-        public DateTime ReleaseDate { get; set; }
+        public DateTime? ReleaseDate { get; set; }
         public bool IsReleased { get; set; }
     }
 }
