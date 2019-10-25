@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Evorine.EvoPackageManager;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -9,5 +10,6 @@ namespace Evopeons.API
     {
         public string ConnectionString { get; set; }
         public string ApplicationSecretKey { get; set; }
+        public PackageManagerSettings PackageManager { get; set; }
     }
 }

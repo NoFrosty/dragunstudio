@@ -6,6 +6,14 @@ namespace Evorine.EvoPackageManager
 {
     public class ConnectionStringFactory
     {
-        public string GetConnectionString() => @"Data Source=C:\Users\Calvi\Documents\GitHub\Evopeons-Server\Evopeons.API\Evopeons.db;Version=3;";
+        private readonly PackageManagerSettings packageManagerSettings;
+        public ConnectionStringFactory(PackageManagerSettings packageManagerSettings)
+        {
+            this.packageManagerSettings = packageManagerSettings;
+        }
+        public string GetConnectionString()
+        {
+            return packageManagerSettings.ConnectionString;
+        }
     }
 }

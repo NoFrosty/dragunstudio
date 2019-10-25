@@ -10,9 +10,10 @@ namespace EvoPackageManagerDemo
         {
             var settings = new PackageManagerSettings()
             {
-                RootPath = @"C:\Users\Calvi\Desktop\Test"
+                RootPath = @"C:\Users\Calvi\Desktop\Test",
+                ConnectionString = @"Data Source=C:\Users\Calvi\Documents\GitHub\Evopeons-Server\Evopeons.API\Evopeons.db;Version=3;"
             };
-            ConnectionStringFactory connectionStringFactory = new ConnectionStringFactory();
+            ConnectionStringFactory connectionStringFactory = new ConnectionStringFactory(settings);
             var dataAccess = new DataAccess(connectionStringFactory);
             var packageManager = new PackageManager(settings, dataAccess);
 
