@@ -47,7 +47,7 @@ namespace Evorine.EvoPackageManager
             return applicationInfo;
         }
 
-        public async Task DeleteApplication()
+        public Task DeleteApplication()
         {
             //TODO: Delete application directory
             throw new NotImplementedException();

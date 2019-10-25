@@ -23,7 +23,6 @@ namespace Evopeons.API.Services
             using(IDbConnection connection = connectionFactory.GetConnection())
             {
                 return await connection.GetAllAsync<News>();
-                //return connection.Query<News>("SELECT * FROM News");
             }
         }
 
@@ -32,7 +31,6 @@ namespace Evopeons.API.Services
             using (IDbConnection connection = connectionFactory.GetConnection())
             {
                 return await connection.QueryFirstAsync<News>("SELECT * FROM News WHERE slug = '" + slug + "'");
-                //throw new NotImplementedException();
             }
         }
 
@@ -41,7 +39,6 @@ namespace Evopeons.API.Services
             using (IDbConnection connection = connectionFactory.GetConnection())
             {
                 return await connection.QueryAsync<News>("SELECT * FROM News ORDER BY Id DESC LIMIT " + nbNews);
-                //throw new NotImplementedException();
             }
         }
 
@@ -50,7 +47,6 @@ namespace Evopeons.API.Services
             using (IDbConnection connection = connectionFactory.GetConnection())
             {
                 await connection.InsertAsync(news);
-                //connection.Execute("INSERT INTO News (Slug, Title, Article, PublishDate, Author) values (@Slug, @Title, @Article, @PublishDate, @Author)", news);
             }
         }
 
