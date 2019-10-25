@@ -31,6 +31,7 @@ namespace EvoPackageManagerDemo
                 packageManager.CreateVersion(applicationInfo.ApplicationId, "v2", stream).Wait();
 
             }
+            /*
             using (var stream = File.OpenRead(@"C:\Users\Calvi\Desktop\Test\TestFile\Sample1-V3.zip"))
             {
                 packageManager.CreateVersion(applicationInfo.ApplicationId, "v3", stream).Wait();
@@ -41,7 +42,7 @@ namespace EvoPackageManagerDemo
                 packageManager.CreateVersion(applicationInfo.ApplicationId, "v4", stream).Wait();
 
             }
-
+            */
 
         }
     }
