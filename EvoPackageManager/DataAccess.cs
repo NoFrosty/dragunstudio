@@ -94,5 +94,43 @@ namespace Evorine.EvoPackageManager
                 );
             }
         }
+
+        public async Task AddUpdateAction(DataObjects.UpdateAction updateAction)
+        {
+            using (var connection = new SQLiteConnection(connectionStringFactory.GetConnectionString()))
+            {
+                await connection.InsertAsync(updateAction);
+            }
+        }
+
+        public async Task AddUpdateActionCopy(DataObjects.UpdateActionCopyFile updateActionCopyFile)
+        {
+            using (var connection = new SQLiteConnection(connectionStringFactory.GetConnectionString()))
+            {
+                await connection.InsertAsync(updateActionCopyFile);
+            }
+        }
+
+        public async Task AddUpdateActionDelete(DataObjects.UpdateActionDeleteFile updateActionDeleteFile)
+        {
+            using (var connection = new SQLiteConnection(connectionStringFactory.GetConnectionString()))
+            {
+                await connection.InsertAsync(updateActionDeleteFile);
+            }
+        }
+        public async Task AddUpdateActionUpdate(DataObjects.UpdateActionUpdateFile updateActionUpdateFile)
+        {
+            using (var connection = new SQLiteConnection(connectionStringFactory.GetConnectionString()))
+            {
+                await connection.InsertAsync(updateActionUpdateFile);
+            }
+        }
+        public async Task AddUpdateActionCreate(DataObjects.UpdateActionCreateFile updateActionCreateFile)
+        {
+            using (var connection = new SQLiteConnection(connectionStringFactory.GetConnectionString()))
+            {
+                await connection.InsertAsync(updateActionCreateFile);
+            }
+        }
     }
 }

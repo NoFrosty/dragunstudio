@@ -45,7 +45,6 @@ namespace Evorine.EvoPackageManager
             Directory.CreateDirectory(GetUpdatesDirectoryPath(applicationInfo.ApplicationId));
 
             return applicationInfo;
-
         }
 
         public async Task DeleteApplication()
@@ -137,16 +136,19 @@ namespace Evorine.EvoPackageManager
             }
             await dataAccess.AddVersion(versionInfo);
             await dataAccess.AddFiles(files);
-            if(currentVersions.Any())
-            {
-                await CalculateUpdate(applicationInfo, lastVersion, versionInfo);
-            }
+            UpdateManifest updateManifest = await CalculateUpdate(applicationInfo, lastVersion, versionInfo);
+            await StoreUpdateManifest(updateManifest);
             return versionInfo;
         }
 
         public async Task<UpdateManifest> CalculateUpdate(ApplicationInfo application, VersionInfo versionFrom, VersionInfo versionTo)
         {
-            IEnumerable<FileInfo> fromFiles = await dataAccess.GetFiles(versionFrom.VersionId);
+            if (application == null)
+                throw new ArgumentNullException(nameof(application));
+            if (versionTo == null)
+                throw new ArgumentNullException(nameof(versionTo));
+
+            IEnumerable<FileInfo> fromFiles = versionFrom == null ? Enumerable.Empty<FileInfo>() : await dataAccess.GetFiles(versionFrom.VersionId);
             IEnumerable<FileInfo> toFiles = await dataAccess.GetFiles(versionTo.VersionId);
 
             var fileActions = CalculateFileActions(application.ApplicationId, fromFiles, toFiles);
@@ -154,13 +156,69 @@ namespace Evorine.EvoPackageManager
             var updateManifest = new UpdateManifest()
             {
                 ApplicationId = application.ApplicationId,
-                FromVersion = versionFrom.Version,
-                FromVersionId = versionFrom.VersionId,
+                FromVersion = versionFrom?.Version,
+                FromVersionId = versionFrom?.VersionId,
                 ToVersion = versionTo.Version,
                 ToVersionId = versionTo.VersionId,
                 Actions = fileActions.ToArray()
             };
             return updateManifest;
+        }
+
+        private async Task StoreUpdateManifest(UpdateManifest updateManifest)
+        {
+            for(var i = 0; i < updateManifest.Actions.Length; i++)
+            {
+                var updateAction = new DataObjects.UpdateAction()
+                {
+                    ActionId = Guid.NewGuid().ToString(),
+                    FromVersionId = updateManifest.FromVersionId,
+                    ToVersionId = updateManifest.ToVersionId,
+                    ActionType = updateManifest.Actions[i].ActionType,
+                    ActionOrder = i
+                };
+                await dataAccess.AddUpdateAction(updateAction);
+                switch(updateManifest.Actions[i])
+                {
+                    case CopyFileAction action:
+                        var copyDO = new DataObjects.UpdateActionCopyFile()
+                        {
+                            ActionId = updateAction.ActionId,
+                            SourceFileId = action.SourceFile.FileId,
+                            DestinationFileId = action.DestinationFile.FileId
+                        };
+                        await dataAccess.AddUpdateActionCopy(copyDO);
+                        break;
+                    case CreateFileAction action:
+                        var createDO = new DataObjects.UpdateActionCreateFile()
+                        {
+                            ActionId = updateAction.ActionId,
+                            FileId = action.NewFile.FileId
+                        };
+                        await dataAccess.AddUpdateActionCreate(createDO);
+                        break;
+                    case DeleteFileAction action:
+                        var deleteDO = new DataObjects.UpdateActionDeleteFile()
+                        {
+                            ActionId = updateAction.ActionId,
+                            FileId = action.File.FileId
+                        };
+                        await dataAccess.AddUpdateActionDelete(deleteDO);
+                        break;
+                    case UpdateFileAction action:
+                        var updateDO = new DataObjects.UpdateActionUpdateFile()
+                        {
+                            ActionId = updateAction.ActionId,
+                            OldFileId = action.OldFile.FileId,
+                            NewFileId = action.NewFile.FileId,
+                            DiffId = action.DiffId
+                        };
+                        await dataAccess.AddUpdateActionUpdate(updateDO);
+                        break;
+                    default:
+                        throw new NotImplementedException($"Not implemented kind of action: '{updateManifest.Actions[i].GetType()}'");
+                }
+            }
         }
 
         public IList<UpdateAction> CalculateFileActions(string applicationId, IEnumerable<FileInfo> fromFiles, IEnumerable<FileInfo> toFiles)
