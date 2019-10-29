@@ -13,5 +13,6 @@ namespace Evorine.EvoPackageManager
         public int VersionOrder { get; set; }
         public DateTime? ReleaseDate { get; set; }
         public bool IsReleased { get; set; }
+        public OSType OperatingSystem { get; set; }
     }
 }

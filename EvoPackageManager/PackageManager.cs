@@ -30,13 +30,14 @@ namespace Evorine.EvoPackageManager
             return await dataAccess.GetApplications();
         }
 
-        public async Task<ApplicationInfo> CreateApplication(string applicationName)
+        public async Task<ApplicationInfo> CreateApplication(string applicationName, OSType operatingSystems)
         {
             var applicationInfo = new ApplicationInfo()
             { 
                 Name = applicationName,
                 InMaintenance = false,
                 IsPublished = false,
+                SupportedOperatingSystems = operatingSystems
             };
             await dataAccess.InsertApplication(applicationInfo);
 
@@ -63,7 +64,7 @@ namespace Evorine.EvoPackageManager
             return await dataAccess.GetVersions(applicationId);
         }
 
-        public async Task<VersionInfo> CreateVersion(string applicationId, string version, Stream zipStream)
+        public async Task<VersionInfo> CreateVersion(string applicationId, string version, OSType operatingSystem, Stream zipStream)
         {
             if (version == null) throw new ArgumentNullException(nameof(version));
             if (zipStream == null) throw new ArgumentNullException(nameof(zipStream));
@@ -85,7 +86,8 @@ namespace Evorine.EvoPackageManager
                 ApplicationId = applicationId,
                 IsReleased = false,
                 VersionOrder = (lastVersion?.VersionOrder ?? 0) + 1,
-                ReleaseDate = null
+                ReleaseDate = null,
+                OperatingSystem = operatingSystem
             };
             List<FileInfo> files = new List<FileInfo>();
 

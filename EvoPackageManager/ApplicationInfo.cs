@@ -11,5 +11,6 @@ namespace Evorine.EvoPackageManager
         public string Name { get; set; }
         public bool IsPublished { get; set; }
         public bool InMaintenance { get; set; }
+        public OSType SupportedOperatingSystems { get; set; }
     }
 }
