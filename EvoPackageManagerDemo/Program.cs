@@ -32,18 +32,18 @@ namespace EvoPackageManagerDemo
                 packageManager.CreateVersion(applicationInfo.ApplicationId, "v2", OSType.Windows, stream).Wait();
 
             }
-            /*
+            
             using (var stream = File.OpenRead(@"C:\Users\Calvi\Desktop\Test\TestFile\Sample1-V3.zip"))
             {
-                packageManager.CreateVersion(applicationInfo.ApplicationId, "v3", stream).Wait();
+                packageManager.CreateVersion(applicationInfo.ApplicationId, "v3", OSType.Windows, stream).Wait();
 
             }
             using (var stream = File.OpenRead(@"C:\Users\Calvi\Desktop\Test\TestFile\Sample1-V4.zip"))
             {
-                packageManager.CreateVersion(applicationInfo.ApplicationId, "v4", stream).Wait();
+                packageManager.CreateVersion(applicationInfo.ApplicationId, "v4", OSType.Windows, stream).Wait();
 
             }
-            */
+            
 
         }
     }

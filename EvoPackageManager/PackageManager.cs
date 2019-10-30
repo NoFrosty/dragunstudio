@@ -30,10 +30,16 @@ namespace Evorine.EvoPackageManager
             return await dataAccess.GetApplications();
         }
 
+        public Stream GetFileStream(string applicationId, string fileId)
+        {
+            ;
+            return File.OpenRead(Path.Combine(GetCompressedFilesDirectoryPath(applicationId), fileId));
+        }
+
         public async Task<ApplicationInfo> CreateApplication(string applicationName, OSType operatingSystems)
         {
             var applicationInfo = new ApplicationInfo()
-            { 
+            {
                 Name = applicationName,
                 InMaintenance = false,
                 IsPublished = false,
@@ -58,10 +64,20 @@ namespace Evorine.EvoPackageManager
         {
             throw new NotImplementedException();
         }
-        
+
         public async Task<IEnumerable<VersionInfo>> GetVersions(string applicationId)
         {
             return await dataAccess.GetVersions(applicationId);
+        }
+
+        public async Task<VersionInfo> GetLastVersion(string applicationId)
+        {
+            return await dataAccess.GetLastVersion(applicationId);
+        }
+
+        public async Task<IEnumerable<FileInfo>> GetFiles(string versionId)
+        {
+            return await dataAccess.GetFiles(versionId);
         }
 
         public async Task<VersionInfo> CreateVersion(string applicationId, string version, OSType operatingSystem, Stream zipStream)
@@ -150,8 +166,8 @@ namespace Evorine.EvoPackageManager
             if (versionTo == null)
                 throw new ArgumentNullException(nameof(versionTo));
 
-            IEnumerable<FileInfo> fromFiles = versionFrom == null ? Enumerable.Empty<FileInfo>() : await dataAccess.GetFiles(versionFrom.VersionId);
-            IEnumerable<FileInfo> toFiles = await dataAccess.GetFiles(versionTo.VersionId);
+            IEnumerable<FileInfo> fromFiles = versionFrom == null ? Enumerable.Empty<FileInfo>() : await GetFiles(versionFrom.VersionId);
+            IEnumerable<FileInfo> toFiles = await GetFiles(versionTo.VersionId);
 
             var fileActions = CalculateFileActions(application.ApplicationId, fromFiles, toFiles);
 

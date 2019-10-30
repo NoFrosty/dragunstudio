@@ -22,5 +22,6 @@ namespace Evopeons.API.Controllers
         {
             return await packageManager.GetApplications();
         }
+
     }
 }

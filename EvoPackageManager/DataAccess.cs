@@ -75,6 +75,16 @@ namespace Evorine.EvoPackageManager
                 );
             }
         }
+
+        public async Task<VersionInfo> GetLastVersion(string applicationId)
+        {
+            using (var connection = new SQLiteConnection(connectionStringFactory.GetConnectionString()))
+            {
+                return await connection.QueryFirstOrDefaultAsync<VersionInfo>
+                    ("SELECT * FROM Version WHERE ApplicationId = @ApplicationId ORDER BY VersionOrder DESC", new { ApplicationId = applicationId });
+
+            }
+        }
         
         public async Task AddFiles(IEnumerable<FileInfo> files)
         {
