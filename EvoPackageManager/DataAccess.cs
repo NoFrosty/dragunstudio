@@ -105,6 +105,42 @@ namespace Evorine.EvoPackageManager
             }
         }
 
+        public async Task<FileInfo> GetFile(string fileId)
+        {
+            using (var connection = new SQLiteConnection(connectionStringFactory.GetConnectionString()))
+            {
+                return await connection.QueryFirstOrDefaultAsync<FileInfo>(
+                    "SELECT * FROM File WHERE FileId = @fileId",
+                    new { FileId = fileId }
+                );
+            }
+        }
+
+        public async Task<IEnumerable<DataObjects.UpdateAction>> GetUpdateAction(string fromVersionId, string toVersionId)
+        {
+            using (var connection = new SQLiteConnection(connectionStringFactory.GetConnectionString()))
+            {
+                if(fromVersionId == "null")
+                {
+                    return await connection.QueryAsync<DataObjects.UpdateAction>(
+                        "SELECT * FROM UpdateAction WHERE ToVersionId = @ToVersionId AND FromVersionId IS NULL",
+                        new { ToVersionId = toVersionId }
+                    );
+                }
+                else
+                {
+                    return await connection.QueryAsync<DataObjects.UpdateAction>(
+                        "SELECT * FROM UpdateAction WHERE FromVersionId = @FromVersionId AND ToVersionId = @ToVersionId",
+                        new
+                        {
+                            FromVersionId = fromVersionId,
+                            ToVersionId = toVersionId
+                        }
+                    );
+                }
+            }
+        }
+
         public async Task AddUpdateAction(DataObjects.UpdateAction updateAction)
         {
             using (var connection = new SQLiteConnection(connectionStringFactory.GetConnectionString()))
@@ -120,6 +156,16 @@ namespace Evorine.EvoPackageManager
                 await connection.InsertAsync(updateActionCopyFile);
             }
         }
+        public async Task<DataObjects.UpdateActionCopyFile> GetUpdateActionCopy(string actionId)
+        {
+            using (var connection = new SQLiteConnection(connectionStringFactory.GetConnectionString()))
+            {
+                return await connection.QueryFirstOrDefaultAsync<DataObjects.UpdateActionCopyFile>(
+                    "SELECT * FROM UpdateActionCopyFile WHERE ActionId = @ActionId",
+                    new { ActionId = actionId }
+                );
+            }
+        }
 
         public async Task AddUpdateActionDelete(DataObjects.UpdateActionDeleteFile updateActionDeleteFile)
         {
@@ -128,6 +174,18 @@ namespace Evorine.EvoPackageManager
                 await connection.InsertAsync(updateActionDeleteFile);
             }
         }
+
+        public async Task<DataObjects.UpdateActionDeleteFile> GetUpdateActionDelete(string actionId)
+        {
+            using (var connection = new SQLiteConnection(connectionStringFactory.GetConnectionString()))
+            {
+                return await connection.QueryFirstOrDefaultAsync<DataObjects.UpdateActionDeleteFile>(
+                    "SELECT * FROM UpdateActionDeleteFile WHERE ActionId = @ActionId",
+                    new { ActionId = actionId }
+                );
+            }
+        }
+
         public async Task AddUpdateActionUpdate(DataObjects.UpdateActionUpdateFile updateActionUpdateFile)
         {
             using (var connection = new SQLiteConnection(connectionStringFactory.GetConnectionString()))
@@ -135,11 +193,34 @@ namespace Evorine.EvoPackageManager
                 await connection.InsertAsync(updateActionUpdateFile);
             }
         }
+
+        public async Task<DataObjects.UpdateActionUpdateFile> GetUpdateActionUpdate(string actionId)
+        {
+            using (var connection = new SQLiteConnection(connectionStringFactory.GetConnectionString()))
+            {
+                return await connection.QueryFirstOrDefaultAsync<DataObjects.UpdateActionUpdateFile>(
+                    "SELECT * FROM UpdateActionUpdateFile WHERE ActionId = @ActionId",
+                    new { ActionId = actionId }
+                );
+            }
+        }
+
         public async Task AddUpdateActionCreate(DataObjects.UpdateActionCreateFile updateActionCreateFile)
         {
             using (var connection = new SQLiteConnection(connectionStringFactory.GetConnectionString()))
             {
                 await connection.InsertAsync(updateActionCreateFile);
+            }
+        }
+
+        public async Task<DataObjects.UpdateActionCreateFile> GetUpdateActionCreate(string actionId)
+        {
+            using (var connection = new SQLiteConnection(connectionStringFactory.GetConnectionString()))
+            {
+                return await connection.QueryFirstOrDefaultAsync<DataObjects.UpdateActionCreateFile>(
+                    "SELECT * FROM UpdateActionDeleteFile WHERE ActionId = @ActionId",
+                    new { ActionId = actionId }
+                );
             }
         }
     }

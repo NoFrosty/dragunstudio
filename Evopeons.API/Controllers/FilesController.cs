@@ -24,6 +24,12 @@ namespace Evopeons.API.Controllers
             return await packageManager.GetFiles(versionId);
         }
 
+        [HttpGet("GetFile/{fileId}")]
+        public async Task<FileInfo> GetFile(string fileId)
+        {
+            return await packageManager.GetFile(fileId);
+        }
+
         [HttpGet("{applicationId}/{fileId}")]
         public IActionResult GetFile(string applicationId, string fileId)
         {

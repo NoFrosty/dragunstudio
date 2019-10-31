@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-
 namespace Evopeons.API.Controllers
 {
     [Route("api/[controller]")]
@@ -19,9 +18,15 @@ namespace Evopeons.API.Controllers
 
 
         [HttpGet("{applicationId}")]
-        public async Task<VersionInfo> GetApplicationVersion(string applicationId)
+        public async Task<VersionInfo> GetApplicationLastVersion(string applicationId)
         {
             return await packageManager.GetLastVersion(applicationId);
+        }
+
+        [HttpGet("{fromVersionId}/{toVersionId}")]
+        public async Task<IEnumerable<Evorine.EvoPackageManager.DataObjects.UpdateAction>> GetVersionUpdateVersion(string fromVersionId, string toVersionId)
+        {
+            return await packageManager.GetUpdateAction(fromVersionId, toVersionId);
         }
     }
 }

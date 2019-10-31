@@ -32,8 +32,32 @@ namespace Evorine.EvoPackageManager
 
         public Stream GetFileStream(string applicationId, string fileId)
         {
-            ;
             return File.OpenRead(Path.Combine(GetCompressedFilesDirectoryPath(applicationId), fileId));
+        }
+
+        public async Task<IEnumerable<DataObjects.UpdateAction>> GetUpdateAction(string fromVersionId, string toVersionId)
+        {
+            return await dataAccess.GetUpdateAction(fromVersionId, toVersionId);
+        }
+
+        public async Task<DataObjects.UpdateActionCopyFile> GetUpdateActionCopy(string actionId)
+        {
+            return await dataAccess.GetUpdateActionCopy(actionId);
+        }
+
+        public async Task<DataObjects.UpdateActionCreateFile> GetUpdateActionCreate(string actionId)
+        {
+            return await dataAccess.GetUpdateActionCreate(actionId);
+        }
+
+        public async Task<DataObjects.UpdateActionDeleteFile> GetUpdateActionDelete(string actionId)
+        {
+            return await dataAccess.GetUpdateActionDelete(actionId);
+        }
+
+        public async Task<DataObjects.UpdateActionUpdateFile> GetUpdateActionUpdate(string actionId)
+        {
+            return await dataAccess.GetUpdateActionUpdate(actionId);
         }
 
         public async Task<ApplicationInfo> CreateApplication(string applicationName, OSType operatingSystems)
@@ -78,6 +102,11 @@ namespace Evorine.EvoPackageManager
         public async Task<IEnumerable<FileInfo>> GetFiles(string versionId)
         {
             return await dataAccess.GetFiles(versionId);
+        }
+
+        public async Task<FileInfo> GetFile(string fileId)
+        {
+            return await dataAccess.GetFile(fileId);
         }
 
         public async Task<VersionInfo> CreateVersion(string applicationId, string version, OSType operatingSystem, Stream zipStream)
