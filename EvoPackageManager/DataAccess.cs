@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.SQLite;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Dapper;
@@ -76,13 +77,14 @@ namespace Evorine.EvoPackageManager
             }
         }
 
-        public async Task<VersionInfo> GetLastVersion(string applicationId)
+        public async Task<VersionInfo> GetLastVersion(string applicationId, OSType operatingSystem)
         {
             using (var connection = new SQLiteConnection(connectionStringFactory.GetConnectionString()))
             {
-                return await connection.QueryFirstOrDefaultAsync<VersionInfo>
-                    ("SELECT * FROM Version WHERE ApplicationId = @ApplicationId ORDER BY VersionOrder DESC", new { ApplicationId = applicationId });
-
+                return await connection.QueryFirstOrDefaultAsync<VersionInfo>(
+                    "SELECT * FROM Version WHERE ApplicationId = @ApplicationId AND OperatingSystem = @OperatingSystem ORDER BY VersionOrder DESC",
+                    new { ApplicationId = applicationId, OperatingSystem = operatingSystem }
+                );
             }
         }
         
@@ -116,29 +118,113 @@ namespace Evorine.EvoPackageManager
             }
         }
 
-        public async Task<IEnumerable<DataObjects.UpdateAction>> GetUpdateAction(string fromVersionId, string toVersionId)
+        public async Task<UpdateAction[]> GetUpdateAction(string fromVersionId, string toVersionId)
         {
+            List<UpdateAction> actions = new List<UpdateAction>();
             using (var connection = new SQLiteConnection(connectionStringFactory.GetConnectionString()))
             {
-                if(fromVersionId == "null")
+                var allActions = await connection.QueryAsync<DataObjects.UpdateAction>(
+                    @"SELECT * FROM UpdateAction UA
+                      WHERE ((@FromVersionId IS NULL AND UA.FromVersionId IS NULL) OR (UA.FromVersionId = @FromVersionId)) 
+                        AND (UA.ToVersionId = @ToVersionId)",
+                    new
+                    {
+                        FromVersionId = fromVersionId,
+                        ToVersionId = toVersionId
+                    }
+                );
+
+                // Copy Actions
+                var copyActions = await connection.QueryAsync<DataObjects.UpdateActionCopyFile>(
+                    @"SELECT CP.* FROM UpdateAction UA
+                      JOIN UpdateActionCopyFile CP ON CP.ActionId = UA.ActionId
+                      WHERE ((@FromVersionId IS NULL AND UA.FromVersionId IS NULL) OR (UA.FromVersionId = @FromVersionId)) 
+                        AND (UA.ToVersionId = @ToVersionId)",
+                    new
+                    {
+                        FromVersionId = fromVersionId,
+                        ToVersionId = toVersionId ?? ""
+                    }
+                );
+
+                // Create Actions
+                var createActions = await connection.QueryAsync<DataObjects.UpdateActionCreateFile>(
+                    @"SELECT CR.* FROM UpdateAction UA
+                      JOIN UpdateActionCreateFile CR ON CR.ActionId = UA.ActionId
+                      WHERE ((@FromVersionId IS NULL AND UA.FromVersionId IS NULL) OR (UA.FromVersionId = @FromVersionId)) 
+                        AND (UA.ToVersionId = @ToVersionId)",
+                    new
+                    {
+                        FromVersionId = fromVersionId,
+                        ToVersionId = toVersionId ?? ""
+                    }
+                );
+
+                // Delete Actions
+                var deleteActions = await connection.QueryAsync<DataObjects.UpdateActionDeleteFile>(
+                    @"SELECT RM.* FROM UpdateAction UA
+                      JOIN UpdateActionDeleteFile RM ON RM.ActionId = UA.ActionId
+                      WHERE ((@FromVersionId IS NULL AND UA.FromVersionId IS NULL) OR (UA.FromVersionId = @FromVersionId)) 
+                        AND (UA.ToVersionId = @ToVersionId)",
+                    new
+                    {
+                        FromVersionId = fromVersionId,
+                        ToVersionId = toVersionId ?? ""
+                    }
+                );
+
+                // Update Actions
+                var updateActions = await connection.QueryAsync<DataObjects.UpdateActionUpdateFile>(
+                    @"SELECT UP.* FROM UpdateAction UA
+                      JOIN UpdateActionUpdateFile UP ON UP.ActionId = UA.ActionId
+                      WHERE ((@FromVersionId IS NULL AND UA.FromVersionId IS NULL) OR (UA.FromVersionId = @FromVersionId)) 
+                        AND (UA.ToVersionId = @ToVersionId)",
+                    new
+                    {
+                        FromVersionId = fromVersionId,
+                        ToVersionId = toVersionId ?? ""
+                    }
+                );
+
+                var tofiles = await GetFiles(toVersionId);
+                var fromFiles = fromVersionId != null ? await GetFiles(fromVersionId) : Enumerable.Empty<FileInfo>();
+                foreach (var copyAction in copyActions)
                 {
-                    return await connection.QueryAsync<DataObjects.UpdateAction>(
-                        "SELECT * FROM UpdateAction WHERE ToVersionId = @ToVersionId AND FromVersionId IS NULL",
-                        new { ToVersionId = toVersionId }
-                    );
+                    var action = new Actions.CopyFileAction()
+                    {
+                        DestinationFile = tofiles.First(x => x.FileId == copyAction.DestinationFileId),
+                        SourceFile = fromFiles.First(x => x.FileId == copyAction.SourceFileId)
+                    };
+                    actions.Add(action);
                 }
-                else
+                foreach (var createAction in createActions)
                 {
-                    return await connection.QueryAsync<DataObjects.UpdateAction>(
-                        "SELECT * FROM UpdateAction WHERE FromVersionId = @FromVersionId AND ToVersionId = @ToVersionId",
-                        new
-                        {
-                            FromVersionId = fromVersionId,
-                            ToVersionId = toVersionId
-                        }
-                    );
+                    var action = new Actions.CreateFileAction()
+                    {
+                        NewFile = tofiles.First(x => x.FileId == createAction.FileId)
+                    };
+                    actions.Add(action);
+                }
+                foreach (var deleteAction in deleteActions)
+                {
+                    var action = new Actions.CreateFileAction()
+                    {
+                        NewFile = tofiles.First(x => x.FileId == deleteAction.FileId)
+                    };
+                    actions.Add(action);
+                }
+                foreach (var updateAction in updateActions)
+                {
+                    var action = new Actions.UpdateFileAction()
+                    {
+                        DiffId = updateAction.DiffId,
+                        NewFile = tofiles.First(x => x.FileId == updateAction.NewFileId),
+                        OldFile = fromFiles.First(x => x.FileId == updateAction.OldFileId)
+                    };
+                    actions.Add(action);
                 }
             }
+            return actions.ToArray();
         }
 
         public async Task AddUpdateAction(DataObjects.UpdateAction updateAction)

@@ -16,17 +16,16 @@ namespace Evopeons.API.Controllers
             this.packageManager = packageManager;
         }
 
-
-        [HttpGet("{applicationId}")]
-        public async Task<VersionInfo> GetApplicationLastVersion(string applicationId)
+        [HttpGet("last")]
+        public async Task<VersionInfo> GetApplicationLastVersion([FromQuery]string applicationId, [FromQuery]int operatingSystem)
         {
-            return await packageManager.GetLastVersion(applicationId);
+            return await packageManager.GetLastVersion(applicationId, (OSType)operatingSystem);
         }
 
-        [HttpGet("{fromVersionId}/{toVersionId}")]
-        public async Task<IEnumerable<Evorine.EvoPackageManager.DataObjects.UpdateAction>> GetVersionUpdateVersion(string fromVersionId, string toVersionId)
-        {
-            return await packageManager.GetUpdateAction(fromVersionId, toVersionId);
-        }
+        //[HttpGet("{fromVersionId}/{toVersionId}")]
+        //public async Task<IEnumerable<Evorine.EvoPackageManager.DataObjects.UpdateAction>> GetVersionUpdateVersion(string fromVersionId, string toVersionId)
+        //{
+        //    return await packageManager.GetUpdateAction(fromVersionId, toVersionId);
+        //}
     }
 }

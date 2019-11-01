@@ -17,6 +17,7 @@ namespace Evopeons.API.Controllers
             this.packageManager = packageManager;
         }
         
+
         [HttpGet]
         public async Task<IEnumerable<ApplicationInfo>> GetApplications()
         {

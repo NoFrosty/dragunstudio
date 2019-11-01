@@ -35,7 +35,7 @@ namespace Evorine.EvoPackageManager
             return File.OpenRead(Path.Combine(GetCompressedFilesDirectoryPath(applicationId), fileId));
         }
 
-        public async Task<IEnumerable<DataObjects.UpdateAction>> GetUpdateAction(string fromVersionId, string toVersionId)
+        public async Task<UpdateAction[]> GetUpdateAction(string fromVersionId, string toVersionId)
         {
             return await dataAccess.GetUpdateAction(fromVersionId, toVersionId);
         }
@@ -94,9 +94,9 @@ namespace Evorine.EvoPackageManager
             return await dataAccess.GetVersions(applicationId);
         }
 
-        public async Task<VersionInfo> GetLastVersion(string applicationId)
+        public async Task<VersionInfo> GetLastVersion(string applicationId, OSType operatingSystem)
         {
-            return await dataAccess.GetLastVersion(applicationId);
+            return await dataAccess.GetLastVersion(applicationId, operatingSystem);
         }
 
         public async Task<IEnumerable<FileInfo>> GetFiles(string versionId)

@@ -17,12 +17,19 @@ namespace Evopeons.API.Controllers
             this.packageManager = packageManager;
         }
 
+        [HttpGet]
+        public IEnumerable<object> GetUpdateActions([FromQuery]string fromVersionId, [FromQuery]string toVersionId)
+        {
+            var result = packageManager.GetUpdateAction(fromVersionId, toVersionId).Result;
+            return result.Select(x => (object)x);
+        }
+
 
         [HttpGet("GetInstallationFiles/{operatingSystem}/{applicationId}")]
         public ResponseInstallation GetInstallationFiles(int operatingSystem, string applicationId)
         {
             //TODO: Check operatingSystem
-            VersionInfo lastVersion = packageManager.GetLastVersion(applicationId).Result;
+            VersionInfo lastVersion = packageManager.GetLastVersion(applicationId, (OSType)operatingSystem).Result;
             IEnumerable<FileInfo> lastVersionFiles = packageManager.GetFiles(lastVersion.VersionId).Result;
             ResponseInstallation response = new ResponseInstallation
             {
@@ -34,30 +41,17 @@ namespace Evopeons.API.Controllers
         }
 
         [HttpGet("CheckUpdateAvailable/{operatingSystem}/{applicationId}/{fromVersionId}")]
-        public Boolean CheckUpdateAvailable(string operatingSystem, string applicationId, string fromVersionId)
+        public Boolean CheckUpdateAvailable(int operatingSystem, string applicationId, string fromVersionId)
         {
             //TODO: Check operatingSystem
-            VersionInfo lastVersion = packageManager.GetLastVersion(applicationId).Result;
-            if (packageManager.GetVersion(applicationId, fromVersionId).VersionOrder < packageManager.GetLastVersion(applicationId).Result.VersionOrder)
+            VersionInfo lastVersion = packageManager.GetLastVersion(applicationId, (OSType)operatingSystem).Result;
+            if (packageManager.GetVersion(applicationId, fromVersionId).VersionOrder < packageManager.GetLastVersion(applicationId, (OSType)operatingSystem).Result.VersionOrder)
                 return true;
             else
                 return false;
         }
 
-        [HttpGet("GetUpdateFiles/{operatingSystem}/{applicationId}/{fromVersionId}")]
-        public ResponseUpdate GetUpdateFiles(string operatingSystem, string applicationId, string fromVersionId)
-        {
-            //TODO: Check operatingSystem
-            VersionInfo lastVersion = packageManager.GetLastVersion(applicationId).Result;
-            IEnumerable<Evorine.EvoPackageManager.DataObjects.UpdateAction> updateActions = packageManager.GetUpdateAction(fromVersionId, lastVersion.VersionId).Result;
-            ResponseUpdate response = new ResponseUpdate
-            {
-                VersionId = lastVersion.VersionId,
-                Version = lastVersion.Version,
-                UpdateActions = updateActions
-            };
-            return response;
-        }
+
 
         [HttpGet("GetUpdateActionCopy/{actionId}")]
         public Task<Evorine.EvoPackageManager.DataObjects.UpdateActionCopyFile> GetUpdateActionCopy(string actionId)
