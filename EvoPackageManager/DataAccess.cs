@@ -218,6 +218,7 @@ namespace Evorine.EvoPackageManager
                     var action = new Actions.UpdateFileAction()
                     {
                         DiffId = updateAction.DiffId,
+                        DiffSize = updateAction.DiffSize,
                         NewFile = tofiles.First(x => x.FileId == updateAction.NewFileId),
                         OldFile = fromFiles.First(x => x.FileId == updateAction.OldFileId)
                     };

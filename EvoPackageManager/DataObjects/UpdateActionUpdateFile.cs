@@ -13,5 +13,6 @@ namespace Evorine.EvoPackageManager.DataObjects
         public string OldFileId { get; set; }
         public string NewFileId { get; set; }
         public string DiffId { get; set; }
+        public long DiffSize { get; set; }
     }
 }

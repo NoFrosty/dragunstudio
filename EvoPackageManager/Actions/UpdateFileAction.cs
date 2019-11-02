@@ -11,5 +11,6 @@ namespace Evorine.EvoPackageManager.Actions
         public FileInfo OldFile { get; set; }
         public FileInfo NewFile { get; set; }
         public string DiffId { get; set; }
+        public long DiffSize { get; set; }
     }
 }

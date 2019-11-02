@@ -258,7 +258,8 @@ namespace Evorine.EvoPackageManager
                             ActionId = updateAction.ActionId,
                             OldFileId = action.OldFile.FileId,
                             NewFileId = action.NewFile.FileId,
-                            DiffId = action.DiffId
+                            DiffId = action.DiffId,
+                            DiffSize = action.DiffSize
                         };
                         await dataAccess.AddUpdateActionUpdate(updateDO);
                         break;
@@ -309,12 +310,13 @@ namespace Evorine.EvoPackageManager
             }
             foreach (var file in updateFiles)
             {
-                var diffId = CreateDiffFiles(applicationId, file.source, file.target);
+                var diffInfo = CreateDiffFiles(applicationId, file.source, file.target);
                 var action = new UpdateFileAction()
                 {
                     OldFile = file.source,
                     NewFile = file.target,
-                    DiffId = diffId
+                    DiffId = diffInfo.diffId,
+                    DiffSize = diffInfo.diffSize
                 };
                 actions.Add(action);
             }
@@ -329,7 +331,7 @@ namespace Evorine.EvoPackageManager
             return actions;
         }
 
-        public string CreateDiffFiles(string applicationId, FileInfo oldFile, FileInfo newFile)
+        public (string diffId, long diffSize) CreateDiffFiles(string applicationId, FileInfo oldFile, FileInfo newFile)
         {
             var oldBuffer = File.ReadAllBytes(GetPackagesFilePath(applicationId, oldFile));
             var newBuffer = File.ReadAllBytes(GetPackagesFilePath(applicationId, newFile));
@@ -340,8 +342,9 @@ namespace Evorine.EvoPackageManager
             {
                 BinaryPatchUtility.Create(oldBuffer, newBuffer, outputFile);
             }
+            var fi = new System.IO.FileInfo(path);
 
-            return diffId;
+            return (diffId, fi.Length);
         }
         public Task<IEnumerable<FileInfo>> GetVersionFiles(string versionId)
         {
