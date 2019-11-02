@@ -18,10 +18,6 @@ namespace EvoPackageManagerDemo
             var packageManager = new PackageManager(settings, dataAccess);
 
             var applicationInfo = packageManager.CreateApplication("Training Station", OSType.Windows).Result;
-            var x = packageManager.GetApplication(applicationInfo.ApplicationId);
-            var y = packageManager.GetApplications();
-            packageManager.UpdateApplicationPublishStatus("1ac4b846-03f1-4124-9d3e-43afca75b0b5", true).Wait();
-            packageManager.UpdateApplicationMaintenance("1ac4b846-03f1-4124-9d3e-43afca75b0b5", true).Wait();
             using (var stream = File.OpenRead(@"C:\Users\Calvi\Desktop\Test\TestFile\Training Stations.zip"))
             {
                 packageManager.CreateVersion(applicationInfo.ApplicationId, "v1", OSType.Windows, stream).Wait();
