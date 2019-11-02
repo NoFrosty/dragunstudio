@@ -34,6 +34,11 @@ namespace Evorine.EvoPackageManager
         {
             return File.OpenRead(Path.Combine(GetCompressedFilesDirectoryPath(applicationId), fileId));
         }
+        public Stream GetDiffStream(string applicationId, string diffId)
+        {
+            return File.OpenRead(Path.Combine(GetUpdatesDirectoryPath(applicationId), diffId));
+        }
+
 
         public async Task<UpdateAction[]> GetUpdateAction(string fromVersionId, string toVersionId)
         {

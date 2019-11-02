@@ -24,18 +24,31 @@ namespace Evopeons.API.Controllers
             return await packageManager.GetFiles(versionId);
         }
 
-        [HttpGet("GetFile/{fileId}")]
+        [HttpGet("{fileId}")]
         public async Task<FileInfo> GetFile(string fileId)
         {
             return await packageManager.GetFile(fileId);
         }
 
-        [HttpGet("{applicationId}/{fileId}")]
-        public IActionResult GetFile(string applicationId, string fileId)
+        [HttpGet("{applicationId}/{fileId}/download")]
+        public IActionResult DownloadFile(string applicationId, string fileId)
         {
             try
             {
                 return File(packageManager.GetFileStream(applicationId, fileId), "application/zip");
+            }
+            catch (System.IO.FileNotFoundException)
+            {
+                return NotFound();
+            }
+        }
+
+        [HttpGet("diff/{applicationId}/{diffId}/download")]
+        public IActionResult DownloadDiff(string applicationId, string diffId)
+        {
+            try
+            {
+                return File(packageManager.GetFileStream(applicationId, diffId), "application/octet-stream");
             }
             catch (System.IO.FileNotFoundException)
             {
