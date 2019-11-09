@@ -89,9 +89,9 @@ namespace Evorine.EvoPackageManager
             throw new NotImplementedException();
         }
 
-        public VersionInfo GetVersion(string applicationId, string versionId)
+        public async Task<VersionInfo> GetVersion(string versionId)
         {
-            throw new NotImplementedException();
+            return await dataAccess.GetVersion(versionId);
         }
 
         public async Task<IEnumerable<VersionInfo>> GetVersions(string applicationId)

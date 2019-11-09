@@ -45,7 +45,7 @@ namespace Evopeons.API.Controllers
         {
             //TODO: Check operatingSystem
             VersionInfo lastVersion = packageManager.GetLastVersion(applicationId, (OSType)operatingSystem).Result;
-            if (packageManager.GetVersion(applicationId, fromVersionId).VersionOrder < packageManager.GetLastVersion(applicationId, (OSType)operatingSystem).Result.VersionOrder)
+            if (packageManager.GetVersion(fromVersionId).Result.VersionOrder < packageManager.GetLastVersion(applicationId, (OSType)operatingSystem).Result.VersionOrder)
                 return true;
             else
                 return false;

@@ -77,12 +77,23 @@ namespace Evorine.EvoPackageManager
             }
         }
 
+        public async Task<VersionInfo> GetVersion(string versionId)
+        {
+            using (var connection = new SQLiteConnection(connectionStringFactory.GetConnectionString()))
+            {
+                return await connection.QueryFirstOrDefaultAsync<VersionInfo>(
+                    "SELECT * FROM Version WHERE VersionId = @VersionId",
+                    new { VersionId = versionId}
+                );
+            }
+        }
+
         public async Task<VersionInfo> GetLastVersion(string applicationId, OSType operatingSystem)
         {
             using (var connection = new SQLiteConnection(connectionStringFactory.GetConnectionString()))
             {
                 return await connection.QueryFirstOrDefaultAsync<VersionInfo>(
-                    "SELECT * FROM Version WHERE ApplicationId = @ApplicationId AND OperatingSystem = @OperatingSystem ORDER BY VersionOrder DESC",
+                    "SELECT * FROM Version WHERE IsReleased = true AND ApplicationId = @ApplicationId AND OperatingSystem = @OperatingSystem ORDER BY VersionOrder DESC",
                     new { ApplicationId = applicationId, OperatingSystem = operatingSystem }
                 );
             }
@@ -207,9 +218,9 @@ namespace Evorine.EvoPackageManager
                 }
                 foreach (var deleteAction in deleteActions)
                 {
-                    var action = new Actions.CreateFileAction()
+                    var action = new Actions.DeleteFileAction()
                     {
-                        NewFile = tofiles.First(x => x.FileId == deleteAction.FileId)
+                        File = fromFiles.First(x => x.FileId == deleteAction.FileId)
                     };
                     actions.Add(action);
                 }
