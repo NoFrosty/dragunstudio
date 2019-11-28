@@ -48,7 +48,7 @@ namespace Evopeons.API.Controllers
         {
             try
             {
-                return File(packageManager.GetFileStream(applicationId, diffId), "application/octet-stream");
+                return File(packageManager.GetDiffStream(applicationId, diffId), "application/octet-stream");
             }
             catch (System.IO.FileNotFoundException)
             {
