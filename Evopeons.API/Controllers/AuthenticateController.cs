@@ -40,17 +40,25 @@ namespace Evopeons.API.Controllers
         }
 
         [HttpPost]
-        public async Task<Models.SignInResult> SignIn(SignInModel model)
+        public async Task<ObjectResult> SignIn(SignInModel model)
         {
             var user = await userManager.FindByEmailAsync(model.Email);
+            if (user == null)
+            {
+                return StatusCode(403, new Models.SignInResult()
+                {
+                    IsSuccessfull = false
+                });
+            }
+
             var result = await signInManager.CheckPasswordSignInAsync(user, model.Password, false);
 
             if (!result.Succeeded)
             {
-                return new Models.SignInResult()
+                return StatusCode(403, new Models.SignInResult()
                 {
                     IsSuccessfull = false
-                };
+                });
             }
             
             var claims = new Claim[]
@@ -75,12 +83,12 @@ namespace Evopeons.API.Controllers
             user.LastLoginDate = DateTime.UtcNow;
             await userManager.UpdateAsync(user);
 
-            return new Models.SignInResult()
+            return StatusCode(200, new Models.SignInResult()
             {
                 IsSuccessfull = true,
                 Token = tokenHandler.WriteToken(token),
                 Username = user.Username
-            };
+            });
         }
 
         [HttpPost]
