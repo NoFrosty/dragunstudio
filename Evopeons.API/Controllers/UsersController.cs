@@ -8,10 +8,11 @@ using System.Security.Cryptography;
 using Microsoft.AspNetCore.Identity;
 using Evopeons.API.Identity;
 using Evopeons.API.Entities;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Evopeons.API.Controllers
 {
-    
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class UsersController : ControllerBase

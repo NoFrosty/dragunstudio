@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace Evopeons.API.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class NewsController : ControllerBase

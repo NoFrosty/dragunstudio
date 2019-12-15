@@ -12,6 +12,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.Extensions.Hosting;
+using Microsoft.AspNetCore.Authorization;
+using System;
 
 namespace Evopeons.API
 {
@@ -57,8 +59,16 @@ namespace Evopeons.API
                     ValidateIssuerSigningKey = true,
                     IssuerSigningKey = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(applicationSettings.ApplicationSecretKey)),
                     ValidateIssuer = false,
-                    ValidateAudience = false
+                    ValidateAudience = false,
+                    RequireExpirationTime = true,
+                    ClockSkew = TimeSpan.Zero
                 };
+                
+            });
+            services.AddAuthorization(options =>
+            {
+                var defaultAuthorizationPolicyBuilder = new AuthorizationPolicyBuilder(JwtBearerDefaults.AuthenticationScheme);
+                options.DefaultPolicy = defaultAuthorizationPolicyBuilder.RequireAuthenticatedUser().Build();
             });
 
             services.AddIdentity<ApplicationUser, ApplicationRole>(options =>
@@ -93,6 +103,7 @@ namespace Evopeons.API
 
             app.UseCors(MyAllowSpecificOrigins);
             app.UseAuthentication();
+            app.UseAuthorization();
 
             app.UseHttpsRedirection();
             app.UseMvc();
