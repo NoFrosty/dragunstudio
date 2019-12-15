@@ -1,4 +1,5 @@
 ﻿using Evorine.EvoPackageManager;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -7,6 +8,7 @@ using System.Threading.Tasks;
 
 namespace Evopeons.API.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class FilesController : ControllerBase
@@ -16,7 +18,6 @@ namespace Evopeons.API.Controllers
         {
             this.packageManager = packageManager;
         }
-
 
         [HttpGet("{versionId}")]
         public async Task<IEnumerable<FileInfo>> GetVersionFiles(string versionId)
@@ -30,6 +31,7 @@ namespace Evopeons.API.Controllers
             return await packageManager.GetFile(fileId);
         }
 
+        [AllowAnonymous]
         [HttpGet("{applicationId}/{fileId}/download")]
         public IActionResult DownloadFile(string applicationId, string fileId)
         {
@@ -43,6 +45,7 @@ namespace Evopeons.API.Controllers
             }
         }
 
+        [AllowAnonymous]
         [HttpGet("diff/{applicationId}/{diffId}/download")]
         public IActionResult DownloadDiff(string applicationId, string diffId)
         {
