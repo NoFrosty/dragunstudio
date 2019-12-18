@@ -60,6 +60,7 @@ namespace Evopeons.API.Controllers
             return Ok(userResult);
         }
 
+        [AllowAnonymous]
         // POST api/values
         [HttpPost]
         public async Task<CreateUserResult> RegisterNewUser([FromBody] CreateUserModel userModel)
@@ -72,9 +73,13 @@ namespace Evopeons.API.Controllers
                 {
                     Id = Guid.NewGuid().ToString(),
                     Email = userModel.Email,
+                    EmailNormalized = userModel.Email,
                     Username = userModel.Username,
+                    UsernameNormalized = userModel.Username,
                     FirstName = userModel.FirstName,
                     LastName = userModel.LastName,
+                    Birthday = userModel.Birthday,
+                    Country = userModel.Country,
                     Active = AccountStatus.Active,
                     CreationDate = DateTime.UtcNow,
                     TwoFactorEnabled = false,
