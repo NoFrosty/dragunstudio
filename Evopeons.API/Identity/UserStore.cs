@@ -55,7 +55,7 @@ namespace Evopeons.API.Identity
 
             using (IDbConnection connection = connectionFactory.GetConnection())
             {
-                return await connection.QuerySingleOrDefaultAsync<ApplicationUser>("SELECT * FROM Users WHERE Email ='" + normalizedEmail + "'");
+                return await connection.QuerySingleOrDefaultAsync<ApplicationUser>("SELECT * FROM Users WHERE EmailNormalized ='" + normalizedEmail + "'");
             }
         }
 
@@ -75,7 +75,7 @@ namespace Evopeons.API.Identity
 
             using (IDbConnection connection = connectionFactory.GetConnection())
             {
-                return await connection.QuerySingleOrDefaultAsync<ApplicationUser>("SELECT * FROM Users WHERE UserName ='" + normalizedUserName + "'");
+                return await connection.QuerySingleOrDefaultAsync<ApplicationUser>("SELECT * FROM Users WHERE UsernameNormalized ='" + normalizedUserName + "'");
             }
         }
 
@@ -91,12 +91,12 @@ namespace Evopeons.API.Identity
 
         public Task<string> GetNormalizedEmailAsync(ApplicationUser user, CancellationToken cancellationToken)
         {
-            return Task.FromResult(user.Email);
+            return Task.FromResult(user.EmailNormalized);
         }
 
         public Task<string> GetNormalizedUserNameAsync(ApplicationUser user, CancellationToken cancellationToken)
         {
-            return Task.FromResult(user.Username);
+            return Task.FromResult(user.UsernameNormalized);
         }
 
         public Task<string> GetPasswordHashAsync(ApplicationUser user, CancellationToken cancellationToken)
@@ -146,13 +146,13 @@ namespace Evopeons.API.Identity
 
         public Task SetNormalizedEmailAsync(ApplicationUser user, string normalizedEmail, CancellationToken cancellationToken)
         {
-            user.Email = normalizedEmail;
+            user.EmailNormalized = normalizedEmail;
             return Task.FromResult(0);
         }
 
         public Task SetNormalizedUserNameAsync(ApplicationUser user, string normalizedName, CancellationToken cancellationToken)
         {
-            user.Username = normalizedName;
+            user.UsernameNormalized = normalizedName;
             return Task.FromResult(0);
         }
 

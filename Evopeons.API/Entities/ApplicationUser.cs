@@ -10,8 +10,10 @@ namespace Evopeons.API.Entities
         [ExplicitKey]
         public string Id { get; set; }
         public string Email { get; set; }
+        public string EmailNormalized { get; set; }
         public bool EmailConfirmed { get; set; }
         public string Username { get; set; }
+        public string UsernameNormalized { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string PasswordHash { get; set; }
