@@ -20,11 +20,19 @@ namespace Evopeons.API.Controllers
         }
         
         [AllowAnonymous]
+        [HttpGet("{includeHidden}")]
+        public async Task<IEnumerable<ApplicationInfo>> GetApplications(bool includeHidden)
+        {
+            return await packageManager.GetApplications(includeHidden);
+        }
+
+        [AllowAnonymous]
         [HttpGet]
         public async Task<IEnumerable<ApplicationInfo>> GetApplications()
         {
-            return await packageManager.GetApplications();
+            return await packageManager.GetApplications(false);
         }
+
 
     }
 }

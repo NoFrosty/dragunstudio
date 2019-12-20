@@ -25,9 +25,9 @@ namespace Evorine.EvoPackageManager
             return await dataAccess.GetApplication(applicationId);
         }
 
-        public async Task<IEnumerable<ApplicationInfo>> GetApplications()
+        public async Task<IEnumerable<ApplicationInfo>> GetApplications(bool includeHidden)
         {
-            return await dataAccess.GetApplications();
+            return await dataAccess.GetApplications(includeHidden);
         }
 
         public Stream GetFileStream(string applicationId, string fileId)
@@ -72,7 +72,8 @@ namespace Evorine.EvoPackageManager
                 Name = applicationName,
                 InMaintenance = false,
                 IsPublished = false,
-                SupportedOperatingSystems = operatingSystems
+                SupportedOperatingSystems = operatingSystems,
+                IsVisible = true
             };
             await dataAccess.InsertApplication(applicationInfo);
 

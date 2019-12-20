@@ -34,11 +34,12 @@ namespace Evorine.EvoPackageManager
             }
         }
 
-        public async Task<IEnumerable<ApplicationInfo>> GetApplications()
+        public async Task<IEnumerable<ApplicationInfo>> GetApplications(bool includeHidden)
         {
             using (var connection = new SQLiteConnection(connectionStringFactory.GetConnectionString()))
             {
-                return await connection.GetAllAsync<ApplicationInfo>();
+                string sql = includeHidden ? "SELECT * FROM Application" : "SELECT * FROM Application WHERE IsVisible = 1";
+                return await connection.QueryAsync<ApplicationInfo>(sql);
             }
         }
 
@@ -319,6 +320,73 @@ namespace Evorine.EvoPackageManager
                     "SELECT * FROM UpdateActionDeleteFile WHERE ActionId = @ActionId",
                     new { ActionId = actionId }
                 );
+            }
+        }
+
+        public async Task<IEnumerable<Article>> GetAllArticles(bool includeNotPublished)
+        {
+            using (var connection = new SQLiteConnection(connectionStringFactory.GetConnectionString()))
+            {
+                string sql = includeNotPublished ? "SELECT * FROM Article" : "SELECT * FROM Article WHERE Published = 1";
+                return await connection.QueryAsync<Article>(sql);
+            }
+        }
+
+        public async Task<IEnumerable<Article>> GetAllArticlesByGame(string applicationId, bool includeNotPublished)
+        {
+            using (var connection = new SQLiteConnection(connectionStringFactory.GetConnectionString()))
+            {
+                string sql = includeNotPublished ? "SELECT * FROM Article WHERE ApplicationId = @ApplicationId" : "SELECT * FROM Article WHERE ApplicationId = @ApplicationId AND Published = 1";
+                return await connection.QueryAsync<Article>(
+                    sql,
+                    new{ApplicationId = applicationId}
+                );
+            }
+        }
+
+        public async Task<Article> GetArticle(string slug)
+        {
+            using (var connection = new SQLiteConnection(connectionStringFactory.GetConnectionString()))
+            {
+                return await connection.QueryFirstAsync<Article>(
+                    "SELECT * FROM Article WHERE Slug = @Slug",
+                    new { Slug = slug }
+                );
+            }
+        }
+
+        public async Task AddArticle(Article article)
+        {
+            using (var connection = new SQLiteConnection(connectionStringFactory.GetConnectionString()))
+            {
+                await connection.InsertAsync(article);
+            }
+        }
+
+        public async Task UpdateArticle(Article article)
+        {
+            using (var connection = new SQLiteConnection(connectionStringFactory.GetConnectionString()))
+            {
+                await connection.UpdateAsync(article);
+            }
+        }
+
+        public async Task DeleteArticle(Article article)
+        {
+            using (var connection = new SQLiteConnection(connectionStringFactory.GetConnectionString()))
+            {
+                await connection.DeleteAsync(article);
+            }
+        }
+
+        public async Task DeleteArticle(string slug)
+        {
+            using (var connection = new SQLiteConnection(connectionStringFactory.GetConnectionString()))
+            {
+                await connection.ExecuteAsync(
+                    "DELETE FROM Article WHERE Slug = @Slug",
+                    new { Slug = slug}
+                );;
             }
         }
     }

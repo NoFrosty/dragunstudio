@@ -1,7 +1,6 @@
 ﻿using Evopeons.API.Entities;
 using Evopeons.API.Identity;
 using Evopeons.API.Models;
-using Evopeons.API.Services;
 using Evorine.EvoPackageManager;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -35,7 +34,6 @@ namespace Evopeons.API
             applicationSettings.PackageManager.ConnectionString = applicationSettings.ConnectionString;
             services.AddSingleton(applicationSettings);
             services.AddSingleton<Data.IConnectionFactory, Data.SqliteConnectionFactory>();
-            services.AddTransient<NewsService>();
             services.AddTransient<IUserStore<ApplicationUser>, UserStore>();
             services.AddTransient<IRoleStore<ApplicationRole>, RoleStore>();
 

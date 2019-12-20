@@ -4,34 +4,35 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Evopeons.API.Models;
-using Evopeons.API.Services;
 using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Authorization;
+using Evorine.EvoPackageManager;
 
 namespace Evopeons.API.Controllers
 {
     [Authorize]
     [Route("api/[controller]")]
     [ApiController]
-    public class NewsController : ControllerBase
+    public class ArticleController : ControllerBase
     {
-        readonly NewsService newsService;
-        public NewsController(NewsService newsService)
+        readonly DataAccess dataAccess;
+        public ArticleController(DataAccess dataAccess)
         {
-            this.newsService = newsService;
+            this.dataAccess = dataAccess;
         }
 
+        [AllowAnonymous]
         [HttpGet]
-        public async Task<IEnumerable<News>> GetAllNews()
+        public async Task<IEnumerable<Article>> GetAllNews()
         {
-            //return news.OrderByDescending(x => x.PublishDate);
-            return await newsService.GetLastXNews(4);
+            return await dataAccess.GetAllArticles(false);
         }
 
+        [AllowAnonymous]
         [HttpGet("{slug}")]
         public async Task<ActionResult> GetNews(string slug)
         {
-            var item = await newsService.GetNews(slug);
+            var item = await dataAccess.GetArticle(slug);
             if (item == null)
             {
                 return NotFound();
@@ -42,11 +43,12 @@ namespace Evopeons.API.Controllers
 
         // POST api/values
         [HttpPost]
-        public async Task<ActionResult> Post([FromBody] News news)
+        public async Task<ActionResult> Post([FromBody] Article article)
         {
-            news.Slug = UrlSlugger.ToUrlSlug(news.Title);
-            news.PublishDate = DateTime.UtcNow;
-            await newsService.AddNews(news);
+            throw new NotImplementedException();
+            article.Slug = UrlSlugger.ToUrlSlug(article.Title);
+            article.PublishDate = DateTime.UtcNow;
+            await dataAccess.AddArticle(article);
             return Ok();
         }
 
@@ -54,14 +56,14 @@ namespace Evopeons.API.Controllers
         [HttpPut("{id}")]
         public string Put(int id, [FromBody] string value)
         {
-            return value;
+            throw new NotImplementedException();
         }
 
         // DELETE api/values/5
         [HttpDelete("{slug}")]
         public async Task Delete(int slug)
         {
-            await newsService.DeleteNews(slug);
+            throw new NotImplementedException();
         }
     }
 }
