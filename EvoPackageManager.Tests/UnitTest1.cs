@@ -23,7 +23,7 @@ namespace EvoPackageManager.Tests
 
             var packageManager = new PackageManager(settings, dataAccessMock.Object);
 
-            var applicationInfo = packageManager.CreateApplication("Warcraft IV").Result;
+            var applicationInfo = packageManager.CreateApplication("Warcraft IV", OSType.Windows).Result;
             
             Assert.NotEqual(default(Guid).ToString(), applicationInfo.ApplicationId);
             Assert.Equal("Warcraft IV", applicationInfo.Name);
