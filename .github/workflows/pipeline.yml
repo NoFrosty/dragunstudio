@@ -1,0 +1,26 @@
+name: Launcher Server
+
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 3.1.101
+    - name: Install dependencies
+      run: dotnet restore
+    - name: Build
+      run: dotnet publish --configuration Release --no-restore --output .\out
+    - uses: actions/upload-artifact@v1
+      name: Publish Artifact
+      with:
+        name: launcher-server
+        path: .\out
