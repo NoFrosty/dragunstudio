@@ -18,9 +18,9 @@ jobs:
     - name: Install dependencies
       run: dotnet restore
     - name: Build
-      run: dotnet publish --configuration Release --no-restore --output .\out
+      run: dotnet publish --configuration Release --no-restore --output ./out
     - uses: actions/upload-artifact@v1
       name: Publish Artifact
       with:
         name: launcher-server
-        path: .\out
+        path: ./out
