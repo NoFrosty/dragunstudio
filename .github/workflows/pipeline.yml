@@ -19,6 +19,17 @@ jobs:
       run: dotnet restore
     - name: Build
       run: dotnet publish --configuration Release --no-restore --output ./out
+
+    - name: Copy
+      uses: appleboy/scp-action@master
+      with:
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.USERNAME }}
+        password: ${{ secrets.PASSWORD }}
+        port: ${{ secrets.PORT }}
+        source: "./out/*"
+        target: "~/launcher-server"
+        
     - uses: actions/upload-artifact@v1
       name: Publish Artifact
       with:
