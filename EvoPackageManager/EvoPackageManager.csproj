@@ -13,4 +13,8 @@
     <PackageReference Include="System.Data.SQLite" Version="1.0.111" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\EvoPackageManager.Common\EvoPackageManager.Common.csproj" />
+  </ItemGroup>
+
 </Project>

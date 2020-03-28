@@ -39,6 +39,7 @@ namespace Evopeons.API
 
             services.AddSingleton(applicationSettings.PackageManager);
             services.AddSingleton<ConnectionStringFactory>();
+            services.AddSingleton<ConnectionFactory>();
             services.AddSingleton<DataAccess>();
             services.AddSingleton<PackageManager>();
 

@@ -16,6 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\EvoPackageManager.Common\EvoPackageManager.Common.csproj" />
     <ProjectReference Include="..\EvoPackageManager\EvoPackageManager.csproj" />
   </ItemGroup>
 
