@@ -7,8 +7,8 @@ namespace Evorine.EvoPackageManager
     public class VersionInfo
     {
         [ExplicitKey]
-        public string VersionId { get; set; }
-        public string ApplicationId { get; set; }
+        public Guid VersionId { get; set; }
+        public Guid ApplicationId { get; set; }
         public string Version { get; set; }
         public int VersionOrder { get; set; }
         public DateTime? ReleaseDate { get; set; }

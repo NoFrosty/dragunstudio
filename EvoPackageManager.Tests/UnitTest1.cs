@@ -18,14 +18,14 @@ namespace EvoPackageManager.Tests
             var dataAccessMock = new Mock<DataAccess>();
             dataAccessMock.Setup(x => x.InsertApplication(It.IsAny<ApplicationInfo>())).Callback<ApplicationInfo>(x => 
             {
-                x.ApplicationId = Guid.NewGuid().ToString();
+                x.ApplicationId = Guid.NewGuid();
             });
 
             var packageManager = new PackageManager(settings, dataAccessMock.Object);
 
             var applicationInfo = packageManager.CreateApplication("Warcraft IV", OSType.Windows).Result;
             
-            Assert.NotEqual(default(Guid).ToString(), applicationInfo.ApplicationId);
+            Assert.NotEqual(default(Guid), applicationInfo.ApplicationId);
             Assert.Equal("Warcraft IV", applicationInfo.Name);
             Assert.False(applicationInfo.IsPublished);
             Assert.False(applicationInfo.InMaintenance);

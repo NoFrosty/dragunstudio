@@ -19,14 +19,14 @@ namespace Evorine.EvoPackageManager
         }
         public async virtual Task InsertApplication(ApplicationInfo applicationInfo)
         {
-            applicationInfo.ApplicationId = Guid.NewGuid().ToString();
+            applicationInfo.ApplicationId = Guid.NewGuid();
             using(var connection = new SQLiteConnection(connectionStringFactory.GetConnectionString()))
             {
                 await connection.InsertAsync(applicationInfo);
             }
         }
 
-        public async Task<ApplicationInfo> GetApplication(string applicationId)
+        public async Task<ApplicationInfo> GetApplication(Guid applicationId)
         {
             using (var connection = new SQLiteConnection(connectionStringFactory.GetConnectionString()))
             {
@@ -67,7 +67,7 @@ namespace Evorine.EvoPackageManager
             }
         }
 
-        public async Task<IEnumerable<VersionInfo>> GetVersions(string applicationId)
+        public async Task<IEnumerable<VersionInfo>> GetVersions(Guid applicationId)
         {
             using (var connection = new SQLiteConnection(connectionStringFactory.GetConnectionString()))
             {
@@ -78,7 +78,7 @@ namespace Evorine.EvoPackageManager
             }
         }
 
-        public async Task<VersionInfo> GetVersion(string versionId)
+        public async Task<VersionInfo> GetVersion(Guid versionId)
         {
             using (var connection = new SQLiteConnection(connectionStringFactory.GetConnectionString()))
             {
@@ -89,7 +89,7 @@ namespace Evorine.EvoPackageManager
             }
         }
 
-        public async Task<VersionInfo> GetLastVersion(string applicationId, OSType operatingSystem)
+        public async Task<VersionInfo> GetLastVersion(Guid applicationId, OSType operatingSystem)
         {
             using (var connection = new SQLiteConnection(connectionStringFactory.GetConnectionString()))
             {
@@ -108,7 +108,7 @@ namespace Evorine.EvoPackageManager
             }
         }
 
-        public async Task<IEnumerable<FileInfo>> GetFiles(string versionId)
+        public async Task<IEnumerable<FileInfo>> GetFiles(Guid versionId)
         {
             using (var connection = new SQLiteConnection(connectionStringFactory.GetConnectionString()))
             {
@@ -130,7 +130,7 @@ namespace Evorine.EvoPackageManager
             }
         }
 
-        public async Task<UpdateAction[]> GetUpdateAction(string fromVersionId, string toVersionId)
+        public async Task<UpdateAction[]> GetUpdateAction(Guid fromVersionId, Guid toVersionId)
         {
             List<UpdateAction> actions = new List<UpdateAction>();
             using (var connection = new SQLiteConnection(connectionStringFactory.GetConnectionString()))
@@ -155,7 +155,7 @@ namespace Evorine.EvoPackageManager
                     new
                     {
                         FromVersionId = fromVersionId,
-                        ToVersionId = toVersionId ?? ""
+                        ToVersionId = toVersionId
                     }
                 );
 
@@ -168,7 +168,7 @@ namespace Evorine.EvoPackageManager
                     new
                     {
                         FromVersionId = fromVersionId,
-                        ToVersionId = toVersionId ?? ""
+                        ToVersionId = toVersionId
                     }
                 );
 
@@ -181,7 +181,7 @@ namespace Evorine.EvoPackageManager
                     new
                     {
                         FromVersionId = fromVersionId,
-                        ToVersionId = toVersionId ?? ""
+                        ToVersionId = toVersionId
                     }
                 );
 
@@ -194,7 +194,7 @@ namespace Evorine.EvoPackageManager
                     new
                     {
                         FromVersionId = fromVersionId,
-                        ToVersionId = toVersionId ?? ""
+                        ToVersionId = toVersionId
                     }
                 );
 
@@ -255,7 +255,7 @@ namespace Evorine.EvoPackageManager
                 await connection.InsertAsync(updateActionCopyFile);
             }
         }
-        public async Task<DataObjects.UpdateActionCopyFile> GetUpdateActionCopy(string actionId)
+        public async Task<DataObjects.UpdateActionCopyFile> GetUpdateActionCopy(Guid actionId)
         {
             using (var connection = new SQLiteConnection(connectionStringFactory.GetConnectionString()))
             {
@@ -274,7 +274,7 @@ namespace Evorine.EvoPackageManager
             }
         }
 
-        public async Task<DataObjects.UpdateActionDeleteFile> GetUpdateActionDelete(string actionId)
+        public async Task<DataObjects.UpdateActionDeleteFile> GetUpdateActionDelete(Guid actionId)
         {
             using (var connection = new SQLiteConnection(connectionStringFactory.GetConnectionString()))
             {
@@ -293,7 +293,7 @@ namespace Evorine.EvoPackageManager
             }
         }
 
-        public async Task<DataObjects.UpdateActionUpdateFile> GetUpdateActionUpdate(string actionId)
+        public async Task<DataObjects.UpdateActionUpdateFile> GetUpdateActionUpdate(Guid actionId)
         {
             using (var connection = new SQLiteConnection(connectionStringFactory.GetConnectionString()))
             {
@@ -312,7 +312,7 @@ namespace Evorine.EvoPackageManager
             }
         }
 
-        public async Task<DataObjects.UpdateActionCreateFile> GetUpdateActionCreate(string actionId)
+        public async Task<DataObjects.UpdateActionCreateFile> GetUpdateActionCreate(Guid actionId)
         {
             using (var connection = new SQLiteConnection(connectionStringFactory.GetConnectionString()))
             {
@@ -332,7 +332,7 @@ namespace Evorine.EvoPackageManager
             }
         }
 
-        public async Task<IEnumerable<Article>> GetAllArticlesByGame(string applicationId, bool includeNotPublished)
+        public async Task<IEnumerable<Article>> GetAllArticlesByGame(Guid applicationId, bool includeNotPublished)
         {
             using (var connection = new SQLiteConnection(connectionStringFactory.GetConnectionString()))
             {

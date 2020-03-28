@@ -10,8 +10,8 @@ namespace Evorine.EvoPackageManager
     public class FileInfo : IEquatable<FileInfo>
     {
         [ExplicitKey]
-        public string FileId { get; set; }
-        public string VersionId { get; set; }
+        public Guid FileId { get; set; }
+        public Guid VersionId { get; set; }
         public string FileName { get; set; }
         public string DirectoryPath { get; set; }
         public string Hash { get; set; }

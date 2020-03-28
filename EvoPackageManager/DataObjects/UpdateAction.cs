@@ -9,9 +9,9 @@ namespace Evorine.EvoPackageManager.DataObjects
     public class UpdateAction
     {
         [ExplicitKey]
-        public string ActionId { get; set; }
-        public string FromVersionId { get; set; }
-        public string ToVersionId { get; set; }
+        public Guid ActionId { get; set; }
+        public Guid? FromVersionId { get; set; }
+        public Guid ToVersionId { get; set; }
         public ActionType ActionType { get; set; }
         public int ActionOrder { get; set; }
     }

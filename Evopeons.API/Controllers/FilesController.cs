@@ -20,7 +20,7 @@ namespace Evopeons.API.Controllers
         }
 
         [HttpGet("{versionId}")]
-        public async Task<IEnumerable<FileInfo>> GetVersionFiles(string versionId)
+        public async Task<IEnumerable<FileInfo>> GetVersionFiles(Guid versionId)
         {
             return await packageManager.GetFiles(versionId);
         }
@@ -33,7 +33,7 @@ namespace Evopeons.API.Controllers
 
         [AllowAnonymous]
         [HttpGet("{applicationId}/{fileId}/download")]
-        public IActionResult DownloadFile(string applicationId, string fileId)
+        public IActionResult DownloadFile(Guid applicationId, string fileId)
         {
             try
             {
@@ -47,7 +47,7 @@ namespace Evopeons.API.Controllers
 
         [AllowAnonymous]
         [HttpGet("diff/{applicationId}/{diffId}/download")]
-        public IActionResult DownloadDiff(string applicationId, string diffId)
+        public IActionResult DownloadDiff(Guid applicationId, string diffId)
         {
             try
             {

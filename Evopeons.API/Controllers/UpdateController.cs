@@ -20,7 +20,7 @@ namespace Evopeons.API.Controllers
         }
 
         [HttpGet]
-        public IEnumerable<object> GetUpdateActions([FromQuery]string fromVersionId, [FromQuery]string toVersionId)
+        public IEnumerable<object> GetUpdateActions([FromQuery]Guid fromVersionId, [FromQuery]Guid toVersionId)
         {
             var result = packageManager.GetUpdateAction(fromVersionId, toVersionId).Result;
             return result.Select(x => (object)x);
@@ -28,7 +28,7 @@ namespace Evopeons.API.Controllers
 
 
         [HttpGet("GetInstallationFiles/{operatingSystem}/{applicationId}")]
-        public ResponseInstallation GetInstallationFiles(int operatingSystem, string applicationId)
+        public ResponseInstallation GetInstallationFiles(int operatingSystem, Guid applicationId)
         {
             //TODO: Check operatingSystem
             VersionInfo lastVersion = packageManager.GetLastVersion(applicationId, (OSType)operatingSystem).Result;
@@ -43,7 +43,7 @@ namespace Evopeons.API.Controllers
         }
 
         [HttpGet("CheckUpdateAvailable/{operatingSystem}/{applicationId}/{fromVersionId}")]
-        public Boolean CheckUpdateAvailable(int operatingSystem, string applicationId, string fromVersionId)
+        public Boolean CheckUpdateAvailable(int operatingSystem, Guid applicationId, Guid fromVersionId)
         {
             //TODO: Check operatingSystem
             VersionInfo lastVersion = packageManager.GetLastVersion(applicationId, (OSType)operatingSystem).Result;
@@ -56,25 +56,25 @@ namespace Evopeons.API.Controllers
 
 
         [HttpGet("GetUpdateActionCopy/{actionId}")]
-        public Task<Evorine.EvoPackageManager.DataObjects.UpdateActionCopyFile> GetUpdateActionCopy(string actionId)
+        public Task<Evorine.EvoPackageManager.DataObjects.UpdateActionCopyFile> GetUpdateActionCopy(Guid actionId)
         {
             return packageManager.GetUpdateActionCopy(actionId);
         }
 
         [HttpGet("GetUpdateActionDelete/{actionId}")]
-        public Task<Evorine.EvoPackageManager.DataObjects.UpdateActionDeleteFile> GetUpdateActionDelete(string actionId)
+        public Task<Evorine.EvoPackageManager.DataObjects.UpdateActionDeleteFile> GetUpdateActionDelete(Guid actionId)
         {
             return packageManager.GetUpdateActionDelete(actionId);
         }
 
         [HttpGet("GetUpdateActionCreate/{actionId}")]
-        public Task<Evorine.EvoPackageManager.DataObjects.UpdateActionCreateFile> GetUpdateActionCreate(string actionId)
+        public Task<Evorine.EvoPackageManager.DataObjects.UpdateActionCreateFile> GetUpdateActionCreate(Guid actionId)
         {
             return packageManager.GetUpdateActionCreate(actionId);
         }
 
         [HttpGet("GetUpdateActionUpdate/{actionId}")]
-        public Task<Evorine.EvoPackageManager.DataObjects.UpdateActionUpdateFile> GetUpdateActionUpdate(string actionId)
+        public Task<Evorine.EvoPackageManager.DataObjects.UpdateActionUpdateFile> GetUpdateActionUpdate(Guid actionId)
         {
             return packageManager.GetUpdateActionUpdate(actionId);
         }
@@ -82,13 +82,13 @@ namespace Evopeons.API.Controllers
 
         public class ResponseInstallation
         {
-            public string VersionId { get; set; }
+            public Guid VersionId { get; set; }
             public string Version { get; set; }
             public IEnumerable<FileInfo> Files { get; set; }
         }
         public class ResponseUpdate
         {
-            public string VersionId { get; set; }
+            public Guid versionId { get; set; }
             public string Version { get; set; }
             public IEnumerable<Evorine.EvoPackageManager.DataObjects.UpdateAction> UpdateActions { get; set; }
         }

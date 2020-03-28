@@ -20,7 +20,7 @@ namespace Evorine.EvoPackageManager
             this.dataAccess = dataAccess;
         }
 
-        public async Task<ApplicationInfo> GetApplication(string applicationId)
+        public async Task<ApplicationInfo> GetApplication(Guid applicationId)
         {
             return await dataAccess.GetApplication(applicationId);
         }
@@ -30,37 +30,37 @@ namespace Evorine.EvoPackageManager
             return await dataAccess.GetApplications(includeHidden);
         }
 
-        public Stream GetFileStream(string applicationId, string fileId)
+        public Stream GetFileStream(Guid applicationId, string fileId)
         {
             return File.OpenRead(Path.Combine(GetCompressedFilesDirectoryPath(applicationId), fileId));
         }
-        public Stream GetDiffStream(string applicationId, string diffId)
+        public Stream GetDiffStream(Guid applicationId, string diffId)
         {
             return File.OpenRead(Path.Combine(GetUpdatesDirectoryPath(applicationId), diffId));
         }
 
 
-        public async Task<UpdateAction[]> GetUpdateAction(string fromVersionId, string toVersionId)
+        public async Task<UpdateAction[]> GetUpdateAction(Guid fromVersionId, Guid toVersionId)
         {
             return await dataAccess.GetUpdateAction(fromVersionId, toVersionId);
         }
 
-        public async Task<DataObjects.UpdateActionCopyFile> GetUpdateActionCopy(string actionId)
+        public async Task<DataObjects.UpdateActionCopyFile> GetUpdateActionCopy(Guid actionId)
         {
             return await dataAccess.GetUpdateActionCopy(actionId);
         }
 
-        public async Task<DataObjects.UpdateActionCreateFile> GetUpdateActionCreate(string actionId)
+        public async Task<DataObjects.UpdateActionCreateFile> GetUpdateActionCreate(Guid actionId)
         {
             return await dataAccess.GetUpdateActionCreate(actionId);
         }
 
-        public async Task<DataObjects.UpdateActionDeleteFile> GetUpdateActionDelete(string actionId)
+        public async Task<DataObjects.UpdateActionDeleteFile> GetUpdateActionDelete(Guid actionId)
         {
             return await dataAccess.GetUpdateActionDelete(actionId);
         }
 
-        public async Task<DataObjects.UpdateActionUpdateFile> GetUpdateActionUpdate(string actionId)
+        public async Task<DataObjects.UpdateActionUpdateFile> GetUpdateActionUpdate(Guid actionId)
         {
             return await dataAccess.GetUpdateActionUpdate(actionId);
         }
@@ -72,7 +72,7 @@ namespace Evorine.EvoPackageManager
                 Name = applicationName,
                 InMaintenance = false,
                 IsPublished = false,
-                SupportedOperatingSystems = operatingSystems,
+                SupportedOS = operatingSystems,
                 IsVisible = true
             };
             await dataAccess.InsertApplication(applicationInfo);
@@ -90,22 +90,22 @@ namespace Evorine.EvoPackageManager
             throw new NotImplementedException();
         }
 
-        public async Task<VersionInfo> GetVersion(string versionId)
+        public async Task<VersionInfo> GetVersion(Guid versionId)
         {
             return await dataAccess.GetVersion(versionId);
         }
 
-        public async Task<IEnumerable<VersionInfo>> GetVersions(string applicationId)
+        public async Task<IEnumerable<VersionInfo>> GetVersions(Guid applicationId)
         {
             return await dataAccess.GetVersions(applicationId);
         }
 
-        public async Task<VersionInfo> GetLastVersion(string applicationId, OSType operatingSystem)
+        public async Task<VersionInfo> GetLastVersion(Guid applicationId, OSType operatingSystem)
         {
             return await dataAccess.GetLastVersion(applicationId, operatingSystem);
         }
 
-        public async Task<IEnumerable<FileInfo>> GetFiles(string versionId)
+        public async Task<IEnumerable<FileInfo>> GetFiles(Guid versionId)
         {
             return await dataAccess.GetFiles(versionId);
         }
@@ -115,7 +115,7 @@ namespace Evorine.EvoPackageManager
             return await dataAccess.GetFile(fileId);
         }
 
-        public async Task<VersionInfo> CreateVersion(string applicationId, string version, OSType operatingSystem, Stream zipStream)
+        public async Task<VersionInfo> CreateVersion(Guid applicationId, string version, OSType operatingSystem, Stream zipStream)
         {
             if (version == null) throw new ArgumentNullException(nameof(version));
             if (zipStream == null) throw new ArgumentNullException(nameof(zipStream));
@@ -132,7 +132,7 @@ namespace Evorine.EvoPackageManager
 
             VersionInfo versionInfo = new VersionInfo()
             {
-                VersionId = Guid.NewGuid().ToString(),
+                VersionId = Guid.NewGuid(),
                 Version = version,
                 ApplicationId = applicationId,
                 IsReleased = false,
@@ -142,7 +142,7 @@ namespace Evorine.EvoPackageManager
             };
             List<FileInfo> files = new List<FileInfo>();
 
-            string versionDirectoryPath = Path.Combine(GetPackagesDirectoryPath(applicationId), versionInfo.VersionId);
+            string versionDirectoryPath = Path.Combine(GetPackagesDirectoryPath(applicationId), versionInfo.VersionId.ToString());
             Directory.CreateDirectory(versionDirectoryPath);
 
             using (ZipArchive archive = new ZipArchive(zipStream))
@@ -161,7 +161,7 @@ namespace Evorine.EvoPackageManager
                         FileInfo file = new FileInfo()
                         {
                             VersionId = versionInfo.VersionId,
-                            FileId = Guid.NewGuid().ToString(),
+                            FileId = Guid.NewGuid(),
                             FileName = entry.Name,
                             DirectoryPath = Utilities.MakeRelative(absoluteDirectoryPath, versionDirectoryPath),
                             Size = entry.Length
@@ -173,7 +173,7 @@ namespace Evorine.EvoPackageManager
                         }
 
                         // Zip file back alone
-                        string singleZipPath = Path.Combine(GetCompressedFilesDirectoryPath(applicationId), file.FileId);
+                        string singleZipPath = Path.Combine(GetCompressedFilesDirectoryPath(applicationId), file.FileId.ToString());
                         using (Stream singleZipFileStream = File.Create(singleZipPath))
                         {
                             using (ZipArchive singleArchive = new ZipArchive(singleZipFileStream, ZipArchiveMode.Create, true))
@@ -224,7 +224,7 @@ namespace Evorine.EvoPackageManager
             {
                 var updateAction = new DataObjects.UpdateAction()
                 {
-                    ActionId = Guid.NewGuid().ToString(),
+                    ActionId = Guid.NewGuid(),
                     FromVersionId = updateManifest.FromVersionId,
                     ToVersionId = updateManifest.ToVersionId,
                     ActionType = updateManifest.Actions[i].ActionType,
@@ -275,7 +275,7 @@ namespace Evorine.EvoPackageManager
             }
         }
 
-        public IList<UpdateAction> CalculateFileActions(string applicationId, IEnumerable<FileInfo> fromFiles, IEnumerable<FileInfo> toFiles)
+        public IList<UpdateAction> CalculateFileActions(Guid applicationId, IEnumerable<FileInfo> fromFiles, IEnumerable<FileInfo> toFiles)
         {
             var copiedFiles = FileInfoUtilities.GetCopyFiles(fromFiles, toFiles);
             var newFiles = FileInfoUtilities.GetNewFiles(fromFiles, toFiles);
@@ -337,12 +337,12 @@ namespace Evorine.EvoPackageManager
             return actions;
         }
 
-        public (string diffId, long diffSize) CreateDiffFiles(string applicationId, FileInfo oldFile, FileInfo newFile)
+        public (Guid diffId, long diffSize) CreateDiffFiles(Guid applicationId, FileInfo oldFile, FileInfo newFile)
         {
             var oldBuffer = File.ReadAllBytes(GetPackagesFilePath(applicationId, oldFile));
             var newBuffer = File.ReadAllBytes(GetPackagesFilePath(applicationId, newFile));
-            var diffId = Guid.NewGuid().ToString();
-            var path = Path.Combine(GetUpdatesDirectoryPath(applicationId), diffId);
+            var diffId = Guid.NewGuid();
+            var path = Path.Combine(GetUpdatesDirectoryPath(applicationId), diffId.ToString());
 
             using (FileStream outputFile = File.Create(path))
             {
@@ -352,7 +352,7 @@ namespace Evorine.EvoPackageManager
 
             return (diffId, fi.Length);
         }
-        public Task<IEnumerable<FileInfo>> GetVersionFiles(string versionId)
+        public Task<IEnumerable<FileInfo>> GetVersionFiles(Guid versionId)
         {
             return dataAccess.GetFiles(versionId);
         }
@@ -362,14 +362,14 @@ namespace Evorine.EvoPackageManager
             throw new NotImplementedException();
         }
 
-        public async Task UpdateApplicationMaintenance(string applicationId, bool inMaintenance)
+        public async Task UpdateApplicationMaintenance(Guid applicationId, bool inMaintenance)
         {
             ApplicationInfo applicationInfo = GetApplication(applicationId).Result;
             applicationInfo.InMaintenance = inMaintenance;
             await dataAccess.UpdateApplication(applicationInfo);
         }
 
-        public async Task UpdateApplicationPublishStatus(string applicationId, bool isPublished)
+        public async Task UpdateApplicationPublishStatus(Guid applicationId, bool isPublished)
         {
 
             ApplicationInfo applicationInfo = GetApplication(applicationId).Result;
@@ -382,24 +382,24 @@ namespace Evorine.EvoPackageManager
             throw new NotImplementedException();
         }
 
-        private string GetCompressedFilesDirectoryPath(string applicationId)
+        private string GetCompressedFilesDirectoryPath(Guid applicationId)
         {
-            return Path.Combine(settings.RootPath, applicationId, "CompressedFiles");
+            return Path.Combine(settings.RootPath, applicationId.ToString(), "CompressedFiles");
         }
 
-        private string GetPackagesDirectoryPath(string applicationId)
+        private string GetPackagesDirectoryPath(Guid applicationId)
         {
-            return Path.Combine(settings.RootPath, applicationId, "Packages");
+            return Path.Combine(settings.RootPath, applicationId.ToString(), "Packages");
         }
 
-        private string GetUpdatesDirectoryPath(string applicationId)
+        private string GetUpdatesDirectoryPath(Guid applicationId)
         {
-            return Path.Combine(settings.RootPath, applicationId, "Updates");
+            return Path.Combine(settings.RootPath, applicationId.ToString(), "Updates");
         }
 
-        private string GetPackagesFilePath(string applicationId, FileInfo file)
+        private string GetPackagesFilePath(Guid applicationId, FileInfo file)
         {
-            return Path.Combine(GetPackagesDirectoryPath(applicationId), file.VersionId, file.RelativeFilename);
+            return Path.Combine(GetPackagesDirectoryPath(applicationId), file.VersionId.ToString(), file.RelativeFilename);
         }
 
 

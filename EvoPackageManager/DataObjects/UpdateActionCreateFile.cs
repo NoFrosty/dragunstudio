@@ -9,7 +9,7 @@ namespace Evorine.EvoPackageManager.DataObjects
     public class UpdateActionCreateFile
     {
         [ExplicitKey]
-        public string ActionId { get; set; }
-        public string FileId { get; set; }
+        public Guid ActionId { get; set; }
+        public Guid FileId { get; set; }
     }
 }

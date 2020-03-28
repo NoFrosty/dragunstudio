@@ -9,10 +9,10 @@ namespace Evorine.EvoPackageManager.DataObjects
     public class UpdateActionUpdateFile
     {
         [ExplicitKey]
-        public string ActionId { get; set; }
-        public string OldFileId { get; set; }
-        public string NewFileId { get; set; }
-        public string DiffId { get; set; }
+        public Guid ActionId { get; set; }
+        public Guid OldFileId { get; set; }
+        public Guid NewFileId { get; set; }
+        public Guid DiffId { get; set; }
         public long DiffSize { get; set; }
     }
 }

@@ -9,8 +9,8 @@ namespace Evorine.EvoPackageManager.DataObjects
     public class UpdateActionCopyFile
     {
         [ExplicitKey]
-        public string ActionId { get; set; }
-        public string SourceFileId { get; set; }
-        public string DestinationFileId { get; set; }
+        public Guid ActionId { get; set; }
+        public Guid SourceFileId { get; set; }
+        public Guid DestinationFileId { get; set; }
     }
 }

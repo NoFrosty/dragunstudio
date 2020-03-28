@@ -9,7 +9,7 @@ namespace Evorine.EvoPackageManager
     public class Article
     {
         [ExplicitKey]
-        public string Id { get; set; }
+        public Guid ArticleId { get; set; }
         //Unique Slug (link of the article)
         public string Slug { get; set; }
         public string Title { get; set; }
@@ -17,6 +17,6 @@ namespace Evorine.EvoPackageManager
         public DateTime PublishDate { get; set; }
         public string AuthorId { get; set; }
         public Boolean Published { get; set; }
-        public string ApplicationId { get; set; }
+        public Guid applicationId { get; set; }
     }
 }
