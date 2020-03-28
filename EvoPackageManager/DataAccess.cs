@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.SQLite;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,16 +10,16 @@ namespace Evorine.EvoPackageManager
 {
     public class DataAccess
     {
-        ConnectionStringFactory connectionStringFactory;
+        readonly ConnectionFactory connectionFactory;
 
-        public DataAccess(ConnectionStringFactory connectionStringFactory)
+        public DataAccess(ConnectionFactory connectionFactory)
         {
-            this.connectionStringFactory = connectionStringFactory;
+            this.connectionFactory = connectionFactory;
         }
         public async virtual Task InsertApplication(ApplicationInfo applicationInfo)
         {
             applicationInfo.ApplicationId = Guid.NewGuid();
-            using(var connection = new SQLiteConnection(connectionStringFactory.GetConnectionString()))
+            using (var connection = connectionFactory.AquireConnection())
             {
                 await connection.InsertAsync(applicationInfo);
             }
@@ -28,15 +27,15 @@ namespace Evorine.EvoPackageManager
 
         public async Task<ApplicationInfo> GetApplication(Guid applicationId)
         {
-            using (var connection = new SQLiteConnection(connectionStringFactory.GetConnectionString()))
+            using (var connection = connectionFactory.AquireConnection())
             {
-                return await connection.GetAsync<ApplicationInfo>(applicationId.ToString());
+                return await connection.GetAsync<ApplicationInfo>(applicationId);
             }
         }
 
         public async Task<IEnumerable<ApplicationInfo>> GetApplications(bool includeHidden)
         {
-            using (var connection = new SQLiteConnection(connectionStringFactory.GetConnectionString()))
+            using (var connection = connectionFactory.AquireConnection())
             {
                 string sql = includeHidden ? "SELECT * FROM Application" : "SELECT * FROM Application WHERE IsVisible = 1";
                 return await connection.QueryAsync<ApplicationInfo>(sql);
@@ -45,7 +44,7 @@ namespace Evorine.EvoPackageManager
 
         public async Task<bool> UpdateApplication(ApplicationInfo applicationInfo)
         {
-            using (var connection = new SQLiteConnection(connectionStringFactory.GetConnectionString()))
+            using (var connection = connectionFactory.AquireConnection())
             {
                 return await connection.UpdateAsync(applicationInfo);
             }
@@ -53,7 +52,7 @@ namespace Evorine.EvoPackageManager
 
         public async Task AddVersion(VersionInfo versionInfo)
         {
-            using (var connection = new SQLiteConnection(connectionStringFactory.GetConnectionString()))
+            using (var connection = connectionFactory.AquireConnection())
             {
                 await connection.InsertAsync(versionInfo);
             }
@@ -61,7 +60,7 @@ namespace Evorine.EvoPackageManager
 
         public async Task<IEnumerable<VersionInfo>> GetVersions()
         {
-            using (var connection = new SQLiteConnection(connectionStringFactory.GetConnectionString()))
+            using (var connection = connectionFactory.AquireConnection())
             {
                 return await connection.GetAllAsync<VersionInfo>();
             }
@@ -69,7 +68,7 @@ namespace Evorine.EvoPackageManager
 
         public async Task<IEnumerable<VersionInfo>> GetVersions(Guid applicationId)
         {
-            using (var connection = new SQLiteConnection(connectionStringFactory.GetConnectionString()))
+            using (var connection = connectionFactory.AquireConnection())
             {
                 return await connection.QueryAsync<VersionInfo>(
                     "SELECT * FROM Version WHERE ApplicationId = @ApplicationId",
@@ -80,7 +79,7 @@ namespace Evorine.EvoPackageManager
 
         public async Task<VersionInfo> GetVersion(Guid versionId)
         {
-            using (var connection = new SQLiteConnection(connectionStringFactory.GetConnectionString()))
+            using (var connection = connectionFactory.AquireConnection())
             {
                 return await connection.QueryFirstOrDefaultAsync<VersionInfo>(
                     "SELECT * FROM Version WHERE VersionId = @VersionId",
@@ -91,7 +90,7 @@ namespace Evorine.EvoPackageManager
 
         public async Task<VersionInfo> GetLastVersion(Guid applicationId, OSType operatingSystem)
         {
-            using (var connection = new SQLiteConnection(connectionStringFactory.GetConnectionString()))
+            using (var connection = connectionFactory.AquireConnection())
             {
                 return await connection.QueryFirstOrDefaultAsync<VersionInfo>(
                     "SELECT * FROM Version WHERE IsReleased = true AND ApplicationId = @ApplicationId AND OperatingSystem = @OperatingSystem ORDER BY VersionOrder DESC",
@@ -102,7 +101,7 @@ namespace Evorine.EvoPackageManager
         
         public async Task AddFiles(IEnumerable<FileInfo> files)
         {
-            using (var connection = new SQLiteConnection(connectionStringFactory.GetConnectionString()))
+            using (var connection = connectionFactory.AquireConnection())
             {
                 await connection.InsertAsync(files);
             }
@@ -110,7 +109,7 @@ namespace Evorine.EvoPackageManager
 
         public async Task<IEnumerable<FileInfo>> GetFiles(Guid versionId)
         {
-            using (var connection = new SQLiteConnection(connectionStringFactory.GetConnectionString()))
+            using (var connection = connectionFactory.AquireConnection())
             {
                 return await connection.QueryAsync<FileInfo>(
                     "SELECT * FROM File WHERE VersionId = @VersionId",
@@ -121,7 +120,7 @@ namespace Evorine.EvoPackageManager
 
         public async Task<FileInfo> GetFile(string fileId)
         {
-            using (var connection = new SQLiteConnection(connectionStringFactory.GetConnectionString()))
+            using (var connection = connectionFactory.AquireConnection())
             {
                 return await connection.QueryFirstOrDefaultAsync<FileInfo>(
                     "SELECT * FROM File WHERE FileId = @fileId",
@@ -133,7 +132,7 @@ namespace Evorine.EvoPackageManager
         public async Task<UpdateAction[]> GetUpdateAction(Guid fromVersionId, Guid toVersionId)
         {
             List<UpdateAction> actions = new List<UpdateAction>();
-            using (var connection = new SQLiteConnection(connectionStringFactory.GetConnectionString()))
+            using (var connection = connectionFactory.AquireConnection())
             {
                 var allActions = await connection.QueryAsync<DataObjects.UpdateAction>(
                     @"SELECT * FROM UpdateAction UA
@@ -242,7 +241,7 @@ namespace Evorine.EvoPackageManager
 
         public async Task AddUpdateAction(DataObjects.UpdateAction updateAction)
         {
-            using (var connection = new SQLiteConnection(connectionStringFactory.GetConnectionString()))
+            using (var connection = connectionFactory.AquireConnection())
             {
                 await connection.InsertAsync(updateAction);
             }
@@ -250,14 +249,14 @@ namespace Evorine.EvoPackageManager
 
         public async Task AddUpdateActionCopy(DataObjects.UpdateActionCopyFile updateActionCopyFile)
         {
-            using (var connection = new SQLiteConnection(connectionStringFactory.GetConnectionString()))
+            using (var connection = connectionFactory.AquireConnection())
             {
                 await connection.InsertAsync(updateActionCopyFile);
             }
         }
         public async Task<DataObjects.UpdateActionCopyFile> GetUpdateActionCopy(Guid actionId)
         {
-            using (var connection = new SQLiteConnection(connectionStringFactory.GetConnectionString()))
+            using (var connection = connectionFactory.AquireConnection())
             {
                 return await connection.QueryFirstOrDefaultAsync<DataObjects.UpdateActionCopyFile>(
                     "SELECT * FROM UpdateActionCopyFile WHERE ActionId = @ActionId",
@@ -268,7 +267,7 @@ namespace Evorine.EvoPackageManager
 
         public async Task AddUpdateActionDelete(DataObjects.UpdateActionDeleteFile updateActionDeleteFile)
         {
-            using (var connection = new SQLiteConnection(connectionStringFactory.GetConnectionString()))
+            using (var connection = connectionFactory.AquireConnection())
             {
                 await connection.InsertAsync(updateActionDeleteFile);
             }
@@ -276,7 +275,7 @@ namespace Evorine.EvoPackageManager
 
         public async Task<DataObjects.UpdateActionDeleteFile> GetUpdateActionDelete(Guid actionId)
         {
-            using (var connection = new SQLiteConnection(connectionStringFactory.GetConnectionString()))
+            using (var connection = connectionFactory.AquireConnection())
             {
                 return await connection.QueryFirstOrDefaultAsync<DataObjects.UpdateActionDeleteFile>(
                     "SELECT * FROM UpdateActionDeleteFile WHERE ActionId = @ActionId",
@@ -287,7 +286,7 @@ namespace Evorine.EvoPackageManager
 
         public async Task AddUpdateActionUpdate(DataObjects.UpdateActionUpdateFile updateActionUpdateFile)
         {
-            using (var connection = new SQLiteConnection(connectionStringFactory.GetConnectionString()))
+            using (var connection = connectionFactory.AquireConnection())
             {
                 await connection.InsertAsync(updateActionUpdateFile);
             }
@@ -295,7 +294,7 @@ namespace Evorine.EvoPackageManager
 
         public async Task<DataObjects.UpdateActionUpdateFile> GetUpdateActionUpdate(Guid actionId)
         {
-            using (var connection = new SQLiteConnection(connectionStringFactory.GetConnectionString()))
+            using (var connection = connectionFactory.AquireConnection())
             {
                 return await connection.QueryFirstOrDefaultAsync<DataObjects.UpdateActionUpdateFile>(
                     "SELECT * FROM UpdateActionUpdateFile WHERE ActionId = @ActionId",
@@ -306,7 +305,7 @@ namespace Evorine.EvoPackageManager
 
         public async Task AddUpdateActionCreate(DataObjects.UpdateActionCreateFile updateActionCreateFile)
         {
-            using (var connection = new SQLiteConnection(connectionStringFactory.GetConnectionString()))
+            using (var connection = connectionFactory.AquireConnection())
             {
                 await connection.InsertAsync(updateActionCreateFile);
             }
@@ -314,7 +313,7 @@ namespace Evorine.EvoPackageManager
 
         public async Task<DataObjects.UpdateActionCreateFile> GetUpdateActionCreate(Guid actionId)
         {
-            using (var connection = new SQLiteConnection(connectionStringFactory.GetConnectionString()))
+            using (var connection = connectionFactory.AquireConnection())
             {
                 return await connection.QueryFirstOrDefaultAsync<DataObjects.UpdateActionCreateFile>(
                     "SELECT * FROM UpdateActionDeleteFile WHERE ActionId = @ActionId",
@@ -325,7 +324,7 @@ namespace Evorine.EvoPackageManager
 
         public async Task<IEnumerable<Article>> GetAllArticles(bool includeNotPublished)
         {
-            using (var connection = new SQLiteConnection(connectionStringFactory.GetConnectionString()))
+            using (var connection = connectionFactory.AquireConnection())
             {
                 string sql = includeNotPublished ? "SELECT * FROM Article" : "SELECT * FROM Article WHERE Published = 1";
                 return await connection.QueryAsync<Article>(sql);
@@ -334,7 +333,7 @@ namespace Evorine.EvoPackageManager
 
         public async Task<IEnumerable<Article>> GetAllArticlesByGame(Guid applicationId, bool includeNotPublished)
         {
-            using (var connection = new SQLiteConnection(connectionStringFactory.GetConnectionString()))
+            using (var connection = connectionFactory.AquireConnection())
             {
                 string sql = includeNotPublished ? "SELECT * FROM Article WHERE ApplicationId = @ApplicationId" : "SELECT * FROM Article WHERE ApplicationId = @ApplicationId AND Published = 1";
                 return await connection.QueryAsync<Article>(
@@ -346,7 +345,7 @@ namespace Evorine.EvoPackageManager
 
         public async Task<Article> GetArticle(string slug)
         {
-            using (var connection = new SQLiteConnection(connectionStringFactory.GetConnectionString()))
+            using (var connection = connectionFactory.AquireConnection())
             {
                 return await connection.QueryFirstAsync<Article>(
                     "SELECT * FROM Article WHERE Slug = @Slug",
@@ -357,7 +356,7 @@ namespace Evorine.EvoPackageManager
 
         public async Task AddArticle(Article article)
         {
-            using (var connection = new SQLiteConnection(connectionStringFactory.GetConnectionString()))
+            using (var connection = connectionFactory.AquireConnection())
             {
                 await connection.InsertAsync(article);
             }
@@ -365,7 +364,7 @@ namespace Evorine.EvoPackageManager
 
         public async Task UpdateArticle(Article article)
         {
-            using (var connection = new SQLiteConnection(connectionStringFactory.GetConnectionString()))
+            using (var connection = connectionFactory.AquireConnection())
             {
                 await connection.UpdateAsync(article);
             }
@@ -373,7 +372,7 @@ namespace Evorine.EvoPackageManager
 
         public async Task DeleteArticle(Article article)
         {
-            using (var connection = new SQLiteConnection(connectionStringFactory.GetConnectionString()))
+            using (var connection = connectionFactory.AquireConnection())
             {
                 await connection.DeleteAsync(article);
             }
@@ -381,7 +380,7 @@ namespace Evorine.EvoPackageManager
 
         public async Task DeleteArticle(string slug)
         {
-            using (var connection = new SQLiteConnection(connectionStringFactory.GetConnectionString()))
+            using (var connection = connectionFactory.AquireConnection())
             {
                 await connection.ExecuteAsync(
                     "DELETE FROM Article WHERE Slug = @Slug",

@@ -27,11 +27,12 @@ namespace EvoPackageManagerDemo
             };
 
             ConnectionStringFactory connectionStringFactory = new ConnectionStringFactory(settings);
-            var dataAccess = new DataAccess(connectionStringFactory);
+            ConnectionFactory connectionFactory = new ConnectionFactory(connectionStringFactory);
+            var dataAccess = new DataAccess(connectionFactory);
             var packageManager = new PackageManager(settings, dataAccess);
 
-            var applicationInfo = packageManager.CreateApplication("Training Station", OSType.Windows).Result;
-            using (var stream = File.OpenRead(@"C:\Users\Calvi\Desktop\Test\TestFile\Sample1-V1.zip"))
+            var applicationInfo = packageManager.CreateApplication("Diable IV", OSType.Windows).Result;
+            using (var stream = File.OpenRead(@"C:\Users\Calvi\Desktop\Test\TestFile\MediumPackage.zip"))
             {
                 packageManager.CreateVersion(applicationInfo.ApplicationId, "v1", OSType.Windows, stream).Wait();
             }
@@ -51,9 +52,8 @@ namespace EvoPackageManagerDemo
             {
                 packageManager.CreateVersion(applicationInfo.ApplicationId, "v4", OSType.Windows, stream).Wait();
 
-            }
-            */
-
+            }*/
+            packageManager.UpdateApplicationPublishStatus(applicationInfo.ApplicationId, true).Wait();
         }
     }
 }

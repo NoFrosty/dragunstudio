@@ -43,7 +43,6 @@ namespace Evopeons.API
             services.AddSingleton<DataAccess>();
             services.AddSingleton<PackageManager>();
 
-
             services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;

@@ -71,7 +71,7 @@ namespace Evopeons.API.Controllers
             {
                 var user = new ApplicationUser()
                 {
-                    Id = Guid.NewGuid().ToString(),
+                    UserId = Guid.NewGuid().ToString(),
                     Email = userModel.Email,
                     EmailNormalized = userModel.Email,
                     Username = userModel.Username,

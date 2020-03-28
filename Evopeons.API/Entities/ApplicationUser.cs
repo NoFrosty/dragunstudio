@@ -8,7 +8,7 @@ namespace Evopeons.API.Entities
     public class ApplicationUser
     {
         [ExplicitKey]
-        public string Id { get; set; }
+        public string UserId { get; set; }
         public string Email { get; set; }
         public string EmailNormalized { get; set; }
         public bool EmailConfirmed { get; set; }
