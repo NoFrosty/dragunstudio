@@ -26,7 +26,7 @@ namespace Evopeons.API.Controllers
         }
 
         [HttpGet]
-        public async Task<IQueryable<ApplicationUser>> GetAllUsers()
+        public IQueryable<ApplicationUser> GetAllUsers()
         {
             return userManager.Users;
         }

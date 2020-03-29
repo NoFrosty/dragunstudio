@@ -20,11 +20,7 @@ namespace Evorine.EvoPackageManager
                 return string.Equals(x.Hash, y.Hash, StringComparison.OrdinalIgnoreCase);
             }
 
-            public int GetHashCode(FileInfo obj)
-            {
-                return 0;
-                return obj.GetHashCode();
-            }
+            public int GetHashCode(FileInfo obj) => obj.GetHashCode();
         }
     }
 }

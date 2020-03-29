@@ -45,7 +45,6 @@ namespace Evopeons.API.Controllers
         [HttpPost]
         public async Task<ActionResult> Post([FromBody] Article article)
         {
-            throw new NotImplementedException();
             article.Slug = UrlSlugger.ToUrlSlug(article.Title);
             article.PublishDate = DateTime.UtcNow;
             await dataAccess.AddArticle(article);
@@ -61,7 +60,7 @@ namespace Evopeons.API.Controllers
 
         // DELETE api/values/5
         [HttpDelete("{slug}")]
-        public async Task Delete(int slug)
+        public void Delete(int slug)
         {
             throw new NotImplementedException();
         }
