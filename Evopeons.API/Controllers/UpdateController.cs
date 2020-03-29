@@ -20,7 +20,7 @@ namespace Evopeons.API.Controllers
         }
 
         [HttpGet]
-        public IEnumerable<object> GetUpdateActions([FromQuery]Guid fromVersionId, [FromQuery]Guid toVersionId)
+        public IEnumerable<object> GetUpdateActions([FromQuery]Guid? fromVersionId, [FromQuery]Guid toVersionId)
         {
             var result = packageManager.GetUpdateAction(fromVersionId, toVersionId).Result;
             return result.Select(x => (object)x);

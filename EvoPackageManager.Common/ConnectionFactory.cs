@@ -9,12 +9,12 @@ namespace Evorine.EvoPackageManager
 {
     public class ConnectionFactory
     {
-        private readonly ConnectionStringFactory connectionStringFactory;
-        public ConnectionFactory(ConnectionStringFactory connectionStringFactory)
+        private readonly IConnectionStringFactory connectionStringFactory;
+        public ConnectionFactory(IConnectionStringFactory connectionStringFactory)
         {
             this.connectionStringFactory = connectionStringFactory;
         }
-        public DbConnection AquireConnection()
+        public DbConnection AcquireConnection()
         {
             return new MySqlConnection(connectionStringFactory.GetConnectionString());
         }

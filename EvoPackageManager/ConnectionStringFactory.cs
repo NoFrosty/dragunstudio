@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Evorine.EvoPackageManager
 {
-    public class ConnectionStringFactory
+    public class ConnectionStringFactory : IConnectionStringFactory
     {
         private readonly PackageManagerSettings packageManagerSettings;
         public ConnectionStringFactory(PackageManagerSettings packageManagerSettings)

@@ -31,12 +31,12 @@ namespace EvoPackageManagerDemo
             var dataAccess = new DataAccess(connectionFactory);
             var packageManager = new PackageManager(settings, dataAccess);
 
-            var applicationInfo = packageManager.CreateApplication("Diable IV", OSType.Windows).Result;
-            using (var stream = File.OpenRead(@"C:\Users\Calvi\Desktop\Test\TestFile\MediumPackage.zip"))
+            var applicationInfo = packageManager.CreateApplication("World Of Warcraft New Generations", OSType.Windows).Result;
+            using (var stream = File.OpenRead(@"C:\Users\Calvi\Desktop\Test\TestFile\Sample1-V1.zip"))
             {
-                packageManager.CreateVersion(applicationInfo.ApplicationId, "v1", OSType.Windows, stream).Wait();
+                var version = packageManager.CreateVersion(applicationInfo.ApplicationId, "v1", OSType.Windows, stream).Result;
             }
-            /*
+            
             using (var stream = File.OpenRead(@"C:\Users\Calvi\Desktop\Test\TestFile\Sample1-V2.zip"))
             {
                 packageManager.CreateVersion(applicationInfo.ApplicationId, "v2", OSType.Windows, stream).Wait();
@@ -52,7 +52,7 @@ namespace EvoPackageManagerDemo
             {
                 packageManager.CreateVersion(applicationInfo.ApplicationId, "v4", OSType.Windows, stream).Wait();
 
-            }*/
+            }
             packageManager.UpdateApplicationPublishStatus(applicationInfo.ApplicationId, true).Wait();
         }
     }

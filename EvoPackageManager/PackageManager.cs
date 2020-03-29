@@ -40,7 +40,7 @@ namespace Evorine.EvoPackageManager
         }
 
 
-        public async Task<UpdateAction[]> GetUpdateAction(Guid fromVersionId, Guid toVersionId)
+        public async Task<UpdateAction[]> GetUpdateAction(Guid? fromVersionId, Guid toVersionId)
         {
             return await dataAccess.GetUpdateAction(fromVersionId, toVersionId);
         }
@@ -115,31 +115,45 @@ namespace Evorine.EvoPackageManager
             return await dataAccess.GetFile(fileId);
         }
 
-        public async Task<VersionInfo> CreateVersion(Guid applicationId, string version, OSType operatingSystem, Stream zipStream)
+        public async Task<VersionInfo> CreateVersion(Guid applicationId, string newVersion, OSType operatingSystem, Stream zipStream)
         {
-            if (version == null) throw new ArgumentNullException(nameof(version));
+            if (newVersion == null) throw new ArgumentNullException(nameof(newVersion));
             if (zipStream == null) throw new ArgumentNullException(nameof(zipStream));
 
             ApplicationInfo applicationInfo = await GetApplication(applicationId);
             if(applicationInfo == null) throw new ArgumentNullException(nameof(applicationId));
             IEnumerable<VersionInfo> currentVersions = await GetVersions(applicationId);
-            if (currentVersions != null && currentVersions.Any(x => x.Version.Equals(version, StringComparison.OrdinalIgnoreCase)))
+            if (currentVersions != null && currentVersions.Any(x => x.Version.Equals(newVersion, StringComparison.OrdinalIgnoreCase)))
             {
-                throw new ArgumentException($"A release with version '{version}' already exists!", nameof(version));
+                throw new ArgumentException($"A release with version '{newVersion}' already exists!", nameof(newVersion));
             }
 
-            var lastVersion = currentVersions.SingleOrDefault(x=>x.VersionOrder == currentVersions.Max(y => y.VersionOrder));
+            var fromVersion = currentVersions.SingleOrDefault(x=>x.VersionOrder == currentVersions.Max(y => y.VersionOrder));
 
-            VersionInfo versionInfo = new VersionInfo()
+            VersionInfo newVersionInfo = new VersionInfo()
             {
                 VersionId = Guid.NewGuid(),
-                Version = version,
+                Version = newVersion,
                 ApplicationId = applicationId,
                 IsReleased = false,
-                VersionOrder = (lastVersion?.VersionOrder ?? 0) + 1,
+                VersionOrder = (fromVersion?.VersionOrder ?? 0) + 1,
                 ReleaseDate = null,
                 OperatingSystem = operatingSystem
             };
+
+            var versionFiles = StoreVersionFiles(applicationId, newVersionInfo, zipStream);
+
+            await dataAccess.AddVersion(newVersionInfo);
+            await dataAccess.AddFiles(versionFiles);
+            UpdateManifest updateManifest = await CalculateUpdate(applicationInfo, fromVersion, newVersionInfo);
+            UpdateManifest freshInstallationManifest = await CalculateUpdate(applicationInfo, null, newVersionInfo);
+            await StoreUpdateManifest(updateManifest);
+            await StoreUpdateManifest(freshInstallationManifest);
+            return newVersionInfo;
+        }
+
+        private List<FileInfo> StoreVersionFiles(Guid applicationId, VersionInfo versionInfo, Stream zipStream)
+        {
             List<FileInfo> files = new List<FileInfo>();
 
             string versionDirectoryPath = Path.Combine(GetPackagesDirectoryPath(applicationId), versionInfo.VersionId.ToString());
@@ -187,11 +201,8 @@ namespace Evorine.EvoPackageManager
                     }
                 }
             }
-            await dataAccess.AddVersion(versionInfo);
-            await dataAccess.AddFiles(files);
-            UpdateManifest updateManifest = await CalculateUpdate(applicationInfo, lastVersion, versionInfo);
-            await StoreUpdateManifest(updateManifest);
-            return versionInfo;
+
+            return files;
         }
 
         public async Task<UpdateManifest> CalculateUpdate(ApplicationInfo application, VersionInfo versionFrom, VersionInfo versionTo)

@@ -21,7 +21,8 @@ namespace Evopeons.API.Controllers
         [HttpGet("last")]
         public async Task<VersionInfo> GetApplicationLastVersion([FromQuery]Guid applicationId, [FromQuery]int operatingSystem)
         {
-            return await packageManager.GetLastVersion(applicationId, (OSType)operatingSystem);
+            var bidule = await packageManager.GetLastVersion(applicationId, (OSType)operatingSystem);
+            return bidule;
         }
 
         //[HttpGet("{fromVersionId}/{toVersionId}")]

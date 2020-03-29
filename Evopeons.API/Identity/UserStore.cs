@@ -1,8 +1,8 @@
 ﻿using Dapper;
 using Dapper.Contrib.Extensions;
-using Evopeons.API.Data;
 using Evopeons.API.Entities;
 using Evopeons.API.Models;
+using Evorine.EvoPackageManager;
 using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
@@ -16,11 +16,11 @@ namespace Evopeons.API.Identity
     public class UserStore : IUserStore<ApplicationUser>, IUserEmailStore<ApplicationUser>,
     IUserTwoFactorStore<ApplicationUser>, IUserPasswordStore<ApplicationUser>, IQueryableUserStore<ApplicationUser>
     {
-        readonly IConnectionFactory connectionFactory;
+        readonly ConnectionFactory connectionFactory;
 
-        public IQueryable<ApplicationUser> Users => (connectionFactory.GetConnection() as IDbConnection).GetAll<ApplicationUser>().AsQueryable(); 
+        public IQueryable<ApplicationUser> Users => (connectionFactory.AcquireConnection() as IDbConnection).GetAll<ApplicationUser>().AsQueryable(); 
 
-        public UserStore(IConnectionFactory connectionFactory)
+        public UserStore(ConnectionFactory connectionFactory)
         {
             this.connectionFactory = connectionFactory;
         }
@@ -30,7 +30,7 @@ namespace Evopeons.API.Identity
         public async Task<IdentityResult> CreateAsync(ApplicationUser user, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
-            using (IDbConnection connection = connectionFactory.GetConnection())
+            using (IDbConnection connection = connectionFactory.AcquireConnection())
             {
                 await connection.InsertAsync<ApplicationUser>(user);
             }
@@ -41,7 +41,7 @@ namespace Evopeons.API.Identity
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            using (IDbConnection connection = connectionFactory.GetConnection())
+            using (IDbConnection connection = connectionFactory.AcquireConnection())
             {
                 await connection.DeleteAsync<ApplicationUser>(user);
             }
@@ -53,9 +53,9 @@ namespace Evopeons.API.Identity
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            using (IDbConnection connection = connectionFactory.GetConnection())
+            using (IDbConnection connection = connectionFactory.AcquireConnection())
             {
-                return await connection.QuerySingleOrDefaultAsync<ApplicationUser>("SELECT * FROM Users WHERE EmailNormalized ='" + normalizedEmail + "'");
+                return await connection.QuerySingleOrDefaultAsync<ApplicationUser>("SELECT * FROM User WHERE EmailNormalized ='" + normalizedEmail + "'");
             }
         }
 
@@ -63,9 +63,9 @@ namespace Evopeons.API.Identity
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            using (IDbConnection connection = connectionFactory.GetConnection())
+            using (IDbConnection connection = connectionFactory.AcquireConnection())
             {
-                return await connection.QuerySingleOrDefaultAsync<ApplicationUser>("SELECT * FROM Users WHERE Id ='"+userId+"'");
+                return await connection.QuerySingleOrDefaultAsync<ApplicationUser>("SELECT * FROM User WHERE Id ='"+userId+"'");
             }
         }
 
@@ -73,9 +73,9 @@ namespace Evopeons.API.Identity
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            using (IDbConnection connection = connectionFactory.GetConnection())
+            using (IDbConnection connection = connectionFactory.AcquireConnection())
             {
-                return await connection.QuerySingleOrDefaultAsync<ApplicationUser>("SELECT * FROM Users WHERE UsernameNormalized ='" + normalizedUserName + "'");
+                return await connection.QuerySingleOrDefaultAsync<ApplicationUser>("SELECT * FROM User WHERE UsernameNormalized ='" + normalizedUserName + "'");
             }
         }
 
@@ -121,7 +121,7 @@ namespace Evopeons.API.Identity
 
         public async Task<IEnumerable<ApplicationUser>> GetUsersAsync()
         {
-            using (var connection = connectionFactory.GetConnection())
+            using (var connection = connectionFactory.AcquireConnection())
             {
                 return await connection.GetAllAsync<ApplicationUser>();
             }
@@ -179,7 +179,7 @@ namespace Evopeons.API.Identity
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            using (IDbConnection connection = connectionFactory.GetConnection())
+            using (IDbConnection connection = connectionFactory.AcquireConnection())
             {
                 await connection.UpdateAsync(user);
             }

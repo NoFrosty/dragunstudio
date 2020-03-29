@@ -43,16 +43,16 @@ namespace Evopeons.API.Controllers
             GetUserAccountResult userResult = new GetUserAccountResult()
             {
                 Username = NormalizeString(user.Username),
-                Address1 = user.Address1,
-                Address2 = user.Address2,
-                Birthday = user.Birthday,
-                City = user.City,
+                //Address1 = user.Address1,
+                //Address2 = user.Address2,
+                //Birthday = user.Birthday,
+                //City = user.City,
                 Email = NormalizeString(user.Email),
                 EmailConfirmed = user.EmailConfirmed,
                 FirstName = user.FirstName,
                 LastName = user.LastName,
                 PhoneNumber = user.PhoneNumber,
-                PostCode = user.PostCode,
+                //PostCode = user.PostCode,
                 TwoFactorEnabled = user.TwoFactorEnabled
             };
 
@@ -71,7 +71,7 @@ namespace Evopeons.API.Controllers
             {
                 var user = new ApplicationUser()
                 {
-                    UserId = Guid.NewGuid().ToString(),
+                    UserId = Guid.NewGuid(),
                     Email = userModel.Email,
                     EmailNormalized = userModel.Email,
                     Username = userModel.Username,
@@ -79,7 +79,7 @@ namespace Evopeons.API.Controllers
                     FirstName = userModel.FirstName,
                     LastName = userModel.LastName,
                     Birthday = userModel.Birthday,
-                    Country = userModel.Country,
+                    //Country = userModel.Country,
                     Active = AccountStatus.Active,
                     CreationDate = DateTime.UtcNow,
                     TwoFactorEnabled = false,

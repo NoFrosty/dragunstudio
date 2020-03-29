@@ -33,12 +33,11 @@ namespace Evopeons.API
             var applicationSettings = Configuration.Get<ApplicationSettings>();
             applicationSettings.PackageManager.ConnectionString = applicationSettings.ConnectionString;
             services.AddSingleton(applicationSettings);
-            services.AddSingleton<Data.IConnectionFactory, Data.SqliteConnectionFactory>();
             services.AddTransient<IUserStore<ApplicationUser>, UserStore>();
             services.AddTransient<IRoleStore<ApplicationRole>, RoleStore>();
 
             services.AddSingleton(applicationSettings.PackageManager);
-            services.AddSingleton<ConnectionStringFactory>();
+            services.AddSingleton<IConnectionStringFactory, ConnectionStringFactory>();
             services.AddSingleton<ConnectionFactory>();
             services.AddSingleton<DataAccess>();
             services.AddSingleton<PackageManager>();

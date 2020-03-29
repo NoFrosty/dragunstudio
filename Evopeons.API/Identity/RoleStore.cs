@@ -1,7 +1,7 @@
 ﻿using Dapper;
 using Dapper.Contrib.Extensions;
-using Evopeons.API.Data;
 using Evopeons.API.Models;
+using Evorine.EvoPackageManager;
 using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
@@ -14,9 +14,9 @@ namespace Evopeons.API.Identity
 {
     public class RoleStore : IRoleStore<ApplicationRole>
     {
-        readonly IConnectionFactory connectionFactory;
+        readonly ConnectionFactory connectionFactory;
 
-        public RoleStore(IConnectionFactory connectionFactory)
+        public RoleStore(ConnectionFactory connectionFactory)
         {
             this.connectionFactory = connectionFactory;
         }
@@ -25,7 +25,7 @@ namespace Evopeons.API.Identity
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            using (IDbConnection connection = connectionFactory.GetConnection())
+            using (IDbConnection connection = connectionFactory.AcquireConnection())
             {
                 role.Id = await connection.InsertAsync<ApplicationRole>(role);
             }
@@ -37,7 +37,7 @@ namespace Evopeons.API.Identity
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            using (IDbConnection connection = connectionFactory.GetConnection())
+            using (IDbConnection connection = connectionFactory.AcquireConnection())
             {
                 await connection.DeleteAsync(role);
             }
@@ -53,7 +53,7 @@ namespace Evopeons.API.Identity
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            using (IDbConnection connection = connectionFactory.GetConnection())
+            using (IDbConnection connection = connectionFactory.AcquireConnection())
             {
                 return await connection.QuerySingleOrDefaultAsync<ApplicationRole>("SELECT * FROM UserRoles WHERE Id = '"+ roleId + "'");
             }
@@ -63,7 +63,7 @@ namespace Evopeons.API.Identity
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            using (IDbConnection connection = connectionFactory.GetConnection())
+            using (IDbConnection connection = connectionFactory.AcquireConnection())
             {
                 return await connection.QuerySingleOrDefaultAsync<ApplicationRole>("SELECT * FROM UserRoles WHERE Name = '" + normalizedRoleName + "'");
             }
@@ -100,7 +100,7 @@ namespace Evopeons.API.Identity
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            using (IDbConnection connection = connectionFactory.GetConnection())
+            using (IDbConnection connection = connectionFactory.AcquireConnection())
             {
                 await connection.UpdateAsync<ApplicationRole>(role);
             }

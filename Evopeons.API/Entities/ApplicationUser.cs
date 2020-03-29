@@ -4,11 +4,11 @@ using System;
 
 namespace Evopeons.API.Entities
 {
-    [Table("Users")]
+    [Table("User")]
     public class ApplicationUser
     {
         [ExplicitKey]
-        public string UserId { get; set; }
+        public Guid UserId { get; set; }
         public string Email { get; set; }
         public string EmailNormalized { get; set; }
         public bool EmailConfirmed { get; set; }
@@ -24,11 +24,11 @@ namespace Evopeons.API.Entities
         public DateTime LastLoginDate { get; set; }
         public DateTime CreationDate { get; set; }
         public string PhoneNumber { get; set; }
-        public string Address1 { get; set; }
-        public string Address2 { get; set; }
-        public string PostCode { get; set; }
-        public string City { get; set; }
-        public string Country { get; set; }
+        //public string Address1 { get; set; }
+        //public string Address2 { get; set; }
+        //public string PostCode { get; set; }
+        //public string City { get; set; }
+        //public string Country { get; set; }
         public AccountStatus Active { get; set; }
         public DateTime SuspensionEnd { get; set; }
         public Role UserRole { get; set; }
