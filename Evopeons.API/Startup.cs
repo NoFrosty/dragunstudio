@@ -13,6 +13,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.Extensions.Hosting;
 using Microsoft.AspNetCore.Authorization;
 using System;
+using Evopeons.API.Articles;
 
 namespace Evopeons.API
 {
@@ -41,6 +42,8 @@ namespace Evopeons.API
             services.AddSingleton<ConnectionFactory>();
             services.AddSingleton<DataAccess>();
             services.AddSingleton<PackageManager>();
+            services.AddSingleton<ArticleManager>();
+            services.AddSingleton<ArticleDataAccess>();
 
             services.AddAuthentication(options =>
             {
