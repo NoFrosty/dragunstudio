@@ -20,4 +20,7 @@
     <ProjectReference Include="..\EvoPackageManager\EvoPackageManager.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Articles\" />
+  </ItemGroup>
 </Project>
