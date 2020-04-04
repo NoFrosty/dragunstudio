@@ -12,9 +12,9 @@ namespace Evopeons.API.Articles
             this.articleDataAccess = articleDataAccess;
         }
 
-        public async Task<IEnumerable<Article>> GetAllArticles(bool isPublished)
+        public async Task<IEnumerable<Article>> GetAllArticles(bool includeNotPublished)
         {
-            return await articleDataAccess.GetAllArticles(isPublished);
+            return await articleDataAccess.GetAllArticles(includeNotPublished);
         }
 
         public async Task<Article> GetArticle(Guid slug)
@@ -32,9 +32,9 @@ namespace Evopeons.API.Articles
            await articleDataAccess.DeleteArticle(slug);
         }
 
-        public async Task<IEnumerable<Article>> GetAllArticleByApplication(Guid applicationId, bool isPublished)
+        public async Task<IEnumerable<Article>> GetAllArticleByApplication(Guid applicationId, bool includeNotPublished)
         {
-            return await articleDataAccess.GetAllArticlesByApplication(applicationId, isPublished);
+            return await articleDataAccess.GetAllArticlesByApplication(applicationId, includeNotPublished);
         }
 
         

@@ -18,37 +18,6 @@ namespace Evopeons.API.Controllers
         {
             this.articleManager = articleManager;
         }
-
-        [AllowAnonymous]
-        [HttpGet()]
-        public async Task<IEnumerable<Article>> GetAllArticle(bool? isPublished, Guid? applicationId, int? firstN)
-        {
-            IEnumerable<Article> articles;
-            if (User.IsInRole("Administrators"))
-                articles = await articleManager.GetAllArticles(isPublished ?? false);
-            else
-                articles = await articleManager.GetAllArticles(false);
-            if (firstN.HasValue)
-                return articles.Take(firstN.Value);
-            else
-                return articles;
-        }
-
-        [AllowAnonymous]
-        [HttpGet("{applicationId}")]
-        public async Task<IEnumerable<Article>> GetAllArticleByApplication(Guid applicationId, bool? isPublished, int? firstN)
-        {
-            IEnumerable<Article> articles;
-            if (User.IsInRole("Administrators"))
-                articles = await articleManager.GetAllArticleByApplication(applicationId, isPublished ?? false);
-            else
-                articles = await articleManager.GetAllArticleByApplication(applicationId, false);
-            if (firstN.HasValue)
-                return articles.Take(firstN.Value);
-            else
-                return articles;
-        }
-
         [AllowAnonymous]
         [HttpGet("{slug}")]
         public async Task<ActionResult> GetArticle(Guid slug)

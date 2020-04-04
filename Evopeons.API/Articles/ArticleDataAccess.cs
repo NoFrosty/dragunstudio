@@ -24,11 +24,11 @@ namespace Evopeons.API.Articles
             }
         }
 
-        public async Task<IEnumerable<Article>> GetAllArticlesByApplication(Guid applicationId, bool isPublished)
+        public async Task<IEnumerable<Article>> GetAllArticlesByApplication(Guid applicationId, bool includeNotPublished)
         {
             using (var connection = connectionFactory.AcquireConnection())
             {
-                string sql = isPublished ? "SELECT * FROM Article WHERE ApplicationId = @ApplicationId" : "SELECT * FROM Article WHERE ApplicationId = @ApplicationId AND Published = 1";
+                string sql = includeNotPublished ? "SELECT * FROM Article WHERE ApplicationId = @ApplicationId" : "SELECT * FROM Article WHERE ApplicationId = @ApplicationId AND Published = 1";
                 return await connection.QueryAsync<Article>(
                     sql,
                     new { ApplicationId = applicationId }
