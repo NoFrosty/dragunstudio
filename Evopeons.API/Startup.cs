@@ -95,16 +95,16 @@ namespace Evopeons.API
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+                logger.LogWarning("In Development environment");
+
             }
             else
             {
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
+                logger.LogWarning("In Release environment");
+
             }
-            logger.LogError("In Development environment");
-            logger.LogWarning("WWWWWARNING:!");
-            logger.LogInformation("BOOOO");
-            logger.LogDebug("DEBUG!");
 
             app.UseCors(MyAllowSpecificOrigins);
             app.UseAuthentication();
