@@ -14,6 +14,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.AspNetCore.Authorization;
 using System;
 using Evopeons.API.Articles;
+using Microsoft.Extensions.Logging;
 
 namespace Evopeons.API
 {
@@ -89,7 +90,7 @@ namespace Evopeons.API
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILogger<Startup> logger)
         {
             if (env.IsDevelopment())
             {
@@ -100,6 +101,10 @@ namespace Evopeons.API
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+            logger.LogError("In Development environment");
+            logger.LogWarning("WWWWWARNING:!");
+            logger.LogInformation("BOOOO");
+            logger.LogDebug("DEBUG!");
 
             app.UseCors(MyAllowSpecificOrigins);
             app.UseAuthentication();
