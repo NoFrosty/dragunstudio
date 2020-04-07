@@ -23,8 +23,10 @@ namespace Evopeons.API
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder
-                        //.UseKestrel()
-                        //.UseUrls("https://*:443")
+                        #if RELEASE
+                            .UseKestrel()
+                            .UseUrls("https://*:443")
+                        #endif
                         .UseStartup<Startup>();
                 });
     }
