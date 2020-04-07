@@ -94,7 +94,7 @@ namespace Evorine.EvoPackageManager
             return await dataAccess.GetUpdateActionUpdate(actionId);
         }
 
-        public async Task<ApplicationInfo> CreateApplication(string applicationName, OSType operatingSystems)
+        public async Task<ApplicationInfo> CreateApplication(string applicationName)
         {
             var applicationInfo = new ApplicationInfo()
             {
