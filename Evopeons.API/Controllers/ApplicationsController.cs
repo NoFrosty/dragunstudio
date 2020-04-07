@@ -2,6 +2,7 @@
 using Evopeons.API.Articles;
 using Evopeons.API.Models;
 using Evorine.EvoPackageManager;
+using Evorine.EvoPackageManager.DataObjects;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -72,6 +73,14 @@ namespace Evopeons.API.Controllers
         {
             if (string.IsNullOrWhiteSpace(model.Name)) return Problem("An application without a name? Are you serious? Rly???");
             return Ok(packageManager.ConvertToApplicationViewModel(await packageManager.CreateApplication(model.Name, OSType.None)));
+        }
+
+        [HttpPut]
+        public async Task<IActionResult> UpdateApplication(ApplicationInfo model)
+        {
+            if (string.IsNullOrWhiteSpace(model.ApplicationId.ToString())) return Problem("An application without an ApplicationID can't be updated.");
+            packageManager.UpdateApplication(model);
+            return Ok();
         }
         /*
         [AllowAnonymous]

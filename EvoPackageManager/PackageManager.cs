@@ -1,5 +1,6 @@
 ﻿using EvoPackageManager.Models;
 using Evorine.EvoPackageManager.Actions;
+using Evorine.EvoPackageManager.DataObjects;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -34,12 +35,14 @@ namespace Evorine.EvoPackageManager
         public async Task<IEnumerable<ApplicationViewModel>> GetExtendedApplicationsData(bool isPublished)
         {
             var applications = (await GetApplications(isPublished));
-            var models = applications.Select(x => ConvertToApplicationViewModel(x));
+            var models = applications.Select(async x => await ConvertToApplicationViewModel(x)).Select(x => x.Result);
             return models;
         }
 
-        public ApplicationViewModel ConvertToApplicationViewModel(ApplicationInfo applicationInfo)
+        public async Task<ApplicationViewModel> ConvertToApplicationViewModel(ApplicationInfo applicationInfo)
         {
+            var platforms = (await dataAccess.GetApplicationPlatforms(applicationInfo.ApplicationId)).ToArray();
+
             return new ApplicationViewModel()
             {
                 ApplicationId = applicationInfo.ApplicationId,
@@ -47,14 +50,12 @@ namespace Evorine.EvoPackageManager
                 InMaintenance = applicationInfo.InMaintenance,
                 IsVisible = applicationInfo.IsVisible,
                 Name = applicationInfo.Name,
-                SupportedOS = applicationInfo.SupportedOS,
                 Description = applicationInfo.Description,
-                LastVersions = Enum.GetValues(typeof(OSType))
-                                       .Cast<OSType>()
-                                       .Select(async o => await GetLastVersion(applicationInfo.ApplicationId, o))
-                                       .Select(o => o.Result)
-                                       .Where(o => o != null)
-                                       .ToArray()
+                Platforms = platforms,
+                LastVersions = platforms.Select(async x => await GetLastVersion(applicationInfo.ApplicationId, x.OperatingSystem))
+                                        .Select(o => o.Result)
+                                        .Where(o => o != null)
+                                        .ToArray()
             };
         }
 
@@ -100,7 +101,6 @@ namespace Evorine.EvoPackageManager
                 Name = applicationName,
                 InMaintenance = false,
                 IsPublished = false,
-                SupportedOS = operatingSystems,
                 IsVisible = true
             };
             await dataAccess.InsertApplication(applicationInfo);
@@ -133,12 +133,12 @@ namespace Evorine.EvoPackageManager
             return await dataAccess.GetLastVersion(applicationId, operatingSystem);
         }
 
-        public async Task<IEnumerable<FileInfo>> GetFiles(Guid versionId)
+        public async Task<IEnumerable<PackageFileInfo>> GetFiles(Guid versionId)
         {
             return await dataAccess.GetFiles(versionId);
         }
 
-        public async Task<FileInfo> GetFile(string fileId)
+        public async Task<PackageFileInfo> GetFile(string fileId)
         {
             return await dataAccess.GetFile(fileId);
         }
@@ -180,9 +180,9 @@ namespace Evorine.EvoPackageManager
             return newVersionInfo;
         }
 
-        private List<FileInfo> StoreVersionFiles(Guid applicationId, VersionInfo versionInfo, Stream zipStream)
+        private List<PackageFileInfo> StoreVersionFiles(Guid applicationId, VersionInfo versionInfo, Stream zipStream)
         {
-            List<FileInfo> files = new List<FileInfo>();
+            List<PackageFileInfo> files = new List<PackageFileInfo>();
 
             string versionDirectoryPath = Path.Combine(GetPackagesDirectoryPath(applicationId), versionInfo.VersionId.ToString());
             Directory.CreateDirectory(versionDirectoryPath);
@@ -200,7 +200,7 @@ namespace Evorine.EvoPackageManager
                         Directory.CreateDirectory(absoluteDirectoryPath);
                         entry.ExtractToFile(absoluteFilePath);
 
-                        FileInfo file = new FileInfo()
+                        PackageFileInfo file = new PackageFileInfo()
                         {
                             VersionId = versionInfo.VersionId,
                             FileId = Guid.NewGuid(),
@@ -240,8 +240,8 @@ namespace Evorine.EvoPackageManager
             if (versionTo == null)
                 throw new ArgumentNullException(nameof(versionTo));
 
-            IEnumerable<FileInfo> fromFiles = versionFrom == null ? Enumerable.Empty<FileInfo>() : await GetFiles(versionFrom.VersionId);
-            IEnumerable<FileInfo> toFiles = await GetFiles(versionTo.VersionId);
+            IEnumerable<PackageFileInfo> fromFiles = versionFrom == null ? Enumerable.Empty<PackageFileInfo>() : await GetFiles(versionFrom.VersionId);
+            IEnumerable<PackageFileInfo> toFiles = await GetFiles(versionTo.VersionId);
 
             var fileActions = CalculateFileActions(application.ApplicationId, fromFiles, toFiles);
 
@@ -314,7 +314,7 @@ namespace Evorine.EvoPackageManager
             }
         }
 
-        public IList<UpdateAction> CalculateFileActions(Guid applicationId, IEnumerable<FileInfo> fromFiles, IEnumerable<FileInfo> toFiles)
+        public IList<UpdateAction> CalculateFileActions(Guid applicationId, IEnumerable<PackageFileInfo> fromFiles, IEnumerable<PackageFileInfo> toFiles)
         {
             var copiedFiles = FileInfoUtilities.GetCopyFiles(fromFiles, toFiles);
             var newFiles = FileInfoUtilities.GetNewFiles(fromFiles, toFiles);
@@ -376,7 +376,7 @@ namespace Evorine.EvoPackageManager
             return actions;
         }
 
-        public (Guid diffId, long diffSize) CreateDiffFiles(Guid applicationId, FileInfo oldFile, FileInfo newFile)
+        public (Guid diffId, long diffSize) CreateDiffFiles(Guid applicationId, PackageFileInfo oldFile, PackageFileInfo newFile)
         {
             var oldBuffer = File.ReadAllBytes(GetPackagesFilePath(applicationId, oldFile));
             var newBuffer = File.ReadAllBytes(GetPackagesFilePath(applicationId, newFile));
@@ -391,7 +391,7 @@ namespace Evorine.EvoPackageManager
 
             return (diffId, fi.Length);
         }
-        public Task<IEnumerable<FileInfo>> GetVersionFiles(Guid versionId)
+        public Task<IEnumerable<PackageFileInfo>> GetVersionFiles(Guid versionId)
         {
             return dataAccess.GetFiles(versionId);
         }
@@ -441,7 +441,7 @@ namespace Evorine.EvoPackageManager
             return Path.Combine(settings.RootPath, applicationId.ToString(), "Updates");
         }
 
-        private string GetPackagesFilePath(Guid applicationId, FileInfo file)
+        private string GetPackagesFilePath(Guid applicationId, PackageFileInfo file)
         {
             return Path.Combine(GetPackagesDirectoryPath(applicationId), file.VersionId.ToString(), file.RelativeFilename);
         }

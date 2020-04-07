@@ -4,10 +4,10 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
-namespace Evorine.EvoPackageManager
+namespace Evorine.EvoPackageManager.DataObjects
 {
     [Table("File")]
-    public class FileInfo : IEquatable<FileInfo>
+    public class PackageFileInfo : IEquatable<PackageFileInfo>
     {
         [ExplicitKey]
         public Guid FileId { get; set; }
@@ -22,10 +22,10 @@ namespace Evorine.EvoPackageManager
 
         public override bool Equals(object obj)
         {
-            return obj is FileInfo info && Equals(info);
+            return obj is PackageFileInfo info && Equals(info);
         }
 
-        public bool Equals(FileInfo other)
+        public bool Equals(PackageFileInfo other)
         {
             return FileName == other.FileName &&
                    DirectoryPath == other.DirectoryPath &&

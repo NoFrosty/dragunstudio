@@ -1,7 +1,7 @@
 ﻿using Dapper.Contrib.Extensions;
+using Evorine.EvoPackageManager.DataObjects;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Text;
 
 namespace Evorine.EvoPackageManager
@@ -10,17 +10,17 @@ namespace Evorine.EvoPackageManager
     {
         public static HashFileInfoComparer Hash { get; } = new HashFileInfoComparer();
 
-        public class HashFileInfoComparer : IEqualityComparer<FileInfo>
+        public class HashFileInfoComparer : IEqualityComparer<PackageFileInfo>
         {
             /// <summary>
             /// Returns true if file remains same but is renamed
             /// </summary>
-            public bool Equals(FileInfo x, FileInfo y)
+            public bool Equals(PackageFileInfo x, PackageFileInfo y)
             {
                 return string.Equals(x.Hash, y.Hash, StringComparison.OrdinalIgnoreCase);
             }
 
-            public int GetHashCode(FileInfo obj) => obj.GetHashCode();
+            public int GetHashCode(PackageFileInfo obj) => obj.GetHashCode();
         }
     }
 }

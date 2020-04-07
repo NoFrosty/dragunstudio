@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Evorine.EvoPackageManager.DataObjects;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -8,7 +9,7 @@ namespace Evorine.EvoPackageManager.Actions
     {
         public override ActionType ActionType => ActionType.CopyFile;
 
-        public FileInfo SourceFile { get; set; }
-        public FileInfo DestinationFile { get; set; }
+        public PackageFileInfo SourceFile { get; set; }
+        public PackageFileInfo DestinationFile { get; set; }
     }
 }

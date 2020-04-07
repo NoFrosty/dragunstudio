@@ -1,4 +1,5 @@
 using Evorine.EvoPackageManager;
+using Evorine.EvoPackageManager.DataObjects;
 using Moq;
 using System;
 using System.Collections.Generic;
@@ -9,32 +10,32 @@ namespace EvoPackageManager.Tests
 {
     public class FileInfoTests
     {
-        private (IEnumerable<FileInfo>, IEnumerable<FileInfo>) GetDemoFiles()
+        private (IEnumerable<PackageFileInfo>, IEnumerable<PackageFileInfo>) GetDemoFiles()
         {
-            var fromFiles = new FileInfo[]
+            var fromFiles = new PackageFileInfo[]
             {
-                new FileInfo() { FileName = "Unchanged.txt", DirectoryPath = "Path", Hash = "Hello" },
-                new FileInfo() { FileName = "ToBeDeleted.txt", DirectoryPath = "Path", Hash = "delete" },
-                new FileInfo() { FileName = "ToBeRenamed.txt", DirectoryPath = "Path", Hash = "rename" },
-                new FileInfo() { FileName = "ToBeMoved.txt", DirectoryPath = "Path", Hash = "moved" },
-                new FileInfo() { FileName = "ToBeRenamedAndDup.txt", DirectoryPath = "PathDup", Hash = "dup" },
-                new FileInfo() { FileName = "Duplicate1.txt", DirectoryPath = "Path", Hash = "dup" },
-                new FileInfo() { FileName = "Duplicate2.txt", DirectoryPath = "Path", Hash = "dup" },
-                new FileInfo() { FileName = "ToUpdate.txt", DirectoryPath = "Path", Hash = "old" },
+                new PackageFileInfo() { FileName = "Unchanged.txt", DirectoryPath = "Path", Hash = "Hello" },
+                new PackageFileInfo() { FileName = "ToBeDeleted.txt", DirectoryPath = "Path", Hash = "delete" },
+                new PackageFileInfo() { FileName = "ToBeRenamed.txt", DirectoryPath = "Path", Hash = "rename" },
+                new PackageFileInfo() { FileName = "ToBeMoved.txt", DirectoryPath = "Path", Hash = "moved" },
+                new PackageFileInfo() { FileName = "ToBeRenamedAndDup.txt", DirectoryPath = "PathDup", Hash = "dup" },
+                new PackageFileInfo() { FileName = "Duplicate1.txt", DirectoryPath = "Path", Hash = "dup" },
+                new PackageFileInfo() { FileName = "Duplicate2.txt", DirectoryPath = "Path", Hash = "dup" },
+                new PackageFileInfo() { FileName = "ToUpdate.txt", DirectoryPath = "Path", Hash = "old" },
             };
 
-            var toFiles = new FileInfo[]
+            var toFiles = new PackageFileInfo[]
             {
-                new FileInfo() { FileName = "Unchanged.txt", DirectoryPath = "Path", Hash = "Hello" },
+                new PackageFileInfo() { FileName = "Unchanged.txt", DirectoryPath = "Path", Hash = "Hello" },
                 // new FileInfo() { FileName = "ToBeDeleted.txt", DirectoryPath = "Path", Hash = "delete" },
-                new FileInfo() { FileName = "ToBeRenamed_OLD.txt", DirectoryPath = "Path", Hash = "rename" },
-                new FileInfo() { FileName = "ToBeMoved.txt", DirectoryPath = "Path_OLD", Hash = "moved" },
-                new FileInfo() { FileName = "ToBeRenamedAndDup_OLD.txt", DirectoryPath = "PathDup", Hash = "dup" },
-                new FileInfo() { FileName = "Duplicate1.txt", DirectoryPath = "Path", Hash = "dup" },
-                new FileInfo() { FileName = "Duplicate2.txt", DirectoryPath = "Path", Hash = "dup" },
-                new FileInfo() { FileName = "New.txt", DirectoryPath = "Path", Hash = "Some Hello!" },
-                new FileInfo() { FileName = "Copied.txt", DirectoryPath = "Path", Hash = "dup" },
-                new FileInfo() { FileName = "ToUpdate.txt", DirectoryPath = "Path", Hash = "new" },
+                new PackageFileInfo() { FileName = "ToBeRenamed_OLD.txt", DirectoryPath = "Path", Hash = "rename" },
+                new PackageFileInfo() { FileName = "ToBeMoved.txt", DirectoryPath = "Path_OLD", Hash = "moved" },
+                new PackageFileInfo() { FileName = "ToBeRenamedAndDup_OLD.txt", DirectoryPath = "PathDup", Hash = "dup" },
+                new PackageFileInfo() { FileName = "Duplicate1.txt", DirectoryPath = "Path", Hash = "dup" },
+                new PackageFileInfo() { FileName = "Duplicate2.txt", DirectoryPath = "Path", Hash = "dup" },
+                new PackageFileInfo() { FileName = "New.txt", DirectoryPath = "Path", Hash = "Some Hello!" },
+                new PackageFileInfo() { FileName = "Copied.txt", DirectoryPath = "Path", Hash = "dup" },
+                new PackageFileInfo() { FileName = "ToUpdate.txt", DirectoryPath = "Path", Hash = "new" },
             };
 
             return (fromFiles, toFiles);

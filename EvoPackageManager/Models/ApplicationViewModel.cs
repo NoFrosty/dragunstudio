@@ -1,4 +1,4 @@
-﻿using Evorine.EvoPackageManager;
+﻿using Evorine.EvoPackageManager.DataObjects;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,11 +9,6 @@ namespace EvoPackageManager.Models
     public class ApplicationViewModel : ApplicationInfo
     {
         public VersionInfo[] LastVersions { get; set; }
-        public OSType[] SupportedOSs => Enum
-            .GetValues(typeof(OSType))
-            .Cast<int>()
-            .Where(x => (x & (int)SupportedOS) == x && x != 0)
-            .Cast<OSType>()
-            .ToArray();
+        public PlatformInfo[] Platforms { get; set; }
     }
 }

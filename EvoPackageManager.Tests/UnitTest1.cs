@@ -1,4 +1,5 @@
 using Evorine.EvoPackageManager;
+using Evorine.EvoPackageManager.DataObjects;
 using Moq;
 using System;
 using System.Linq;

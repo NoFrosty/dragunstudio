@@ -1,4 +1,5 @@
 ﻿using Evorine.EvoPackageManager;
+using Evorine.EvoPackageManager.DataObjects;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -20,13 +21,13 @@ namespace Evopeons.API.Controllers
         }
 
         [HttpGet("{versionId}")]
-        public async Task<IEnumerable<FileInfo>> GetVersionFiles(Guid versionId)
+        public async Task<IEnumerable<PackageFileInfo>> GetVersionFiles(Guid versionId)
         {
             return await packageManager.GetFiles(versionId);
         }
 
         [HttpGet("{fileId}")]
-        public async Task<FileInfo> GetFile(string fileId)
+        public async Task<PackageFileInfo> GetFile(string fileId)
         {
             return await packageManager.GetFile(fileId);
         }

@@ -1,4 +1,5 @@
 ﻿using Evorine.EvoPackageManager;
+using Evorine.EvoPackageManager.DataObjects;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;

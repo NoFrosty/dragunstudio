@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Evorine.EvoPackageManager.DataObjects;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -8,6 +9,6 @@ namespace Evorine.EvoPackageManager.Actions
     {
         public override ActionType ActionType => ActionType.CreateFile;
 
-        public FileInfo NewFile { get; set; }
+        public PackageFileInfo NewFile { get; set; }
     }
 }

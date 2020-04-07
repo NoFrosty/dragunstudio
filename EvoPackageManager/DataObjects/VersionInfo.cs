@@ -1,7 +1,7 @@
 ﻿using Dapper.Contrib.Extensions;
 using System;
 
-namespace Evorine.EvoPackageManager
+namespace Evorine.EvoPackageManager.DataObjects
 {
     [Table("Version")]
     public class VersionInfo

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Dapper;
 using Dapper.Contrib.Extensions;
 using EvoPackageManager.Models;
+using Evorine.EvoPackageManager.DataObjects;
 
 namespace Evorine.EvoPackageManager
 {
@@ -100,7 +101,7 @@ namespace Evorine.EvoPackageManager
             }
         }
         
-        public async Task AddFiles(IEnumerable<FileInfo> files)
+        public async Task AddFiles(IEnumerable<PackageFileInfo> files)
         {
             using (var connection = connectionFactory.AcquireConnection())
             {
@@ -108,22 +109,22 @@ namespace Evorine.EvoPackageManager
             }
         }
 
-        public async Task<IEnumerable<FileInfo>> GetFiles(Guid versionId)
+        public async Task<IEnumerable<PackageFileInfo>> GetFiles(Guid versionId)
         {
             using (var connection = connectionFactory.AcquireConnection())
             {
-                return await connection.QueryAsync<FileInfo>(
+                return await connection.QueryAsync<PackageFileInfo>(
                     "SELECT * FROM File WHERE VersionId = @VersionId",
                     new { VersionId = versionId }
                 );
             }
         }
 
-        public async Task<FileInfo> GetFile(string fileId)
+        public async Task<PackageFileInfo> GetFile(string fileId)
         {
             using (var connection = connectionFactory.AcquireConnection())
             {
-                return await connection.QueryFirstOrDefaultAsync<FileInfo>(
+                return await connection.QueryFirstOrDefaultAsync<PackageFileInfo>(
                     "SELECT * FROM File WHERE FileId = @fileId",
                     new { FileId = fileId }
                 );
@@ -199,7 +200,7 @@ namespace Evorine.EvoPackageManager
                 );
 
                 var tofiles = await GetFiles(toVersionId);
-                var fromFiles = fromVersionId != null ? await GetFiles(fromVersionId.Value) : Enumerable.Empty<FileInfo>();
+                var fromFiles = fromVersionId != null ? await GetFiles(fromVersionId.Value) : Enumerable.Empty<PackageFileInfo>();
                 foreach (var copyAction in copyActions)
                 {
                     var action = new Actions.CopyFileAction()
@@ -319,6 +320,17 @@ namespace Evorine.EvoPackageManager
                 return await connection.QueryFirstOrDefaultAsync<DataObjects.UpdateActionCreateFile>(
                     "SELECT * FROM UpdateActionDeleteFile WHERE ActionId = @ActionId",
                     new { ActionId = actionId }
+                );
+            }
+        }
+
+        public async Task<IEnumerable<PlatformInfo>> GetApplicationPlatforms(Guid applicationId)
+        {
+            using (var connection = connectionFactory.AcquireConnection())
+            {
+                return await connection.QueryAsync<PlatformInfo>(
+                    "SELECT * FROM ApplicationPlatform WHERE ApplicationId = @ApplicationId",
+                    new { ApplicationId = applicationId }
                 );
             }
         }

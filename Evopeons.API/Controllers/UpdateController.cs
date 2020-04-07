@@ -1,4 +1,5 @@
 ﻿using Evorine.EvoPackageManager;
+using Evorine.EvoPackageManager.DataObjects;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -32,7 +33,7 @@ namespace Evopeons.API.Controllers
         {
             //TODO: Check operatingSystem
             VersionInfo lastVersion = packageManager.GetLastVersion(applicationId, (OSType)operatingSystem).Result;
-            IEnumerable<FileInfo> lastVersionFiles = packageManager.GetFiles(lastVersion.VersionId).Result;
+            IEnumerable<PackageFileInfo> lastVersionFiles = packageManager.GetFiles(lastVersion.VersionId).Result;
             ResponseInstallation response = new ResponseInstallation
             {
                 VersionId = lastVersion.VersionId,
@@ -84,7 +85,7 @@ namespace Evopeons.API.Controllers
         {
             public Guid VersionId { get; set; }
             public string Version { get; set; }
-            public IEnumerable<FileInfo> Files { get; set; }
+            public IEnumerable<PackageFileInfo> Files { get; set; }
         }
         public class ResponseUpdate
         {
