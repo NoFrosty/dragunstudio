@@ -13,5 +13,6 @@ namespace Evorine.EvoPackageManager
         public bool InMaintenance { get; set; }
         public OSType SupportedOS { get; set; }
         public bool IsVisible { get; set; }
+        public string Description { get; set; }
     }
 }

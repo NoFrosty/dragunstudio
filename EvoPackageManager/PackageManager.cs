@@ -48,6 +48,7 @@ namespace Evorine.EvoPackageManager
                 IsVisible = applicationInfo.IsVisible,
                 Name = applicationInfo.Name,
                 SupportedOS = applicationInfo.SupportedOS,
+                Description = applicationInfo.Description,
                 LastVersions = Enum.GetValues(typeof(OSType))
                                        .Cast<OSType>()
                                        .Select(async o => await GetLastVersion(applicationInfo.ApplicationId, o))
@@ -398,6 +399,11 @@ namespace Evorine.EvoPackageManager
         public void DeleteVersion(Guid versionId)
         {
             throw new NotImplementedException();
+        }
+
+        public async void UpdateApplication(ApplicationInfo model)
+        {
+            await dataAccess.UpdateApplication(model);
         }
 
         public async Task UpdateApplicationMaintenance(Guid applicationId, bool inMaintenance)
