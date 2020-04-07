@@ -59,6 +59,16 @@ namespace Evorine.EvoPackageManager
             };
         }
 
+        public async void UpdateApplicationLogo(Guid applicationId, Stream iconStream)
+        {
+            Directory.CreateDirectory(GetMediaDirectoryPath(applicationId));
+            string filePath = GetApplicationLogoPath(applicationId);
+            using (var stream = new FileStream(filePath, FileMode.Create))
+            {
+                await iconStream.CopyToAsync(stream);
+            }
+        }
+
         public Stream GetFileStream(Guid applicationId, string fileId)
         {
             return File.OpenRead(Path.Combine(GetCompressedFilesDirectoryPath(applicationId), fileId));
@@ -67,7 +77,6 @@ namespace Evorine.EvoPackageManager
         {
             return File.OpenRead(Path.Combine(GetUpdatesDirectoryPath(applicationId), diffId));
         }
-
 
         public async Task<UpdateAction[]> GetUpdateAction(Guid? fromVersionId, Guid toVersionId)
         {
@@ -112,10 +121,10 @@ namespace Evorine.EvoPackageManager
             return applicationInfo;
         }
 
-        public Task DeleteApplication()
+        public async Task DeleteApplication(Guid applicationID)
         {
             //TODO: Delete application directory
-            throw new NotImplementedException();
+            await dataAccess.DeleteApplication(applicationID);
         }
 
         public async Task<VersionInfo> GetVersion(Guid versionId)
@@ -441,11 +450,20 @@ namespace Evorine.EvoPackageManager
             return Path.Combine(settings.RootPath, applicationId.ToString(), "Updates");
         }
 
+        private string GetMediaDirectoryPath(Guid applicationId)
+        {
+            return Path.Combine(settings.RootPath, "Media", applicationId.ToString());
+        }
+
         private string GetPackagesFilePath(Guid applicationId, PackageFileInfo file)
         {
             return Path.Combine(GetPackagesDirectoryPath(applicationId), file.VersionId.ToString(), file.RelativeFilename);
         }
 
+        public string GetApplicationLogoPath(Guid applicationId)
+        {
+            return Path.Combine(GetMediaDirectoryPath(applicationId), "icon.png");
+        } 
 
     }
 }

@@ -39,8 +39,8 @@ namespace Evorine.EvoPackageManager
         {
             using (var connection = connectionFactory.AcquireConnection())
             {
-                string sql = includeHidden ? "SELECT * FROM Application" : "SELECT * FROM Application WHERE IsVisible = 1";
-                return await connection.QueryAsync<ApplicationInfo>(sql);
+                string sql = "SELECT * FROM Application WHERE IsDeleted = 0 AND (@IncludeHidden = 1 OR (@IncludeHidden = 0 AND IsVisible = 1))";
+                return await connection.QueryAsync<ApplicationInfo>(sql, new { IncludeHidden = includeHidden });
             }
         }
 
@@ -127,6 +127,17 @@ namespace Evorine.EvoPackageManager
                 return await connection.QueryFirstOrDefaultAsync<PackageFileInfo>(
                     "SELECT * FROM File WHERE FileId = @fileId",
                     new { FileId = fileId }
+                );
+            }
+        }
+
+        public async Task<int> DeleteApplication(Guid applicationID)
+        {
+            using (var connection = connectionFactory.AcquireConnection())
+            {
+                return await connection.ExecuteAsync(
+                    "UPDATE Application SET IsDeleted = 1 WHERE ApplicationId = @ApplicationId",
+                    new { ApplicationId = applicationID }
                 );
             }
         }

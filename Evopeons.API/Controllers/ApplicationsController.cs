@@ -4,6 +4,7 @@ using Evopeons.API.Models;
 using Evorine.EvoPackageManager;
 using Evorine.EvoPackageManager.DataObjects;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -27,15 +28,15 @@ namespace Evopeons.API.Controllers
 
         [AllowAnonymous]
         [HttpGet]
-        public async Task<IActionResult> GetApplications([FromQuery]bool isPublished = true, [FromQuery]bool isVisible = true, [FromQuery]bool extended = false)
+        public async Task<IActionResult> GetApplications([FromQuery]bool includeHiddens = false, [FromQuery]bool extended = false)
         {
             if (!extended)
             {
-                return Ok(await packageManager.GetApplications(isPublished));
+                return Ok(await packageManager.GetApplications(includeHiddens));
             }
             else
             {
-                return Ok(await packageManager.GetExtendedApplicationsData(isPublished));
+                return Ok(await packageManager.GetExtendedApplicationsData(includeHiddens));
             }
         }
 
@@ -51,6 +52,22 @@ namespace Evopeons.API.Controllers
             {
                 return Ok(packageManager.ConvertToApplicationViewModel(await packageManager.GetApplication(applicationId)));
             }
+        }
+
+        [AllowAnonymous]
+        [HttpGet("{applicationId}/icon")]
+        public IActionResult GetApplicationLogo(Guid applicationId)
+        {
+            return PhysicalFile(packageManager.GetApplicationLogoPath(applicationId), "image/png");
+        }
+
+
+        [AllowAnonymous]
+        [HttpPost("{applicationId}/icon")]
+        public IActionResult UpdateApplicationLogo(Guid applicationId, IFormFile icon)
+        {
+            packageManager.UpdateApplicationLogo(applicationId, icon.OpenReadStream());
+            return Ok(); 
         }
 
         [AllowAnonymous]
@@ -76,10 +93,17 @@ namespace Evopeons.API.Controllers
         }
 
         [HttpPut]
-        public async Task<IActionResult> UpdateApplication(ApplicationInfo model)
+        public IActionResult UpdateApplication(ApplicationInfo model)
         {
             if (string.IsNullOrWhiteSpace(model.ApplicationId.ToString())) return Problem("An application without an ApplicationID can't be updated.");
             packageManager.UpdateApplication(model);
+            return Ok();
+        }
+
+        [HttpDelete("{applicationId}")]
+        public async Task<IActionResult> DeleteApplication(Guid applicationId)
+        {
+            await packageManager.DeleteApplication(applicationId);
             return Ok();
         }
         /*
