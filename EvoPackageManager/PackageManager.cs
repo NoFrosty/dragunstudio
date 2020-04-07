@@ -1,4 +1,5 @@
-﻿using Evorine.EvoPackageManager.Actions;
+﻿using EvoPackageManager.Models;
+using Evorine.EvoPackageManager.Actions;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -28,6 +29,32 @@ namespace Evorine.EvoPackageManager
         public async Task<IEnumerable<ApplicationInfo>> GetApplications(bool includeHidden)
         {
             return await dataAccess.GetApplications(includeHidden);
+        }
+
+        public async Task<IEnumerable<ApplicationViewModel>> GetExtendedApplicationsData(bool isPublished)
+        {
+            var applications = (await GetApplications(isPublished));
+            var models = applications.Select(x => ConvertToApplicationViewModel(x));
+            return models;
+        }
+
+        public ApplicationViewModel ConvertToApplicationViewModel(ApplicationInfo applicationInfo)
+        {
+            return new ApplicationViewModel()
+            {
+                ApplicationId = applicationInfo.ApplicationId,
+                IsPublished = applicationInfo.IsPublished,
+                InMaintenance = applicationInfo.InMaintenance,
+                IsVisible = applicationInfo.IsVisible,
+                Name = applicationInfo.Name,
+                SupportedOS = applicationInfo.SupportedOS,
+                LastVersions = Enum.GetValues(typeof(OSType))
+                                       .Cast<OSType>()
+                                       .Select(async o => await GetLastVersion(applicationInfo.ApplicationId, o))
+                                       .Select(o => o.Result)
+                                       .Where(o => o != null)
+                                       .ToArray()
+            };
         }
 
         public Stream GetFileStream(Guid applicationId, string fileId)
@@ -121,14 +148,14 @@ namespace Evorine.EvoPackageManager
             if (zipStream == null) throw new ArgumentNullException(nameof(zipStream));
 
             ApplicationInfo applicationInfo = await GetApplication(applicationId);
-            if(applicationInfo == null) throw new ArgumentNullException(nameof(applicationId));
+            if (applicationInfo == null) throw new ArgumentNullException(nameof(applicationId));
             IEnumerable<VersionInfo> currentVersions = await GetVersions(applicationId);
             if (currentVersions != null && currentVersions.Any(x => x.Version.Equals(newVersion, StringComparison.OrdinalIgnoreCase)))
             {
                 throw new ArgumentException($"A release with version '{newVersion}' already exists!", nameof(newVersion));
             }
 
-            var fromVersion = currentVersions.SingleOrDefault(x=>x.VersionOrder == currentVersions.Max(y => y.VersionOrder));
+            var fromVersion = currentVersions.SingleOrDefault(x => x.VersionOrder == currentVersions.Max(y => y.VersionOrder));
 
             VersionInfo newVersionInfo = new VersionInfo()
             {
@@ -231,7 +258,7 @@ namespace Evorine.EvoPackageManager
 
         private async Task StoreUpdateManifest(UpdateManifest updateManifest)
         {
-            for(var i = 0; i < updateManifest.Actions.Length; i++)
+            for (var i = 0; i < updateManifest.Actions.Length; i++)
             {
                 var updateAction = new DataObjects.UpdateAction()
                 {
@@ -242,7 +269,7 @@ namespace Evorine.EvoPackageManager
                     ActionOrder = i
                 };
                 await dataAccess.AddUpdateAction(updateAction);
-                switch(updateManifest.Actions[i])
+                switch (updateManifest.Actions[i])
                 {
                     case CopyFileAction action:
                         var copyDO = new DataObjects.UpdateActionCopyFile()

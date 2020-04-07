@@ -1,4 +1,6 @@
-﻿using Evopeons.API.Articles;
+﻿using EvoPackageManager.Models;
+using Evopeons.API.Articles;
+using Evopeons.API.Models;
 using Evorine.EvoPackageManager;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -23,10 +25,31 @@ namespace Evopeons.API.Controllers
         }
 
         [AllowAnonymous]
-        [HttpGet()]
-        public async Task<IEnumerable<ApplicationInfo>> GetApplications([FromQuery]bool isPublished = true, [FromQuery]bool isVisible = true)
+        [HttpGet]
+        public async Task<IActionResult> GetApplications([FromQuery]bool isPublished = true, [FromQuery]bool isVisible = true, [FromQuery]bool extended = false)
         {
-            return await packageManager.GetApplications(isPublished);
+            if (!extended)
+            {
+                return Ok(await packageManager.GetApplications(isPublished));
+            }
+            else
+            {
+                return Ok(await packageManager.GetExtendedApplicationsData(isPublished));
+            }
+        }
+
+        [AllowAnonymous]
+        [HttpGet("{applicationId}")]
+        public async Task<IActionResult> GetApplication(Guid applicationId, [FromQuery]bool extended = false)
+        {
+            if (!extended)
+            {
+                return Ok(await packageManager.GetApplication(applicationId));
+            }
+            else
+            {
+                return Ok(packageManager.ConvertToApplicationViewModel(await packageManager.GetApplication(applicationId)));
+            }
         }
 
         [AllowAnonymous]
@@ -44,6 +67,12 @@ namespace Evopeons.API.Controllers
                 return articles;
         }
 
+        [HttpPost]
+        public async Task<IActionResult> CreateApplication(ApplicationCreateModel model)
+        {
+            if (string.IsNullOrWhiteSpace(model.Name)) return Problem("An application without a name? Are you serious? Rly???");
+            return Ok(packageManager.ConvertToApplicationViewModel(await packageManager.CreateApplication(model.Name, OSType.None)));
+        }
         /*
         [AllowAnonymous]
         [HttpGet()]

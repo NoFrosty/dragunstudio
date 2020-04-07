@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Dapper;
 using Dapper.Contrib.Extensions;
+using EvoPackageManager.Models;
 
 namespace Evorine.EvoPackageManager
 {
