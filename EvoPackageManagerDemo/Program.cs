@@ -31,7 +31,7 @@ namespace EvoPackageManagerDemo
             var dataAccess = new DataAccess(connectionFactory);
             var packageManager = new PackageManager(settings, dataAccess);
 
-            var applicationInfo = packageManager.CreateApplication("World Of Warcraft New Generations", OSType.Windows).Result;
+            var applicationInfo = packageManager.CreateApplication("World Of Warcraft New Generations").Result;
             using (var stream = File.OpenRead(@"C:\Users\Calvi\Desktop\Test\TestFile\Sample1-V1.zip"))
             {
                 var version = packageManager.CreateVersion(applicationInfo.ApplicationId, "v1", OSType.Windows, stream).Result;

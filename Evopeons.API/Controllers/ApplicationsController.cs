@@ -72,7 +72,7 @@ namespace Evopeons.API.Controllers
         public async Task<IActionResult> CreateApplication(ApplicationCreateModel model)
         {
             if (string.IsNullOrWhiteSpace(model.Name)) return Problem("An application without a name? Are you serious? Rly???");
-            return Ok(packageManager.ConvertToApplicationViewModel(await packageManager.CreateApplication(model.Name, OSType.None)));
+            return Ok(packageManager.ConvertToApplicationViewModel(await packageManager.CreateApplication(model.Name)));
         }
 
         [HttpPut]
