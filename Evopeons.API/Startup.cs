@@ -46,6 +46,8 @@ namespace Evopeons.API
             services.AddSingleton<ArticleManager>();
             services.AddSingleton<ArticleDataAccess>();
 
+            services.AddLetsEncrypt();
+
             services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
