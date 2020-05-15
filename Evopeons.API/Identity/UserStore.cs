@@ -56,6 +56,7 @@ namespace Evopeons.API.Identity
             using (IDbConnection connection = connectionFactory.AcquireConnection())
             {
                 return await connection.QuerySingleOrDefaultAsync<ApplicationUser>("SELECT * FROM User WHERE EmailNormalized ='" + normalizedEmail + "'");
+
             }
         }
 
