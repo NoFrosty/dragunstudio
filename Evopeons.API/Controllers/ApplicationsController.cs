@@ -72,17 +72,29 @@ namespace Evopeons.API.Controllers
 
         [AllowAnonymous]
         [HttpGet("{applicationID}/articles")]
-        public async Task<IEnumerable<Article>> GetArticles(Guid applicationID, [FromQuery]bool? includeNotPublished = true, [FromQuery]int? firstN = null)
+        public async Task<IEnumerable<Article>> GetArticles(Guid applicationId, [FromQuery]bool? includeNotPublished = true, [FromQuery]int? firstN = null)
         {
             IEnumerable<Article> articles;
             if (User.IsInRole("Administrators"))
-                articles = await articleManager.GetAllArticleByApplication(applicationID, includeNotPublished.Value);
+                articles = await articleManager.GetAllArticleByApplication(applicationId, includeNotPublished.Value);
             else
-                articles = await articleManager.GetAllArticleByApplication(applicationID, false);
+                articles = await articleManager.GetAllArticleByApplication(applicationId, false);
             if (firstN.HasValue)
                 return articles.Take(firstN.Value);
             else
                 return articles;
+        }
+
+        [HttpGet("{applicationId}/versions")]
+        public async Task<IEnumerable<VersionInfo>> GetAllVersions(Guid applicationId)
+        {
+            return await packageManager.GetVersions(applicationId);
+        }
+
+        [HttpGet("{applicationId}/version/{versionId}")]
+        public async Task<VersionInfo> GetVersion(Guid applicationId, Guid versionId)
+        {
+            return await packageManager.GetVersion(versionId);
         }
 
         [HttpPost]
