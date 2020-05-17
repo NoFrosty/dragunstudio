@@ -218,6 +218,24 @@ namespace Evorine.EvoPackageManager
             return newVersionInfo;
         }
 
+        public async Task<UpdateManifest> CreateVersion(Guid applicationId, Guid fromVersionId, Guid toVersionId)
+        {
+            ApplicationInfo applicationInfo = await GetApplication(applicationId);
+            if (applicationInfo == null) throw new ArgumentNullException(nameof(applicationId));
+
+            if (fromVersionId.Equals(toVersionId)) throw new ArgumentException("Cannot create an update for the same version!");
+            Updates update = await dataAccess.GetUpdate(fromVersionId, toVersionId);
+            if (update != null) throw new ArgumentException($"An update from version '{fromVersionId}' to version '{toVersionId}' already exists!");
+            VersionInfo fromVersionInfo = await dataAccess.GetVersion(fromVersionId);
+            if (fromVersionInfo == null) throw new ArgumentNullException(nameof(fromVersionId));
+            VersionInfo toVersionInfo = await dataAccess.GetVersion(toVersionId);
+            if (toVersionInfo == null) throw new ArgumentNullException(nameof(toVersionInfo));
+
+            UpdateManifest updateManifest = await CalculateUpdate(applicationInfo, fromVersionInfo, toVersionInfo);
+            await StoreUpdateManifest(updateManifest);
+            return updateManifest;
+        }
+        
         private List<PackageFileInfo> StoreVersionFiles(Guid applicationId, VersionInfo versionInfo, Stream zipStream)
         {
             List<PackageFileInfo> files = new List<PackageFileInfo>();

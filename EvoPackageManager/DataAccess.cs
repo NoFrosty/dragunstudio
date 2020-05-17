@@ -475,7 +475,7 @@ namespace Evorine.EvoPackageManager
             using (var connection = connectionFactory.AcquireConnection())
             {
                 return await connection.QueryFirstOrDefaultAsync<Updates>(
-                    "SELECT * FROM Update WHERE FromVersionId = @FromVersionId AND ToVersionId = @ToVersionId",
+                    "SELECT * FROM Updates WHERE FromVersionId = @FromVersionId AND ToVersionId = @ToVersionId",
                     new { FromVersionId = fromVersionId, ToVersionId = toVersionId }
                 );
             }

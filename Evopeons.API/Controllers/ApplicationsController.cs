@@ -131,11 +131,20 @@ namespace Evopeons.API.Controllers
         {
             return Ok(packageManager.AddPlatformToApplication(applicationId, operatingSystem, executablePath));
         }
+        public class ModelGuid{ 
+            public Guid FromVersion { get; set; }
+            public Guid ToVersion { get; set; }
+        }
+        [HttpPost("{applicationId}/version/{versionId}/update")]
+        public async Task<IActionResult> AddNewUpdateBetweenVersions(Guid applicationId, Guid versionId, ModelGuid model)
+        {
+            return Ok(await packageManager.CreateVersion(applicationId, model.FromVersion, versionId));
+        }
 
         [HttpPost("{applicationId}/version")]
         public async Task<IActionResult> CreateVersion(Guid applicationId, [FromForm]string newVersion, [FromForm]OSType operatingSystem, IFormFile zip)
         {
-            return Ok(packageManager.CreateVersion(applicationId, newVersion, operatingSystem, zip.OpenReadStream()));
+            return Ok(await packageManager.CreateVersion(applicationId, newVersion, operatingSystem, zip.OpenReadStream()));
         }
 
         [HttpPut("{applicationId}/version/{versionId}")]
