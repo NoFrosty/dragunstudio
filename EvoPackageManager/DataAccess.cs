@@ -252,6 +252,122 @@ namespace Evorine.EvoPackageManager
             return actions.ToArray();
         }
 
+        public async Task UpdateVersion(VersionInfo version)
+        {
+            using (var connection = connectionFactory.AcquireConnection())
+            {
+                await connection.UpdateAsync(version);
+            }
+        }
+
+        public async Task AddPlatformToApplication(PlatformInfo platformInfo)
+        {
+            using (var connection = connectionFactory.AcquireConnection())
+            {
+                await connection.InsertAsync(platformInfo);
+            }
+        }
+
+        public async Task<UpdateAction[]> GetUpdateAction(Updates update)
+        {
+            List<UpdateAction> actions = new List<UpdateAction>();
+            using (var connection = connectionFactory.AcquireConnection())
+            {
+                var allActions = await connection.QueryAsync<DataObjects.UpdateAction>(
+                    @"SELECT * FROM UpdateAction UA
+                      WHERE UpdateId = @UpdateId",
+                    new
+                    {
+                        UpdateId = update.UpdateId
+                    }
+                );
+
+                // Copy Actions
+                var copyActions = await connection.QueryAsync<DataObjects.UpdateActionCopyFile>(
+                    @"SELECT CP.* FROM UpdateAction UA
+                      JOIN UpdateActionCopyFile CP ON CP.ActionId = UA.ActionId
+                      WHERE UpdateId = @UpdateId",
+                    new
+                    {
+                        UpdateId = update.UpdateId
+                    }
+                );
+
+                // Create Actions
+                var createActions = await connection.QueryAsync<DataObjects.UpdateActionCreateFile>(
+                    @"SELECT CR.* FROM UpdateAction UA
+                      JOIN UpdateActionCreateFile CR ON CR.ActionId = UA.ActionId
+                      WHERE UpdateId = @UpdateId",
+                    new
+                    {
+                        UpdateId = update.UpdateId
+                    }
+                );
+
+                // Delete Actions
+                var deleteActions = await connection.QueryAsync<DataObjects.UpdateActionDeleteFile>(
+                    @"SELECT RM.* FROM UpdateAction UA
+                      JOIN UpdateActionDeleteFile RM ON RM.ActionId = UA.ActionId
+                      WHERE UpdateId = @UpdateId",
+                    new
+                    {
+                        UpdateId = update.UpdateId
+                    }
+                );
+
+                // Update Actions
+                var updateActions = await connection.QueryAsync<DataObjects.UpdateActionUpdateFile>(
+                    @"SELECT UP.* FROM UpdateAction UA
+                      JOIN UpdateActionUpdateFile UP ON UP.ActionId = UA.ActionId
+                      WHERE UpdateId = @UpdateId",
+                    new
+                    {
+                        UpdateId = update.UpdateId
+                    }
+                );
+
+                var tofiles = await GetFiles(update.ToVersionId);
+                var fromFiles = update.FromVersionId != null ? await GetFiles(update.FromVersionId.Value) : Enumerable.Empty<PackageFileInfo>();
+                foreach (var copyAction in copyActions)
+                {
+                    var action = new Actions.CopyFileAction()
+                    {
+                        DestinationFile = tofiles.First(x => x.FileId == copyAction.DestinationFileId),
+                        SourceFile = fromFiles.First(x => x.FileId == copyAction.SourceFileId)
+                    };
+                    actions.Add(action);
+                }
+                foreach (var createAction in createActions)
+                {
+                    var action = new Actions.CreateFileAction()
+                    {
+                        NewFile = tofiles.First(x => x.FileId == createAction.FileId)
+                    };
+                    actions.Add(action);
+                }
+                foreach (var deleteAction in deleteActions)
+                {
+                    var action = new Actions.DeleteFileAction()
+                    {
+                        File = fromFiles.First(x => x.FileId == deleteAction.FileId)
+                    };
+                    actions.Add(action);
+                }
+                foreach (var updateAction in updateActions)
+                {
+                    var action = new Actions.UpdateFileAction()
+                    {
+                        DiffId = updateAction.DiffId,
+                        DiffSize = updateAction.DiffSize,
+                        NewFile = tofiles.First(x => x.FileId == updateAction.NewFileId),
+                        OldFile = fromFiles.First(x => x.FileId == updateAction.OldFileId)
+                    };
+                    actions.Add(action);
+                }
+            }
+            return actions.ToArray();
+        }
+
         public async Task AddUpdateAction(DataObjects.UpdateAction updateAction)
         {
             using (var connection = connectionFactory.AcquireConnection())
@@ -342,6 +458,36 @@ namespace Evorine.EvoPackageManager
                 return await connection.QueryAsync<PlatformInfo>(
                     "SELECT * FROM ApplicationPlatform WHERE ApplicationId = @ApplicationId",
                     new { ApplicationId = applicationId }
+                );
+            }
+        }
+
+        public async Task AddUpdate(Updates update)
+        {
+            using (var connection = connectionFactory.AcquireConnection())
+            {
+                await connection.InsertAsync(update);
+            }
+        }
+
+        public async Task<Updates> GetUpdate(Guid? fromVersionId, Guid toVersionId)
+        {
+            using (var connection = connectionFactory.AcquireConnection())
+            {
+                return await connection.QueryFirstOrDefaultAsync<Updates>(
+                    "SELECT * FROM Update WHERE FromVersionId = @FromVersionId AND ToVersionId = @ToVersionId",
+                    new { FromVersionId = fromVersionId, ToVersionId = toVersionId }
+                );
+            }
+        }
+
+        public async Task<IEnumerable<Updates>> GetUpdates(Guid toVersionId)
+        {
+            using (var connection = connectionFactory.AcquireConnection())
+            {
+                return await connection.QueryAsync<Updates>(
+                    "SELECT * FROM Updates WHERE ToVersionId = @ToVersionId",
+                    new {ToVersionId = toVersionId }
                 );
             }
         }

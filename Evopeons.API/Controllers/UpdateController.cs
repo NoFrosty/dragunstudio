@@ -27,6 +27,11 @@ namespace Evopeons.API.Controllers
             return result.Select(x => (object)x);
         }
 
+        [HttpGet("{versionId}")]
+        public async Task<IEnumerable<Updates>> GetVersionUpdates(Guid versionId)
+        {
+            return await packageManager.GetVersionUpdates(versionId);
+        }
 
         [HttpGet("GetInstallationFiles/{operatingSystem}/{applicationId}")]
         public ResponseInstallation GetInstallationFiles(int operatingSystem, Guid applicationId)

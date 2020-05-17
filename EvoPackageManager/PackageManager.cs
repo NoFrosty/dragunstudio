@@ -39,6 +39,11 @@ namespace Evorine.EvoPackageManager
             return models;
         }
 
+        public async Task<IEnumerable<Updates>> GetVersionUpdates(Guid versionId)
+        {
+            return await dataAccess.GetUpdates(versionId);
+        }
+
         public async Task<ApplicationViewModel> ConvertToApplicationViewModel(ApplicationInfo applicationInfo)
         {
             var platforms = (await dataAccess.GetApplicationPlatforms(applicationInfo.ApplicationId)).ToArray();
@@ -80,6 +85,7 @@ namespace Evorine.EvoPackageManager
 
         public async Task<UpdateAction[]> GetUpdateAction(Guid? fromVersionId, Guid toVersionId)
         {
+            return await dataAccess.GetUpdateAction(await dataAccess.GetUpdate(fromVersionId, toVersionId));
             return await dataAccess.GetUpdateAction(fromVersionId, toVersionId);
         }
 
@@ -91,6 +97,12 @@ namespace Evorine.EvoPackageManager
         public async Task<DataObjects.UpdateActionCreateFile> GetUpdateActionCreate(Guid actionId)
         {
             return await dataAccess.GetUpdateActionCreate(actionId);
+        }
+
+        public async Task<IEnumerable<Updates>> GetUpdates(Guid versionId)
+        {
+            return await dataAccess.GetUpdates(versionId);
+            throw new NotImplementedException();
         }
 
         public async Task<DataObjects.UpdateActionDeleteFile> GetUpdateActionDelete(Guid actionId)
@@ -110,7 +122,8 @@ namespace Evorine.EvoPackageManager
                 Name = applicationName,
                 InMaintenance = false,
                 IsPublished = false,
-                IsVisible = true
+                IsVisible = true,
+                Description = "Lorem Ipsum a la main !",
             };
             await dataAccess.InsertApplication(applicationInfo);
 
@@ -121,10 +134,26 @@ namespace Evorine.EvoPackageManager
             return applicationInfo;
         }
 
+        public async Task AddPlatformToApplication(Guid applicationId, OSType operatingSystem, string executablePath)
+        {
+            PlatformInfo platformInfo = new PlatformInfo()
+            {
+                ApplicationId = applicationId,
+                OperatingSystem = operatingSystem,
+                ExecutablePath = executablePath
+            };
+            await dataAccess.AddPlatformToApplication(platformInfo);
+        }
+
         public async Task DeleteApplication(Guid applicationID)
         {
             //TODO: Delete application directory
             await dataAccess.DeleteApplication(applicationID);
+        }
+
+        public async void UpdateVersion(VersionInfo version)
+        {
+            await dataAccess.UpdateVersion(version);
         }
 
         public async Task<VersionInfo> GetVersion(Guid versionId)
@@ -268,13 +297,20 @@ namespace Evorine.EvoPackageManager
 
         private async Task StoreUpdateManifest(UpdateManifest updateManifest)
         {
+            Updates update = new Updates()
+            {
+                UpdateId = Guid.NewGuid(),
+                FromVersionId = updateManifest.FromVersionId,
+                ToVersionId = updateManifest.ToVersionId,
+                Size = 0,
+
+            };
             for (var i = 0; i < updateManifest.Actions.Length; i++)
             {
                 var updateAction = new DataObjects.UpdateAction()
                 {
                     ActionId = Guid.NewGuid(),
-                    FromVersionId = updateManifest.FromVersionId,
-                    ToVersionId = updateManifest.ToVersionId,
+                    UpdateId = update.UpdateId,
                     ActionType = updateManifest.Actions[i].ActionType,
                     ActionOrder = i
                 };
@@ -296,6 +332,7 @@ namespace Evorine.EvoPackageManager
                             ActionId = updateAction.ActionId,
                             FileId = action.NewFile.FileId
                         };
+                        update.Size += action.NewFile.CompressedSize;
                         await dataAccess.AddUpdateActionCreate(createDO);
                         break;
                     case DeleteFileAction action:
@@ -315,12 +352,14 @@ namespace Evorine.EvoPackageManager
                             DiffId = action.DiffId,
                             DiffSize = action.DiffSize
                         };
+                        update.Size += action.DiffSize;
                         await dataAccess.AddUpdateActionUpdate(updateDO);
                         break;
                     default:
                         throw new NotImplementedException($"Not implemented kind of action: '{updateManifest.Actions[i].GetType()}'");
                 }
             }
+            await dataAccess.AddUpdate(update);
         }
 
         public IList<UpdateAction> CalculateFileActions(Guid applicationId, IEnumerable<PackageFileInfo> fromFiles, IEnumerable<PackageFileInfo> toFiles)

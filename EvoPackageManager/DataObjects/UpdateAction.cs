@@ -10,8 +10,7 @@ namespace Evorine.EvoPackageManager.DataObjects
     {
         [ExplicitKey]
         public Guid ActionId { get; set; }
-        public Guid? FromVersionId { get; set; }
-        public Guid ToVersionId { get; set; }
+        public Guid UpdateId { get; set; }
         public ActionType ActionType { get; set; }
         public int ActionOrder { get; set; }
     }

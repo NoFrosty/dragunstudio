@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -97,6 +98,12 @@ namespace Evopeons.API.Controllers
             return await packageManager.GetVersion(versionId);
         }
 
+        [HttpGet("{applicationId}/version/{versionId}/updates")]
+        public async Task<IEnumerable<Updates>> GetUpdates(Guid applicationId, Guid versionId)
+        {
+            return await packageManager.GetUpdates(versionId);
+        }
+
         [HttpPost]
         public async Task<IActionResult> CreateApplication(ApplicationCreateModel model)
         {
@@ -118,6 +125,27 @@ namespace Evopeons.API.Controllers
             await packageManager.DeleteApplication(applicationId);
             return Ok();
         }
+
+        [HttpPost("{applicationId}/platform")]
+        public async Task<IActionResult> AddPlatformToApplication(Guid applicationId, OSType operatingSystem, string executablePath)
+        {
+            return Ok(packageManager.AddPlatformToApplication(applicationId, operatingSystem, executablePath));
+        }
+
+        [HttpPost("{applicationId}/version")]
+        public async Task<IActionResult> CreateVersion(Guid applicationId, [FromForm]string newVersion, [FromForm]OSType operatingSystem, IFormFile zip)
+        {
+            return Ok(packageManager.CreateVersion(applicationId, newVersion, operatingSystem, zip.OpenReadStream()));
+        }
+
+        [HttpPut("{applicationId}/version/{versionId}")]
+        public IActionResult UpdateVersion(VersionInfo version)
+        {
+            if (string.IsNullOrWhiteSpace(version.VersionId.ToString())) return Problem("A Version without a VersionId can't be updated.");
+            packageManager.UpdateVersion(version);
+            return Ok();
+        }
+
         /*
         [AllowAnonymous]
         [HttpGet()]
