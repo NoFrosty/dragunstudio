@@ -26,16 +26,34 @@ namespace Evopeons.API.Controllers
         }
 
         [HttpGet]
-        public IQueryable<ApplicationUser> GetAllUsers()
+        public IEnumerable<GetUserAccountResult> GetAllUsers()
         {
-            return userManager.Users;
+            List<GetUserAccountResult> users = new List<GetUserAccountResult>();
+            foreach (ApplicationUser user in userManager.Users)
+            {
+                GetUserAccountResult u = new GetUserAccountResult()
+                {
+                    Username = NormalizeString(user.Username),
+                    Email = NormalizeString(user.Email),
+                    EmailConfirmed = user.EmailConfirmed,
+                    FirstName = user.FirstName,
+                    LastName = user.LastName,
+                    PhoneNumber = user.PhoneNumber,
+                    TwoFactorEnabled = user.TwoFactorEnabled,
+                    CreationDate = user.CreationDate,
+                    LastLoginDate = user.LastLoginDate,
+                    UserId = user.UserId
+                };
+                users.Add(u);
+            }
+            return users;
         }
 
-        [HttpGet("{username}")]
-        public ActionResult<GetUserAccountResult> GetUser(string username)
+        [HttpGet("{userId}")]
+        public ActionResult<GetUserAccountResult> GetUser(Guid userId)
         {
             
-            ApplicationUser user = userManager.FindByNameAsync(username).Result;
+            ApplicationUser user = userManager.FindByIdAsync(userId.ToString()).Result;
             if (user == null)
             {
                 return NotFound();
@@ -43,17 +61,15 @@ namespace Evopeons.API.Controllers
             GetUserAccountResult userResult = new GetUserAccountResult()
             {
                 Username = NormalizeString(user.Username),
-                //Address1 = user.Address1,
-                //Address2 = user.Address2,
-                //Birthday = user.Birthday,
-                //City = user.City,
                 Email = NormalizeString(user.Email),
                 EmailConfirmed = user.EmailConfirmed,
                 FirstName = user.FirstName,
                 LastName = user.LastName,
                 PhoneNumber = user.PhoneNumber,
-                //PostCode = user.PostCode,
-                TwoFactorEnabled = user.TwoFactorEnabled
+                TwoFactorEnabled = user.TwoFactorEnabled,
+                CreationDate = user.CreationDate,
+                LastLoginDate = user.LastLoginDate,
+                UserId = user.UserId
             };
 
 

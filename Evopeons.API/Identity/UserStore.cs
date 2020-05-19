@@ -55,7 +55,8 @@ namespace Evopeons.API.Identity
 
             using (IDbConnection connection = connectionFactory.AcquireConnection())
             {
-                return await connection.QuerySingleOrDefaultAsync<ApplicationUser>("SELECT * FROM User WHERE EmailNormalized ='" + normalizedEmail + "'");
+                return await connection.QuerySingleOrDefaultAsync<ApplicationUser>("SELECT * FROM User WHERE EmailNormalized = @EmailNormalized",
+                    new { EmailNormalized = normalizedEmail });
             }
         }
 
@@ -65,7 +66,8 @@ namespace Evopeons.API.Identity
 
             using (IDbConnection connection = connectionFactory.AcquireConnection())
             {
-                return await connection.QuerySingleOrDefaultAsync<ApplicationUser>("SELECT * FROM User WHERE Id ='"+userId+"'");
+                return await connection.QuerySingleOrDefaultAsync<ApplicationUser>("SELECT * FROM User WHERE UserId = @UserId",
+                    new { UserId = userId});
             }
         }
 
@@ -75,7 +77,8 @@ namespace Evopeons.API.Identity
 
             using (IDbConnection connection = connectionFactory.AcquireConnection())
             {
-                return await connection.QuerySingleOrDefaultAsync<ApplicationUser>("SELECT * FROM User WHERE UsernameNormalized ='" + normalizedUserName + "'");
+                return await connection.QuerySingleOrDefaultAsync<ApplicationUser>("SELECT * FROM User WHERE UsernameNormalized = @UsernameNormalized",
+                    new { UsernameNormalized = normalizedUserName });
             }
         }
 
