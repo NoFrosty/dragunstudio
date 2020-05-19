@@ -135,10 +135,10 @@ namespace Evopeons.API.Controllers
             public Guid FromVersion { get; set; }
             public Guid ToVersion { get; set; }
         }
-        [HttpPost("{applicationId}/version/{versionId}/update")]
-        public async Task<IActionResult> AddNewUpdateBetweenVersions(Guid applicationId, Guid versionId, ModelGuid model)
+        [HttpPost("{applicationId}/update")]
+        public async Task<IActionResult> AddNewUpdateBetweenVersions(Guid applicationId, ModelGuid model)
         {
-            return Ok(await packageManager.CreateVersion(applicationId, model.FromVersion, versionId));
+            return Ok(await packageManager.CreateVersion(applicationId, model.FromVersion, model.ToVersion));
         }
 
         [HttpPost("{applicationId}/version")]
