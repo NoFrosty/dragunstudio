@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Server.Kestrel.Https;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using LettuceEncrypt;
 
 namespace Evopeons.API
 {
@@ -23,10 +25,10 @@ namespace Evopeons.API
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder
-                        #if RELEASE
-                            .UseKestrel()
-                            .UseUrls("https://*:443")
-                        #endif
+#if RELEASE
+                        .UseKestrel()
+                        .UseUrls("https://*:443")
+#endif
                         .UseStartup<Startup>();
                 });
     }

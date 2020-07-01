@@ -105,8 +105,8 @@ namespace EvoPackageManager.Tests
         [Fact]
         public void UpdateManifestTest()
         {
-            var (fromFiles, toFiles) = GetDemoFiles();
-            var packageManager = new PackageManager(null, null);
+            //var (fromFiles, toFiles) = GetDemoFiles();
+            //var packageManager = new PackageManager(null, null);
 
             //var actions = packageManager.CalculateFileActions(fromFiles, toFiles);
             throw new NotImplementedException("Where are the asserts?");
