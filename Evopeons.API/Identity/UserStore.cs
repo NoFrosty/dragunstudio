@@ -53,33 +53,27 @@ namespace Evopeons.API.Identity
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            using (IDbConnection connection = connectionFactory.AcquireConnection())
-            {
-                return await connection.QuerySingleOrDefaultAsync<ApplicationUser>("SELECT * FROM User WHERE EmailNormalized = @EmailNormalized",
-                    new { EmailNormalized = normalizedEmail });
-            }
+            using IDbConnection connection = connectionFactory.AcquireConnection();
+            return await connection.QuerySingleOrDefaultAsync<ApplicationUser>("SELECT * FROM User WHERE EmailNormalized = @EmailNormalized",
+                new { EmailNormalized = normalizedEmail });
         }
 
         public async Task<ApplicationUser> FindByIdAsync(string userId, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            using (IDbConnection connection = connectionFactory.AcquireConnection())
-            {
-                return await connection.QuerySingleOrDefaultAsync<ApplicationUser>("SELECT * FROM User WHERE UserId = @UserId",
-                    new { UserId = userId});
-            }
+            using IDbConnection connection = connectionFactory.AcquireConnection();
+            return await connection.QuerySingleOrDefaultAsync<ApplicationUser>("SELECT * FROM User WHERE UserId = @UserId",
+                new { UserId = userId });
         }
 
         public async Task<ApplicationUser> FindByNameAsync(string normalizedUserName, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            using (IDbConnection connection = connectionFactory.AcquireConnection())
-            {
-                return await connection.QuerySingleOrDefaultAsync<ApplicationUser>("SELECT * FROM User WHERE UsernameNormalized = @UsernameNormalized",
-                    new { UsernameNormalized = normalizedUserName });
-            }
+            using IDbConnection connection = connectionFactory.AcquireConnection();
+            return await connection.QuerySingleOrDefaultAsync<ApplicationUser>("SELECT * FROM User WHERE UsernameNormalized = @UsernameNormalized",
+                new { UsernameNormalized = normalizedUserName });
         }
 
         public Task<string> GetEmailAsync(ApplicationUser user, CancellationToken cancellationToken)
