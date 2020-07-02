@@ -25,6 +25,7 @@ namespace Evopeons.API.Controllers
             this.userManager = userManager;
         }
 
+        [AllowAnonymous]
         [HttpGet]
         public IEnumerable<GetUserAccountResult> GetAllUsers()
         {
@@ -69,7 +70,8 @@ namespace Evopeons.API.Controllers
                 TwoFactorEnabled = user.TwoFactorEnabled,
                 CreationDate = user.CreationDate,
                 LastLoginDate = user.LastLoginDate,
-                UserId = user.UserId
+                UserId = user.UserId,
+                Birthday = user.Birthday,
             };
 
 
@@ -117,6 +119,17 @@ namespace Evopeons.API.Controllers
                 IsUsernameTaken = isUsernameTaken
             };
 
+        }
+
+        [HttpPut]
+        public async Task<IActionResult> UpdateUser(ApplicationUser userModel)
+        {
+            if (string.IsNullOrWhiteSpace(userModel.UserId.ToString())) return Problem("A user without an UserId can't be updated.");
+            ApplicationUser user = await userManager.FindByIdAsync(userModel.UserId.ToString());
+            userModel.PasswordHash = user.PasswordHash;
+            userModel.UsernameNormalized = userManager.NormalizeName(userModel.Username);
+            userModel.EmailNormalized = userManager.NormalizeEmail(userModel.Email);
+            return Ok(await userManager.UpdateAsync(userModel));
         }
 
         public string NormalizeString(string value)
