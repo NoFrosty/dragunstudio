@@ -4,5 +4,6 @@
     Banned,
     Suspended,
     Warned,
-    Checking
+    Checking,
+    Deleted
 }

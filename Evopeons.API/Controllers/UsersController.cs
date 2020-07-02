@@ -27,7 +27,7 @@ namespace Evopeons.API.Controllers
 
         [AllowAnonymous]
         [HttpGet]
-        public IEnumerable<GetUserAccountResult> GetAllUsers()
+        public async Task<IEnumerable<GetUserAccountResult>> GetAllUsers()
         {
             List<GetUserAccountResult> users = new List<GetUserAccountResult>();
             foreach (ApplicationUser user in userManager.Users)
@@ -43,7 +43,8 @@ namespace Evopeons.API.Controllers
                     TwoFactorEnabled = user.TwoFactorEnabled,
                     CreationDate = user.CreationDate,
                     LastLoginDate = user.LastLoginDate,
-                    UserId = user.UserId
+                    UserId = user.UserId,
+                    AccountStatus = user.AccountStatus
                 };
                 users.Add(u);
             }
@@ -51,10 +52,10 @@ namespace Evopeons.API.Controllers
         }
 
         [HttpGet("{userId}")]
-        public ActionResult<GetUserAccountResult> GetUser(Guid userId)
+        public async Task<ActionResult<GetUserAccountResult>> GetUser(Guid userId)
         {
             
-            ApplicationUser user = userManager.FindByIdAsync(userId.ToString()).Result;
+            ApplicationUser user = await userManager.FindByIdAsync(userId.ToString());
             if (user == null)
             {
                 return NotFound();
@@ -72,6 +73,7 @@ namespace Evopeons.API.Controllers
                 LastLoginDate = user.LastLoginDate,
                 UserId = user.UserId,
                 Birthday = user.Birthday,
+                AccountStatus = user.AccountStatus,
             };
 
 
@@ -83,41 +85,64 @@ namespace Evopeons.API.Controllers
         [HttpPost]
         public async Task<CreateUserResult> RegisterNewUser([FromBody] CreateUserModel userModel)
         {
-            bool isEmailTaken = userManager.FindByEmailAsync(userModel.Email).Result != null;
-            bool isUsernameTaken = userManager.FindByNameAsync(userModel.Username).Result != null;
-            if(!isEmailTaken && !isUsernameTaken)
-            {
-                var user = new ApplicationUser()
-                {
-                    UserId = Guid.NewGuid(),
-                    Email = userModel.Email,
-                    EmailNormalized = userModel.Email,
-                    Username = userModel.Username,
-                    UsernameNormalized = userModel.Username,
-                    FirstName = userModel.FirstName,
-                    LastName = userModel.LastName,
-                    Birthday = userModel.Birthday,
-                    //Country = userModel.Country,
-                    Active = AccountStatus.Active,
-                    CreationDate = DateTime.UtcNow,
-                    TwoFactorEnabled = false,
-                };
+            ApplicationUser userByEmail = await userManager.FindByEmailAsync(userModel.Email);
+            ApplicationUser userByUserName = await userManager.FindByNameAsync(userModel.Username);
 
-                var result = await userManager.CreateAsync(user, userModel.Password);
-
+            if ((userByEmail != null && userByEmail.AccountStatus != AccountStatus.Deleted) || userByUserName != null)
                 return new CreateUserResult()
                 {
-                    IsSuccessfull = result.Succeeded,
-                    IsEmailTaken = isEmailTaken,
-                    IsUsernameTaken = isUsernameTaken
+                    IsSuccessfull = false,
+                    IsEmailTaken = userByEmail != null,
+                    IsUsernameTaken = userByUserName != null
                 };
+
+            ApplicationUser user = new ApplicationUser()
+            {
+                UserId = Guid.NewGuid(),
+                Email = userModel.Email,
+                EmailNormalized = userModel.Email,
+                Username = userModel.Username,
+                UsernameNormalized = userModel.Username,
+                FirstName = userModel.FirstName,
+                LastName = userModel.LastName,
+                Birthday = userModel.Birthday,
+                AccountStatus = AccountStatus.Active,
+                CreationDate = DateTime.UtcNow,
+                TwoFactorEnabled = false,
+            };
+
+            IdentityResult result;
+            if (userByEmail != null)
+            {
+                user.UserId = userByEmail.UserId;
+                user.PasswordHash = userManager.PasswordHasher.HashPassword(user, userModel.Password);
+                result = await userManager.UpdateAsync(user);
             }
+            else
+            {
+                result = await userManager.CreateAsync(user, userModel.Password);
+            }
+
             return new CreateUserResult()
             {
-                IsSuccessfull = false,
-                IsEmailTaken = isEmailTaken,
-                IsUsernameTaken = isUsernameTaken
+                IsSuccessfull = result.Succeeded,
+                IsEmailTaken = userByEmail != null,
+                IsUsernameTaken = userByUserName != null
             };
+
+        }
+
+        [HttpDelete("{userId}")]
+        public async Task<IActionResult> DeleteUser(Guid userId)
+        {
+            if (string.IsNullOrWhiteSpace(userId.ToString())) return Problem("An userId is necessary !");
+
+            ApplicationUser user = await userManager.FindByIdAsync(userId.ToString());
+
+            user.AccountStatus = AccountStatus.Deleted;
+            user.Username = Guid.NewGuid().ToString().Substring(0,20);
+            user.UsernameNormalized = userManager.NormalizeName(user.Username);
+            return Ok(userManager.UpdateAsync(user));
 
         }
 
