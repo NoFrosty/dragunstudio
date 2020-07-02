@@ -37,6 +37,6 @@ namespace Evopeons.API
                     "appsettings.Local.json",
                      optional: true,
                      reloadOnChange: true);
-                };
+                });
     }
 }
