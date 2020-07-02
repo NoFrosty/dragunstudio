@@ -15,7 +15,6 @@ using Microsoft.AspNetCore.Authorization;
 using System;
 using Evopeons.API.Articles;
 using Microsoft.Extensions.Logging;
-using LettuceEncrypt;
 
 namespace Evopeons.API
 {
@@ -47,7 +46,6 @@ namespace Evopeons.API
             services.AddSingleton<ArticleManager>();
             services.AddSingleton<ArticleDataAccess>();
 
-            //services.AddLettuceEncrypt();
 
             services.AddAuthentication(options =>
             {

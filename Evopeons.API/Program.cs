@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Server.Kestrel.Https;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using LettuceEncrypt;
 
 namespace Evopeons.API
 {
