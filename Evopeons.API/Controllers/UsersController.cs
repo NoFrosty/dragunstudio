@@ -9,10 +9,10 @@ using Microsoft.AspNetCore.Identity;
 using Evopeons.API.Identity;
 using Evopeons.API.Entities;
 using Microsoft.AspNetCore.Authorization;
-using RestSharp;
-using RestSharp.Authenticators;
 using System.IO;
 using System.Reflection;
+using System.Net.Mail;
+using System.Net;
 
 namespace Evopeons.API.Controllers
 {
@@ -22,11 +22,14 @@ namespace Evopeons.API.Controllers
     public class UsersController : ControllerBase
     {
         readonly UserManager<ApplicationUser> userManager;
+        readonly ApplicationSettings applicationSettings;
 
         public UsersController(
-            UserManager<ApplicationUser> userManager)
+            UserManager<ApplicationUser> userManager,
+            ApplicationSettings applicationSettings)
         {
             this.userManager = userManager;
+            this.applicationSettings = applicationSettings;
         }
 
         [AllowAnonymous]
@@ -114,7 +117,7 @@ namespace Evopeons.API.Controllers
                 CreationDate = DateTime.UtcNow,
                 TwoFactorEnabled = false,
             };
-            var x = SendConfirmationEmail(user);
+            await SendConfirmationEmailAmazon(user);
 
             IdentityResult result;
             if (userByEmail != null)
@@ -183,33 +186,52 @@ namespace Evopeons.API.Controllers
             return Ok();
         }
 
-        public async Task<IRestResponse> SendConfirmationEmail(ApplicationUser user)
+        public async Task SendConfirmationEmailAmazon(ApplicationUser user)
         {
-            RestClient client = new RestClient();
-            client.BaseUrl = new Uri("https://api.mailgun.net/v3");
 
-            client.Authenticator = new HttpBasicAuthenticator("api", "ff7082d5dc1f5b087b9e2de4e32eb323-913a5827-1ed37e1f");
-
-            RestRequest request = new RestRequest();
-            request.AddParameter("domain", "sandbox7114b6aaa893439b81282df32247dd80.mailgun.org", ParameterType.UrlSegment);
-            request.Resource = "{domain}/messages";
-            request.AddParameter("from", "Evorine <mailgun@sandbox7114b6aaa893439b81282df32247dd80.mailgun.org>");
-            request.AddParameter("to", user.Email);
-            request.AddParameter("subject", "Account confirmation email");
-            string path = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"Pages\ConfirmEmail.html");
-            string htmlText = System.IO.File.ReadAllText("Pages/ConfirmEmail.html");
+            string BODY = System.IO.File.ReadAllText("Pages/ConfirmEmail.html");
             string code = await userManager.GenerateEmailConfirmationTokenAsync(user);
             var callbackUrl = Url.Action(
                "ConfirmEmail", "users",
                new { userId = user.UserId, code = code },
-               protocol: Request.Scheme,
-               Request.Host.Value);
-            htmlText = htmlText.Replace("{url}", callbackUrl);
-            htmlText = htmlText.Replace("{firstName}", user.FirstName);
-            request.AddParameter("html", htmlText);
-            request.Method = Method.POST;
+               protocol: Request.Scheme
+               //Request.Host.Value
+               );
+            BODY = BODY.Replace("{url}", callbackUrl);
+            BODY = BODY.Replace("{firstName}", user.FirstName);
 
-            return client.Execute(request);
+            // Create and build a new MailMessage object
+            MailMessage message = new MailMessage();
+            message.IsBodyHtml = true;
+            message.From = new MailAddress(applicationSettings.AmazonEmailSender, "Evorine");
+            message.To.Add(new MailAddress(user.Email));
+            message.Subject = "Evorine Email Account Verification";
+            message.Body = BODY;
+            // Comment or delete the next line if you are not using a configuration set
+            //message.Headers.Add("X-SES-CONFIGURATION-SET", CONFIGSET);
+
+            using (var client = new SmtpClient(applicationSettings.AmazonHost, 587))
+            {
+                // Pass SMTP credentials
+                client.Credentials =
+                    new NetworkCredential(applicationSettings.AmazonSmtpUsername, applicationSettings.AmazonSmtpPassword);
+
+                // Enable SSL encryption
+                client.EnableSsl = true;
+
+                // Try to send the message. Show status in console.
+                try
+                {
+                    Console.WriteLine("Attempting to send email...");
+                    client.Send(message);
+                    Console.WriteLine("Email sent!");
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("The email was not sent.");
+                    Console.WriteLine("Error message: " + ex.Message);
+                }
+            }
         }
     }
 }
