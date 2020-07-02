@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Server.Kestrel.Https;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
@@ -29,6 +30,13 @@ namespace Evopeons.API
                         .UseUrls("https://*:443", "http://*:80")
 #endif
                         .UseStartup<Startup>();
-                });
+                })
+                .ConfigureAppConfiguration((hostingContext, config) =>
+                {
+                    config.AddJsonFile(
+                    "appsettings.Local.json",
+                     optional: true,
+                     reloadOnChange: true);
+                };
     }
 }
