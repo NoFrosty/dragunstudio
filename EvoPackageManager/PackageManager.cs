@@ -449,8 +449,9 @@ namespace Evorine.EvoPackageManager
             var oldBuffer = File.ReadAllBytes(GetPackagesFilePath(applicationId, oldFile));
             var newBuffer = File.ReadAllBytes(GetPackagesFilePath(applicationId, newFile));
             var diffId = Guid.NewGuid();
-            var path = Path.Combine(GetUpdatesDirectoryPath(applicationId), diffId.ToString());
-
+            var directoryPath = GetUpdatesDirectoryPath(applicationId);
+            var path = Path.Combine(directoryPath, diffId.ToString());
+            Directory.CreateDirectory(directoryPath);
             using (FileStream outputFile = File.Create(path))
             {
                 BinaryPatchUtility.Create(oldBuffer, newBuffer, outputFile);
