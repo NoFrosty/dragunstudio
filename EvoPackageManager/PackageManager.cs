@@ -211,9 +211,9 @@ namespace Evorine.EvoPackageManager
 
             await dataAccess.AddVersion(newVersionInfo);
             await dataAccess.AddFiles(versionFiles);
-            UpdateManifest updateManifest = await CalculateUpdate(applicationInfo, fromVersion, newVersionInfo);
+            //UpdateManifest updateManifest = await CalculateUpdate(applicationInfo, fromVersion, newVersionInfo);
             UpdateManifest freshInstallationManifest = await CalculateUpdate(applicationInfo, null, newVersionInfo);
-            await StoreUpdateManifest(updateManifest);
+            //await StoreUpdateManifest(updateManifest);
             await StoreUpdateManifest(freshInstallationManifest);
             return newVersionInfo;
         }
