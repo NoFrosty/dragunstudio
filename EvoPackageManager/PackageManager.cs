@@ -86,7 +86,6 @@ namespace Evorine.EvoPackageManager
         public async Task<UpdateAction[]> GetUpdateAction(Guid? fromVersionId, Guid toVersionId)
         {
             return await dataAccess.GetUpdateAction(await dataAccess.GetUpdate(fromVersionId, toVersionId));
-            return await dataAccess.GetUpdateAction(fromVersionId, toVersionId);
         }
 
         public async Task<DataObjects.UpdateActionCopyFile> GetUpdateActionCopy(Guid actionId)

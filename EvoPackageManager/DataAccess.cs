@@ -474,9 +474,14 @@ namespace Evorine.EvoPackageManager
         {
             using (var connection = connectionFactory.AcquireConnection())
             {
+                string sql;
+                if (!fromVersionId.HasValue)
+                    sql = "SELECT * FROM Updates WHERE @FromVersionId IS NULL AND ToVersionId = @ToVersionId";
+                else
+                    sql = "SELECT * FROM Updates WHERE FromVersionId = @FromVersionId AND ToVersionId = @ToVersionId";
+
                 return await connection.QueryFirstOrDefaultAsync<Updates>(
-                    "SELECT * FROM Updates WHERE FromVersionId = @FromVersionId AND ToVersionId = @ToVersionId",
-                    new { FromVersionId = fromVersionId, ToVersionId = toVersionId }
+                    sql, new { FromVersionId = fromVersionId, ToVersionId = toVersionId }
                 );
             }
         }
