@@ -117,6 +117,7 @@ namespace Evopeons.API.Controllers
                 AccountStatus = AccountStatus.Active,
                 CreationDate = DateTime.UtcNow,
                 TwoFactorEnabled = false,
+                Country = userModel.Country
             };
             await SendConfirmationEmailAmazon(user);
 
