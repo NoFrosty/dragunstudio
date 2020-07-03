@@ -271,7 +271,9 @@ namespace Evorine.EvoPackageManager
                         }
 
                         // Zip file back alone
-                        string singleZipPath = Path.Combine(GetCompressedFilesDirectoryPath(applicationId), file.FileId.ToString());
+                        string directory = GetCompressedFilesDirectoryPath(applicationId);
+                        Directory.CreateDirectory(directory);
+                        string singleZipPath = Path.Combine(directory, file.FileId.ToString());
                         using (Stream singleZipFileStream = File.Create(singleZipPath))
                         {
                             using (ZipArchive singleArchive = new ZipArchive(singleZipFileStream, ZipArchiveMode.Create, true))
