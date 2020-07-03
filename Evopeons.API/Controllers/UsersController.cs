@@ -187,6 +187,14 @@ namespace Evopeons.API.Controllers
             return Ok();
         }
 
+        [AllowAnonymous]
+        [HttpGet("count")]
+        public async Task<ActionResult> CountUser()
+        {
+            var x = userManager.Users.Count();
+            return Ok( x );
+        }
+
         public async Task SendConfirmationEmailAmazon(ApplicationUser user)
         {
 
