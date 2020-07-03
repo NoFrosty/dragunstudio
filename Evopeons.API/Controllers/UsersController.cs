@@ -13,6 +13,7 @@ using System.IO;
 using System.Reflection;
 using System.Net.Mail;
 using System.Net;
+using Evopeons.API.Properties;
 
 namespace Evopeons.API.Controllers
 {
@@ -189,7 +190,7 @@ namespace Evopeons.API.Controllers
         public async Task SendConfirmationEmailAmazon(ApplicationUser user)
         {
 
-            string BODY = System.IO.File.ReadAllText("Pages/ConfirmEmail.html");
+            string BODY = Resources.ConfirmEmail;
             string code = await userManager.GenerateEmailConfirmationTokenAsync(user);
             var callbackUrl = Url.Action(
                "ConfirmEmail", "users",
