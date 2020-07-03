@@ -127,9 +127,9 @@ namespace Evopeons.API.Controllers
         }
 
         [HttpPost("{applicationId}/platform")]
-        public async Task<IActionResult> AddPlatformToApplication(Guid applicationId, OSType operatingSystem, string executablePath)
+        public async Task<IActionResult> AddPlatformToApplication(Guid applicationId, AddPlatformApplicationModel addPlatformApplicationModel)
         {
-            return Ok(packageManager.AddPlatformToApplication(applicationId, operatingSystem, executablePath));
+            return Ok(packageManager.AddPlatformToApplication(applicationId, addPlatformApplicationModel.OperatingSystem, addPlatformApplicationModel.ExecutablePath));
         }
         public class ModelGuid{ 
             public Guid FromVersion { get; set; }
