@@ -275,7 +275,7 @@ namespace Evorine.EvoPackageManager
             {
                 var allActions = await connection.QueryAsync<DataObjects.UpdateAction>(
                     @"SELECT * FROM UpdateAction UA
-                      WHERE UpdateId = @UpdateId",
+                      WHERE UA.UpdateId = @UpdateId",
                     new
                     {
                         UpdateId = update.UpdateId
@@ -476,7 +476,7 @@ namespace Evorine.EvoPackageManager
             {
                 string sql;
                 if (!fromVersionId.HasValue)
-                    sql = "SELECT * FROM Updates WHERE @FromVersionId IS NULL AND ToVersionId = @ToVersionId";
+                    sql = "SELECT * FROM Updates WHERE FromVersionId IS NULL AND ToVersionId = @ToVersionId";
                 else
                     sql = "SELECT * FROM Updates WHERE FromVersionId = @FromVersionId AND ToVersionId = @ToVersionId";
 
