@@ -46,6 +46,16 @@ namespace Evopeons.API
             services.AddSingleton<ArticleManager>();
             services.AddSingleton<ArticleDataAccess>();
 
+            services.Configure<IdentityOptions>(options =>
+            {
+                // Default Password settings.
+                options.Password.RequireDigit = false;
+                options.Password.RequireLowercase = false;
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequireUppercase = false;
+                options.Password.RequiredLength = 6;
+                options.Password.RequiredUniqueChars = 1;
+            });
 
             services.AddAuthentication(options =>
             {
