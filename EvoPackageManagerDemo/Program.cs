@@ -23,7 +23,7 @@ namespace EvoPackageManagerDemo
             var settings = new PackageManagerSettings()
             {
                 RootPath = @"C:\Users\Calvi\Desktop\Test",
-                ConnectionString = @"Server=192.168.1.57;Database=warp;Uid=warpy;Pwd=112358;"
+                ConnectionString = @"Server=warp-dev.server.evorine.net;Port=44359;Database=warp;Uid=warpy;Pwd=112358;"
             };
 
             ConnectionStringFactory connectionStringFactory = new ConnectionStringFactory(settings);
