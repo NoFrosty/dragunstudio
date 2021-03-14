@@ -89,7 +89,7 @@ namespace Evopeons.API
             services.AddCors(options =>
             {
                 options.AddDefaultPolicy(builder => {
-                    builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
+                    builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
                 });
 
             });
