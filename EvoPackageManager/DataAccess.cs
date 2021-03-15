@@ -1,23 +1,22 @@
-﻿using System;
+﻿using Dapper;
+using Dapper.Contrib.Extensions;
+using Evorine.EvoPackageManager.DataObjects;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using Dapper;
-using Dapper.Contrib.Extensions;
-using EvoPackageManager.Models;
-using Evorine.EvoPackageManager.DataObjects;
 
 namespace Evorine.EvoPackageManager
 {
     public class DataAccess
     {
-        readonly ConnectionFactory connectionFactory;
+        private readonly ConnectionFactory connectionFactory;
 
         public DataAccess(ConnectionFactory connectionFactory)
         {
             this.connectionFactory = connectionFactory;
         }
+
         public async virtual Task InsertApplication(ApplicationInfo applicationInfo)
         {
             applicationInfo.ApplicationId = Guid.NewGuid();
@@ -85,7 +84,7 @@ namespace Evorine.EvoPackageManager
             {
                 return await connection.QueryFirstOrDefaultAsync<VersionInfo>(
                     "SELECT * FROM Version WHERE VersionId = @VersionId",
-                    new { VersionId = versionId}
+                    new { VersionId = versionId }
                 );
             }
         }
@@ -100,7 +99,7 @@ namespace Evorine.EvoPackageManager
                 );
             }
         }
-        
+
         public async Task AddFiles(IEnumerable<PackageFileInfo> files)
         {
             using (var connection = connectionFactory.AcquireConnection())
@@ -149,7 +148,7 @@ namespace Evorine.EvoPackageManager
             {
                 var allActions = await connection.QueryAsync<DataObjects.UpdateAction>(
                     @"SELECT * FROM UpdateAction UA
-                      WHERE ((@FromVersionId IS NULL AND UA.FromVersionId IS NULL) OR (UA.FromVersionId = @FromVersionId)) 
+                      WHERE ((@FromVersionId IS NULL AND UA.FromVersionId IS NULL) OR (UA.FromVersionId = @FromVersionId))
                         AND (UA.ToVersionId = @ToVersionId)",
                     new
                     {
@@ -162,7 +161,7 @@ namespace Evorine.EvoPackageManager
                 var copyActions = await connection.QueryAsync<DataObjects.UpdateActionCopyFile>(
                     @"SELECT CP.* FROM UpdateAction UA
                       JOIN UpdateActionCopyFile CP ON CP.ActionId = UA.ActionId
-                      WHERE ((@FromVersionId IS NULL AND UA.FromVersionId IS NULL) OR (UA.FromVersionId = @FromVersionId)) 
+                      WHERE ((@FromVersionId IS NULL AND UA.FromVersionId IS NULL) OR (UA.FromVersionId = @FromVersionId))
                         AND (UA.ToVersionId = @ToVersionId)",
                     new
                     {
@@ -175,7 +174,7 @@ namespace Evorine.EvoPackageManager
                 var createActions = await connection.QueryAsync<DataObjects.UpdateActionCreateFile>(
                     @"SELECT CR.* FROM UpdateAction UA
                       JOIN UpdateActionCreateFile CR ON CR.ActionId = UA.ActionId
-                      WHERE ((@FromVersionId IS NULL AND UA.FromVersionId IS NULL) OR (UA.FromVersionId = @FromVersionId)) 
+                      WHERE ((@FromVersionId IS NULL AND UA.FromVersionId IS NULL) OR (UA.FromVersionId = @FromVersionId))
                         AND (UA.ToVersionId = @ToVersionId)",
                     new
                     {
@@ -188,7 +187,7 @@ namespace Evorine.EvoPackageManager
                 var deleteActions = await connection.QueryAsync<DataObjects.UpdateActionDeleteFile>(
                     @"SELECT RM.* FROM UpdateAction UA
                       JOIN UpdateActionDeleteFile RM ON RM.ActionId = UA.ActionId
-                      WHERE ((@FromVersionId IS NULL AND UA.FromVersionId IS NULL) OR (UA.FromVersionId = @FromVersionId)) 
+                      WHERE ((@FromVersionId IS NULL AND UA.FromVersionId IS NULL) OR (UA.FromVersionId = @FromVersionId))
                         AND (UA.ToVersionId = @ToVersionId)",
                     new
                     {
@@ -201,7 +200,7 @@ namespace Evorine.EvoPackageManager
                 var updateActions = await connection.QueryAsync<DataObjects.UpdateActionUpdateFile>(
                     @"SELECT UP.* FROM UpdateAction UA
                       JOIN UpdateActionUpdateFile UP ON UP.ActionId = UA.ActionId
-                      WHERE ((@FromVersionId IS NULL AND UA.FromVersionId IS NULL) OR (UA.FromVersionId = @FromVersionId)) 
+                      WHERE ((@FromVersionId IS NULL AND UA.FromVersionId IS NULL) OR (UA.FromVersionId = @FromVersionId))
                         AND (UA.ToVersionId = @ToVersionId)",
                     new
                     {
@@ -383,6 +382,7 @@ namespace Evorine.EvoPackageManager
                 await connection.InsertAsync(updateActionCopyFile);
             }
         }
+
         public async Task<DataObjects.UpdateActionCopyFile> GetUpdateActionCopy(Guid actionId)
         {
             using (var connection = connectionFactory.AcquireConnection())
@@ -492,7 +492,7 @@ namespace Evorine.EvoPackageManager
             {
                 return await connection.QueryAsync<Updates>(
                     "SELECT * FROM Updates WHERE ToVersionId = @ToVersionId",
-                    new {ToVersionId = toVersionId }
+                    new { ToVersionId = toVersionId }
                 );
             }
         }

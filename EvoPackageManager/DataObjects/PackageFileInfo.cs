@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Text;
 
 namespace Evorine.EvoPackageManager.DataObjects
 {
@@ -11,12 +10,14 @@ namespace Evorine.EvoPackageManager.DataObjects
     {
         [ExplicitKey]
         public Guid FileId { get; set; }
+
         public Guid VersionId { get; set; }
         public string FileName { get; set; }
         public string DirectoryPath { get; set; }
         public string Hash { get; set; }
         public long Size { get; set; }
         public long CompressedSize { get; set; }
+
         [Computed]
         public string RelativeFilename => Path.Combine(DirectoryPath, FileName);
 

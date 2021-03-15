@@ -1,5 +1,4 @@
 ﻿using Dapper.Contrib.Extensions;
-using System;
 
 namespace Evopeons.API.Models
 {

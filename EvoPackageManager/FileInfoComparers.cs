@@ -1,8 +1,6 @@
-﻿using Dapper.Contrib.Extensions;
-using Evorine.EvoPackageManager.DataObjects;
+﻿using Evorine.EvoPackageManager.DataObjects;
 using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace Evorine.EvoPackageManager
 {

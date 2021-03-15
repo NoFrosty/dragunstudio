@@ -1,21 +1,18 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Text;
 using System.Text.RegularExpressions;
 
 namespace Evorine.EvoPackageManager
 {
     public class SemVersion
     {
-        static readonly Regex parseEx =
+        private static readonly Regex parseEx =
             new Regex(@"^(?<major>\d+)" +
                 @"(\.(?<minor>\d+))?" +
                 @"(\.(?<patch>\d+))?" +
                 @"(\-(?<pre>[0-9A-Za-z\-\.]+))?" +
                 @"(\+(?<build>[0-9A-Za-z\-\.]+))?$",
                 RegexOptions.CultureInvariant | RegexOptions.Compiled | RegexOptions.ExplicitCapture);
-
 
         public SemVersion() : this(0)
         {
@@ -65,7 +62,6 @@ namespace Evorine.EvoPackageManager
         public string Prerelease { get; set; }
         public string Build { get; set; }
 
-
         public override string ToString()
         {
             var version = "" + Major + "." + Minor + "." + Patch;
@@ -75,7 +71,6 @@ namespace Evorine.EvoPackageManager
                 version += "+" + Build;
             return version;
         }
-
 
         public override bool Equals(object obj)
         {

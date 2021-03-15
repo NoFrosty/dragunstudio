@@ -15,9 +15,9 @@ namespace Evopeons.API.Controllers
     [ApiController]
     public class AuthenticateController : ControllerBase
     {
-        readonly SignInManager<ApplicationUser> signInManager;
-        readonly UserManager<ApplicationUser> userManager;
-        readonly ApplicationSettings applicationSettings;
+        private readonly SignInManager<ApplicationUser> signInManager;
+        private readonly UserManager<ApplicationUser> userManager;
+        private readonly ApplicationSettings applicationSettings;
 
         public AuthenticateController(
             SignInManager<ApplicationUser> signInManager,
@@ -60,7 +60,7 @@ namespace Evopeons.API.Controllers
                     IsSuccessfull = false
                 });
             }
-            
+
             var claims = new Claim[]
             {
                 new Claim(ClaimTypes.NameIdentifier, user.UserId.ToString()),

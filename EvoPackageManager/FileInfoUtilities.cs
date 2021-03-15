@@ -1,9 +1,7 @@
-﻿using Dapper.Contrib.Extensions;
-using Evorine.EvoPackageManager.DataObjects;
+﻿using Evorine.EvoPackageManager.DataObjects;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace Evorine.EvoPackageManager
 {
@@ -52,7 +50,7 @@ namespace Evorine.EvoPackageManager
         public static IEnumerable<(PackageFileInfo source, PackageFileInfo target)> GetUpdateFiles(IEnumerable<PackageFileInfo> from, IEnumerable<PackageFileInfo> to)
         {
             var fromFiles = from.Where(x => to.Any(t => x.RelativeFilename.Equals(t.RelativeFilename) && !x.Hash.Equals(t.Hash)));
-            return fromFiles.Select(x => (x, to.Single(t=> x.RelativeFilename.Equals(t.RelativeFilename) && !x.Hash.Equals(t.Hash))));
+            return fromFiles.Select(x => (x, to.Single(t => x.RelativeFilename.Equals(t.RelativeFilename) && !x.Hash.Equals(t.Hash))));
         }
     }
 }

@@ -1,19 +1,15 @@
-﻿using System;
+﻿using Evopeons.API.Entities;
+using Evopeons.API.Models;
+using Evopeons.API.Properties;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Evopeons.API.Models;
-using System.Security.Cryptography;
-using Microsoft.AspNetCore.Identity;
-using Evopeons.API.Identity;
-using Evopeons.API.Entities;
-using Microsoft.AspNetCore.Authorization;
-using System.IO;
-using System.Reflection;
-using System.Net.Mail;
 using System.Net;
-using Evopeons.API.Properties;
+using System.Net.Mail;
+using System.Threading.Tasks;
 
 namespace Evopeons.API.Controllers
 {
@@ -22,8 +18,8 @@ namespace Evopeons.API.Controllers
     [ApiController]
     public class UsersController : ControllerBase
     {
-        readonly UserManager<ApplicationUser> userManager;
-        readonly ApplicationSettings applicationSettings;
+        private readonly UserManager<ApplicationUser> userManager;
+        private readonly ApplicationSettings applicationSettings;
 
         public UsersController(
             UserManager<ApplicationUser> userManager,
@@ -62,7 +58,6 @@ namespace Evopeons.API.Controllers
         [HttpGet("{userId}")]
         public async Task<ActionResult<GetUserAccountResult>> GetUser(Guid userId)
         {
-            
             ApplicationUser user = await userManager.FindByIdAsync(userId.ToString());
             if (user == null)
             {
@@ -83,7 +78,6 @@ namespace Evopeons.API.Controllers
                 Birthday = user.Birthday,
                 AccountStatus = user.AccountStatus,
             };
-
 
             return Ok(userResult);
         }
@@ -138,7 +132,6 @@ namespace Evopeons.API.Controllers
                 IsEmailTaken = userByEmail != null,
                 IsUsernameTaken = userByUserName != null
             };
-
         }
 
         [HttpDelete("{userId}")]
@@ -149,10 +142,9 @@ namespace Evopeons.API.Controllers
             ApplicationUser user = await userManager.FindByIdAsync(userId.ToString());
 
             user.AccountStatus = AccountStatus.Deleted;
-            user.Username = Guid.NewGuid().ToString().Substring(0,20);
+            user.Username = Guid.NewGuid().ToString().Substring(0, 20);
             user.UsernameNormalized = userManager.NormalizeName(user.Username);
             return Ok(userManager.UpdateAsync(user));
-
         }
 
         [HttpPut]
@@ -193,12 +185,11 @@ namespace Evopeons.API.Controllers
         public async Task<ActionResult> CountUser()
         {
             var x = userManager.Users.Count();
-            return Ok( x );
+            return Ok(x);
         }
 
         public async Task SendConfirmationEmailAmazon(ApplicationUser user)
         {
-
             string BODY = Resources.ConfirmEmail;
             string code = await userManager.GenerateEmailConfirmationTokenAsync(user);
             var callbackUrl = Url.Action(

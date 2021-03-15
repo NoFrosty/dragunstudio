@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Evopeons.API.Articles;
 using Microsoft.AspNetCore.Authorization;
-using Evopeons.API.Articles;
+using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Threading.Tasks;
 
 namespace Evopeons.API.Controllers
 {
@@ -13,11 +11,13 @@ namespace Evopeons.API.Controllers
     [ApiController]
     public class ArticleController : ControllerBase
     {
-        readonly ArticleManager articleManager;
+        private readonly ArticleManager articleManager;
+
         public ArticleController(ArticleManager articleManager)
         {
             this.articleManager = articleManager;
         }
+
         [AllowAnonymous]
         [HttpGet("{slug}")]
         public async Task<ActionResult> GetArticle(Guid slug)
@@ -27,7 +27,6 @@ namespace Evopeons.API.Controllers
                 return NotFound();
             return Ok(item);
         }
-
 
         [HttpPost]
         public async Task<ActionResult> Post([FromBody] Article article)

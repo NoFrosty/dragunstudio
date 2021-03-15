@@ -1,7 +1,5 @@
 ﻿using Dapper.Contrib.Extensions;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Evorine.EvoPackageManager.DataObjects
 {
@@ -10,6 +8,7 @@ namespace Evorine.EvoPackageManager.DataObjects
     {
         [ExplicitKey]
         public Guid ActionId { get; set; }
+
         public Guid SourceFileId { get; set; }
         public Guid DestinationFileId { get; set; }
     }

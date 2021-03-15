@@ -1,20 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using Dapper;
+﻿using Dapper;
 using Dapper.Contrib.Extensions;
 using Evorine.EvoPackageManager;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Evopeons.API.Articles
 {
     public class ArticleDataAccess
     {
-        readonly ConnectionFactory connectionFactory;
+        private readonly ConnectionFactory connectionFactory;
 
         public ArticleDataAccess(ConnectionFactory connectionFactory)
         {
             this.connectionFactory = connectionFactory;
         }
+
         public async Task<IEnumerable<Article>> GetAllArticles(bool includeNotPublished)
         {
             using (var connection = connectionFactory.AcquireConnection())

@@ -7,6 +7,7 @@ namespace Evopeons.API.Articles
     public class ArticleManager
     {
         private readonly ArticleDataAccess articleDataAccess;
+
         public ArticleManager(ArticleDataAccess articleDataAccess)
         {
             this.articleDataAccess = articleDataAccess;
@@ -29,14 +30,12 @@ namespace Evopeons.API.Articles
 
         public async void DeleteArticle(string slug)
         {
-           await articleDataAccess.DeleteArticle(slug);
+            await articleDataAccess.DeleteArticle(slug);
         }
 
         public async Task<IEnumerable<Article>> GetAllArticleByApplication(Guid applicationId, bool includeNotPublished)
         {
             return await articleDataAccess.GetAllArticlesByApplication(applicationId, includeNotPublished);
         }
-
-        
     }
 }

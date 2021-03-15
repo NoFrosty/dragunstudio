@@ -8,6 +8,7 @@ namespace Evorine.EvoPackageManager.DataObjects
     {
         [ExplicitKey]
         public Guid ApplicationId { get; set; }
+
         public string Name { get; set; }
         public bool IsPublished { get; set; }
         public bool InMaintenance { get; set; }

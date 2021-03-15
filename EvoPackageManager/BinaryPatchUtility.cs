@@ -1,9 +1,6 @@
 ﻿using ICSharpCode.SharpZipLib.BZip2;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.IO.Compression;
-using System.Text;
 
 namespace Evorine.EvoPackageManager
 {
@@ -13,7 +10,7 @@ namespace Evorine.EvoPackageManager
 	Copyright 2003-2005 Colin Percival
 	All rights reserved
 	Redistribution and use in source and binary forms, with or without
-	modification, are permitted providing that the following conditions 
+	modification, are permitted providing that the following conditions
 	are met:
 	1. Redistributions of source code must retain the above copyright
 		notice, this list of conditions and the following disclaimer.
@@ -32,6 +29,7 @@ namespace Evorine.EvoPackageManager
 	IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 	POSSIBILITY OF SUCH DAMAGE.
 	*/
+
     public static class BinaryPatchUtility
     {
         /// <summary>
@@ -82,7 +80,7 @@ namespace Evorine.EvoPackageManager
             int dblen = 0;
             int eblen = 0;
 
-            using (BZip2OutputStream  bz2Stream = new BZip2OutputStream(output) { IsStreamOwner = false })
+            using (BZip2OutputStream bz2Stream = new BZip2OutputStream(output) { IsStreamOwner = false })
             {
                 // compute the differences, writing ctrl as we go
                 int scan = 0;
@@ -194,7 +192,6 @@ namespace Evorine.EvoPackageManager
                 }
             }
 
-            
             // compute size of compressed ctrl data
             long controlEndPosition = output.Position;
             WriteInt64(controlEndPosition - startPosition - c_headerSize, header, 8);
@@ -652,7 +649,7 @@ namespace Evorine.EvoPackageManager
             }
         }
 
-        const long c_fileSignature = 0x3034464649445342L;
-        const int c_headerSize = 32;
+        private const long c_fileSignature = 0x3034464649445342L;
+        private const int c_headerSize = 32;
     }
 }

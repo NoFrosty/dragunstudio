@@ -1,7 +1,6 @@
 ﻿using EvoPackageManager.Models;
 using Evorine.EvoPackageManager.Actions;
 using Evorine.EvoPackageManager.DataObjects;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -13,8 +12,8 @@ namespace Evorine.EvoPackageManager
 {
     public class PackageManager
     {
-        readonly PackageManagerSettings settings;
-        readonly DataAccess dataAccess;
+        private readonly PackageManagerSettings settings;
+        private readonly DataAccess dataAccess;
 
         public PackageManager(PackageManagerSettings settings, DataAccess dataAccess)
         {
@@ -78,6 +77,7 @@ namespace Evorine.EvoPackageManager
         {
             return File.OpenRead(Path.Combine(GetCompressedFilesDirectoryPath(applicationId), fileId));
         }
+
         public Stream GetDiffStream(Guid applicationId, string diffId)
         {
             return File.OpenRead(Path.Combine(GetUpdatesDirectoryPath(applicationId), diffId));
@@ -86,7 +86,7 @@ namespace Evorine.EvoPackageManager
         public async Task<UpdateAction[]> GetUpdateAction(Guid? fromVersionId, Guid toVersionId)
         {
             return await dataAccess.GetUpdateAction(await dataAccess.GetUpdate(fromVersionId, toVersionId));
-            return await dataAccess.GetUpdateAction(fromVersionId,toVersionId);
+            return await dataAccess.GetUpdateAction(fromVersionId, toVersionId);
         }
 
         public async Task<DataObjects.UpdateActionCopyFile> GetUpdateActionCopy(Guid actionId)
@@ -235,7 +235,7 @@ namespace Evorine.EvoPackageManager
             await StoreUpdateManifest(updateManifest);
             return updateManifest;
         }
-        
+
         private List<PackageFileInfo> StoreVersionFiles(Guid applicationId, VersionInfo versionInfo, Stream zipStream)
         {
             List<PackageFileInfo> files = new List<PackageFileInfo>();
@@ -323,7 +323,6 @@ namespace Evorine.EvoPackageManager
                 FromVersionId = updateManifest.FromVersionId,
                 ToVersionId = updateManifest.ToVersionId,
                 Size = 0,
-
             };
             for (var i = 0; i < updateManifest.Actions.Length; i++)
             {
@@ -346,6 +345,7 @@ namespace Evorine.EvoPackageManager
                         };
                         await dataAccess.AddUpdateActionCopy(copyDO);
                         break;
+
                     case CreateFileAction action:
                         var createDO = new DataObjects.UpdateActionCreateFile()
                         {
@@ -355,6 +355,7 @@ namespace Evorine.EvoPackageManager
                         update.Size += action.NewFile.CompressedSize;
                         await dataAccess.AddUpdateActionCreate(createDO);
                         break;
+
                     case DeleteFileAction action:
                         var deleteDO = new DataObjects.UpdateActionDeleteFile()
                         {
@@ -363,6 +364,7 @@ namespace Evorine.EvoPackageManager
                         };
                         await dataAccess.AddUpdateActionDelete(deleteDO);
                         break;
+
                     case UpdateFileAction action:
                         var updateDO = new DataObjects.UpdateActionUpdateFile()
                         {
@@ -375,6 +377,7 @@ namespace Evorine.EvoPackageManager
                         update.Size += action.DiffSize;
                         await dataAccess.AddUpdateActionUpdate(updateDO);
                         break;
+
                     default:
                         throw new NotImplementedException($"Not implemented kind of action: '{updateManifest.Actions[i].GetType()}'");
                 }
@@ -460,6 +463,7 @@ namespace Evorine.EvoPackageManager
 
             return (diffId, fi.Length);
         }
+
         public Task<IEnumerable<PackageFileInfo>> GetVersionFiles(Guid versionId)
         {
             return dataAccess.GetFiles(versionId);
@@ -484,7 +488,6 @@ namespace Evorine.EvoPackageManager
 
         public async Task UpdateApplicationPublishStatus(Guid applicationId, bool isPublished)
         {
-
             ApplicationInfo applicationInfo = GetApplication(applicationId).Result;
             applicationInfo.IsPublished = isPublished;
             await dataAccess.UpdateApplication(applicationInfo);
@@ -523,7 +526,6 @@ namespace Evorine.EvoPackageManager
         public string GetApplicationLogoPath(Guid applicationId)
         {
             return Path.Combine(GetMediaDirectoryPath(applicationId), "icon.png");
-        } 
-
+        }
     }
 }

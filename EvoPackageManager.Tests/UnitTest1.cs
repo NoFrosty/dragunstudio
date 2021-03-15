@@ -2,7 +2,6 @@ using Evorine.EvoPackageManager;
 using Evorine.EvoPackageManager.DataObjects;
 using Moq;
 using System;
-using System.Linq;
 using Xunit;
 
 namespace EvoPackageManager.Tests
@@ -14,10 +13,9 @@ namespace EvoPackageManager.Tests
         {
             var settings = new PackageManagerSettings()
             {
-                
-            };            
+            };
             var dataAccessMock = new Mock<DataAccess>();
-            dataAccessMock.Setup(x => x.InsertApplication(It.IsAny<ApplicationInfo>())).Callback<ApplicationInfo>(x => 
+            dataAccessMock.Setup(x => x.InsertApplication(It.IsAny<ApplicationInfo>())).Callback<ApplicationInfo>(x =>
             {
                 x.ApplicationId = Guid.NewGuid();
             });
@@ -25,7 +23,7 @@ namespace EvoPackageManager.Tests
             var packageManager = new PackageManager(settings, dataAccessMock.Object);
 
             var applicationInfo = packageManager.CreateApplication("Warcraft IV").Result;
-            
+
             Assert.NotEqual(default(Guid), applicationInfo.ApplicationId);
             Assert.Equal("Warcraft IV", applicationInfo.Name);
             Assert.False(applicationInfo.IsPublished);

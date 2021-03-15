@@ -3,10 +3,7 @@ using Dapper.Contrib.Extensions;
 using Evopeons.API.Models;
 using Evorine.EvoPackageManager;
 using Microsoft.AspNetCore.Identity;
-using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -14,7 +11,7 @@ namespace Evopeons.API.Identity
 {
     public class RoleStore : IRoleStore<ApplicationRole>
     {
-        readonly ConnectionFactory connectionFactory;
+        private readonly ConnectionFactory connectionFactory;
 
         public RoleStore(ConnectionFactory connectionFactory)
         {
@@ -55,7 +52,7 @@ namespace Evopeons.API.Identity
 
             using (IDbConnection connection = connectionFactory.AcquireConnection())
             {
-                return await connection.QuerySingleOrDefaultAsync<ApplicationRole>("SELECT * FROM UserRoles WHERE Id = '"+ roleId + "'");
+                return await connection.QuerySingleOrDefaultAsync<ApplicationRole>("SELECT * FROM UserRoles WHERE Id = '" + roleId + "'");
             }
         }
 

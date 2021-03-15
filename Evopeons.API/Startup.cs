@@ -1,20 +1,19 @@
-﻿using Evopeons.API.Entities;
+﻿using Evopeons.API.Articles;
+using Evopeons.API.Entities;
 using Evopeons.API.Identity;
 using Evopeons.API.Models;
 using Evorine.EvoPackageManager;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.IdentityModel.Tokens;
 using Microsoft.Extensions.Hosting;
-using Microsoft.AspNetCore.Authorization;
-using System;
-using Evopeons.API.Articles;
 using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Tokens;
+using System;
 
 namespace Evopeons.API
 {
@@ -25,7 +24,7 @@ namespace Evopeons.API
             Configuration = configuration;
         }
 
-        readonly string MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
+        private readonly string MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 
         public IConfiguration Configuration { get; }
 
@@ -75,7 +74,6 @@ namespace Evopeons.API
                     RequireExpirationTime = true,
                     ClockSkew = TimeSpan.Zero
                 };
-                
             });
             services.AddAuthorization(options =>
             {
@@ -85,7 +83,6 @@ namespace Evopeons.API
 
             services.AddIdentity<ApplicationUser, ApplicationRole>(options =>
             {
-
             }).AddDefaultTokenProviders();
 
             services.AddCors(options =>

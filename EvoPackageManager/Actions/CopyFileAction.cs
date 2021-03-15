@@ -1,7 +1,4 @@
 ﻿using Evorine.EvoPackageManager.DataObjects;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Evorine.EvoPackageManager.Actions
 {

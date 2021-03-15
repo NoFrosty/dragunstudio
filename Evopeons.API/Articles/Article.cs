@@ -8,9 +8,12 @@ namespace Evopeons.API.Articles
     {
         [ExplicitKey]
         public Guid ArticleId { get; set; }
+
         public Guid ApplicationID { get; set; }
+
         //Unique Slug (link of the article)
         public string Slug { get; set; }
+
         public string Title { get; set; }
         public string Content { get; set; }
         public DateTime PublishDate { get; set; }

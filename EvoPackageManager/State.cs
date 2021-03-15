@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Evorine.EvoPackageManager
+﻿namespace Evorine.EvoPackageManager
 {
     public enum State
     {

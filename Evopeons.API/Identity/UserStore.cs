@@ -1,10 +1,8 @@
 ﻿using Dapper;
 using Dapper.Contrib.Extensions;
 using Evopeons.API.Entities;
-using Evopeons.API.Models;
 using Evorine.EvoPackageManager;
 using Microsoft.AspNetCore.Identity;
-using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
@@ -16,16 +14,14 @@ namespace Evopeons.API.Identity
     public class UserStore : IUserStore<ApplicationUser>, IUserEmailStore<ApplicationUser>,
     IUserTwoFactorStore<ApplicationUser>, IUserPasswordStore<ApplicationUser>, IQueryableUserStore<ApplicationUser>
     {
-        readonly ConnectionFactory connectionFactory;
+        private readonly ConnectionFactory connectionFactory;
 
-        public IQueryable<ApplicationUser> Users => (connectionFactory.AcquireConnection() as IDbConnection).GetAll<ApplicationUser>().AsQueryable(); 
+        public IQueryable<ApplicationUser> Users => (connectionFactory.AcquireConnection() as IDbConnection).GetAll<ApplicationUser>().AsQueryable();
 
         public UserStore(ConnectionFactory connectionFactory)
         {
             this.connectionFactory = connectionFactory;
         }
-
-
 
         public async Task<IdentityResult> CreateAsync(ApplicationUser user, CancellationToken cancellationToken)
         {
@@ -47,7 +43,6 @@ namespace Evopeons.API.Identity
             }
             return IdentityResult.Success;
         }
-
 
         public async Task<ApplicationUser> FindByEmailAsync(string normalizedEmail, CancellationToken cancellationToken)
         {
@@ -159,7 +154,6 @@ namespace Evopeons.API.Identity
             return Task.CompletedTask;
         }
 
-
         public Task SetTwoFactorEnabledAsync(ApplicationUser user, bool enabled, CancellationToken cancellationToken)
         {
             user.TwoFactorEnabled = enabled;
@@ -183,9 +177,9 @@ namespace Evopeons.API.Identity
 
             return IdentityResult.Success;
         }
+
         public void Dispose()
         {
-
         }
     }
 }

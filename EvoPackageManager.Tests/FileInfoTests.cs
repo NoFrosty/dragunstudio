@@ -1,6 +1,5 @@
 using Evorine.EvoPackageManager;
 using Evorine.EvoPackageManager.DataObjects;
-using Moq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -52,7 +51,7 @@ namespace EvoPackageManager.Tests
 
             var result = FileInfoUtilities.GetCopyFiles(fromFiles, toFiles);
             Assert.Equal(result.Keys.Select(x => x.FileName), expecteds.Keys);
-            foreach(var copy in expecteds)
+            foreach (var copy in expecteds)
             {
                 var resultKey = result.Keys.First(x => x.FileName == copy.Key);
                 Assert.Equal(copy.Value, result[resultKey].Select(x => x.FileName));
@@ -93,14 +92,13 @@ namespace EvoPackageManager.Tests
         {
             var (fromFiles, toFiles) = GetDemoFiles();
             var expected = (
-                fromFiles.First(x => x.FileName == "ToUpdate.txt"), 
+                fromFiles.First(x => x.FileName == "ToUpdate.txt"),
                 toFiles.First(x => x.FileName == "ToUpdate.txt"));
 
             var result = FileInfoUtilities.GetUpdateFiles(fromFiles, toFiles).First();
             Assert.Equal(expected.Item1, result.Item1);
             Assert.Equal(expected.Item2, result.Item2);
         }
-
 
         [Fact]
         public void UpdateManifestTest()
@@ -111,6 +109,5 @@ namespace EvoPackageManager.Tests
             //var actions = packageManager.CalculateFileActions(fromFiles, toFiles);
             throw new NotImplementedException("Where are the asserts?");
         }
-
     }
 }

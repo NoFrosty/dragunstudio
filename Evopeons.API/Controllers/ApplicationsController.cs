@@ -1,5 +1,4 @@
-﻿using EvoPackageManager.Models;
-using Evopeons.API.Articles;
+﻿using Evopeons.API.Articles;
 using Evopeons.API.Models;
 using Evorine.EvoPackageManager;
 using Evorine.EvoPackageManager.DataObjects;
@@ -8,7 +7,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -21,6 +19,7 @@ namespace Evopeons.API.Controllers
     {
         private readonly PackageManager packageManager;
         private readonly ArticleManager articleManager;
+
         public ApplicationsController(PackageManager packageManager, ArticleManager articleManager)
         {
             this.packageManager = packageManager;
@@ -29,7 +28,7 @@ namespace Evopeons.API.Controllers
 
         [AllowAnonymous]
         [HttpGet]
-        public async Task<IActionResult> GetApplications([FromQuery]bool includeHiddens = false, [FromQuery]bool extended = false)
+        public async Task<IActionResult> GetApplications([FromQuery] bool includeHiddens = false, [FromQuery] bool extended = false)
         {
             if (!extended)
             {
@@ -43,7 +42,7 @@ namespace Evopeons.API.Controllers
 
         [AllowAnonymous]
         [HttpGet("{applicationId}")]
-        public async Task<IActionResult> GetApplication(Guid applicationId, [FromQuery]bool extended = false)
+        public async Task<IActionResult> GetApplication(Guid applicationId, [FromQuery] bool extended = false)
         {
             if (!extended)
             {
@@ -62,18 +61,17 @@ namespace Evopeons.API.Controllers
             return PhysicalFile(packageManager.GetApplicationLogoPath(applicationId), "image/png");
         }
 
-
         [AllowAnonymous]
         [HttpPost("{applicationId}/icon")]
         public IActionResult UpdateApplicationLogo(Guid applicationId, IFormFile icon)
         {
             packageManager.UpdateApplicationLogo(applicationId, icon.OpenReadStream());
-            return Ok(); 
+            return Ok();
         }
 
         [AllowAnonymous]
         [HttpGet("{applicationID}/articles")]
-        public async Task<IEnumerable<Article>> GetArticles(Guid applicationId, [FromQuery]bool? includeNotPublished = true, [FromQuery]int? firstN = null)
+        public async Task<IEnumerable<Article>> GetArticles(Guid applicationId, [FromQuery] bool? includeNotPublished = true, [FromQuery] int? firstN = null)
         {
             IEnumerable<Article> articles;
             if (User.IsInRole("Administrators"))
@@ -131,10 +129,13 @@ namespace Evopeons.API.Controllers
         {
             return Ok(packageManager.AddPlatformToApplication(applicationId, addPlatformApplicationModel.OperatingSystem, addPlatformApplicationModel.ExecutablePath));
         }
-        public class ModelGuid{ 
+
+        public class ModelGuid
+        {
             public Guid FromVersion { get; set; }
             public Guid ToVersion { get; set; }
         }
+
         [HttpPost("{applicationId}/update")]
         public async Task<IActionResult> AddNewUpdateBetweenVersions(Guid applicationId, ModelGuid model)
         {
@@ -142,7 +143,7 @@ namespace Evopeons.API.Controllers
         }
 
         [HttpPost("{applicationId}/version")]
-        public async Task<IActionResult> CreateVersion(Guid applicationId, [FromForm]string newVersion, [FromForm]OSType operatingSystem, IFormFile zip)
+        public async Task<IActionResult> CreateVersion(Guid applicationId, [FromForm] string newVersion, [FromForm] OSType operatingSystem, IFormFile zip)
         {
             return Ok(await packageManager.CreateVersion(applicationId, newVersion, operatingSystem, zip.OpenReadStream()));
         }
@@ -163,7 +164,5 @@ namespace Evopeons.API.Controllers
             return await packageManager.GetApplications(inMaintenance);
         }
         */
-
-
     }
 }

@@ -1,9 +1,7 @@
-﻿using Evorine.EvoPackageManager;
+﻿using Dapper.Contrib.Extensions;
+using Evorine.EvoPackageManager;
 using System;
 using System.IO;
-using Dapper;
-using Dapper.Contrib.Extensions;
-using System.Data;
 
 namespace EvoPackageManagerDemo
 {
@@ -12,13 +10,14 @@ namespace EvoPackageManagerDemo
     {
         [ExplicitKey]
         public Guid SomeId { get; set; }
+
         public int SomeNum { get; set; }
         public bool SomethingElse { get; set; }
     }
 
-    class Program
+    internal class Program
     {
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
             var settings = new PackageManagerSettings()
             {
@@ -36,22 +35,19 @@ namespace EvoPackageManagerDemo
             {
                 var version = packageManager.CreateVersion(applicationInfo.ApplicationId, "v1", OSType.Windows, stream).Result;
             }
-            
+
             using (var stream = File.OpenRead(@"C:\Users\Calvi\Desktop\Test\TestFile\Sample1-V2.zip"))
             {
                 packageManager.CreateVersion(applicationInfo.ApplicationId, "v2", OSType.Windows, stream).Wait();
-
             }
-            
+
             using (var stream = File.OpenRead(@"C:\Users\Calvi\Desktop\Test\TestFile\Sample1-V3.zip"))
             {
                 packageManager.CreateVersion(applicationInfo.ApplicationId, "v3", OSType.Windows, stream).Wait();
-
             }
             using (var stream = File.OpenRead(@"C:\Users\Calvi\Desktop\Test\TestFile\Sample1-V4.zip"))
             {
                 packageManager.CreateVersion(applicationInfo.ApplicationId, "v4", OSType.Windows, stream).Wait();
-
             }
             packageManager.UpdateApplicationPublishStatus(applicationInfo.ApplicationId, true).Wait();
         }

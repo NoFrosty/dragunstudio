@@ -1,5 +1,4 @@
 ﻿using Dapper.Contrib.Extensions;
-using Microsoft.AspNetCore.Identity;
 using System;
 
 namespace Evopeons.API.Entities
@@ -9,6 +8,7 @@ namespace Evopeons.API.Entities
     {
         [ExplicitKey]
         public Guid UserId { get; set; }
+
         public string Email { get; set; }
         public string EmailNormalized { get; set; }
         public bool EmailConfirmed { get; set; }
@@ -17,8 +17,6 @@ namespace Evopeons.API.Entities
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string PasswordHash { get; set; }
-
-
 
         public DateTime Birthday { get; set; }
         public DateTime LastLoginDate { get; set; }

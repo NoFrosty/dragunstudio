@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace Evopeons.API.Controllers
@@ -15,6 +14,7 @@ namespace Evopeons.API.Controllers
     public class FilesController : ControllerBase
     {
         private readonly PackageManager packageManager;
+
         public FilesController(PackageManager packageManager)
         {
             this.packageManager = packageManager;

@@ -8,6 +8,7 @@ namespace Evorine.EvoPackageManager.DataObjects
     {
         [ExplicitKey]
         public Guid VersionId { get; set; }
+
         public Guid ApplicationId { get; set; }
         public string Version { get; set; }
         public int VersionOrder { get; set; }
