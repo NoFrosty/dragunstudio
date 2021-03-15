@@ -86,14 +86,7 @@ namespace Evopeons.API
 
             }).AddDefaultTokenProviders();
 
-            services.AddCors(options =>
-            {
-                options.AddDefaultPolicy(builder =>
-                    builder.WithOrigins("http://warp-dev.server.evorine.net:44357")
-                    .AllowAnyHeader()
-                    .AllowAnyMethod()
-                );
-            });
+            services.AddCors();
 
             services.AddMvc(options => options.EnableEndpointRouting = false);
 
@@ -115,7 +108,12 @@ namespace Evopeons.API
                 logger.LogWarning("In Release environment");
             }
 
-            app.UseCors();
+            app.UseCors(options =>
+            {
+                options.WithOrigins("http://warp-dev.server.evorine.net:44357")
+                    .AllowAnyHeader()
+                    .AllowAnyMethod();
+            });
             app.UseRouting();
             app.UseAuthentication();
             app.UseAuthorization();
