@@ -25,6 +25,8 @@ namespace Evopeons.API
             Configuration = configuration;
         }
 
+        private readonly string MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
+
         public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
@@ -88,7 +90,9 @@ namespace Evopeons.API
 
             services.AddCors(options =>
             {
-                options.AddDefaultPolicy(builder => {
+                options.AddPolicy(MyAllowSpecificOrigins,
+                builder =>
+                {
                     builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
                 });
 
@@ -111,7 +115,7 @@ namespace Evopeons.API
                 logger.LogWarning("In Release environment");
             }
 
-            app.UseCors();
+            app.UseCors(MyAllowSpecificOrigins);
             app.UseAuthentication();
             app.UseAuthorization();
 
