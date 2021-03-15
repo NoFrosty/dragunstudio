@@ -25,6 +25,8 @@ namespace Evopeons.API
             Configuration = configuration;
         }
 
+        readonly string MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
+
         public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
@@ -86,7 +88,14 @@ namespace Evopeons.API
 
             }).AddDefaultTokenProviders();
 
-            services.AddCors();
+            services.AddCors(options =>
+            {
+                options.AddPolicy(name: MyAllowSpecificOrigins,
+                    builder =>
+                    {
+                        builder.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin();
+                    });
+            });
 
             services.AddMvc(options => options.EnableEndpointRouting = false);
 
@@ -107,18 +116,13 @@ namespace Evopeons.API
                 app.UseHsts();
                 logger.LogWarning("In Release environment");
             }
+            app.UseHttpsRedirection();
 
-            app.UseCors(options =>
-            {
-                options.WithOrigins("http://warp-dev.server.evorine.net:44357", "http://localhost:8081", "http://localhost:8080")
-                    .AllowAnyHeader()
-                    .AllowAnyMethod();
-            });
             app.UseRouting();
             app.UseAuthentication();
+            app.UseCors(MyAllowSpecificOrigins);
             app.UseAuthorization();
 
-            app.UseHttpsRedirection();
             app.UseMvc();
         }
     }
