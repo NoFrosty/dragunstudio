@@ -27,7 +27,8 @@ namespace Evopeons.API
                     webBuilder
 #if RELEASE
                         .UseKestrel()
-                        .UseUrls("https://*:443", "http://*:80")
+                        //.UseUrls("https://*:443", "http://*:80")
+                        .UseUrls("http://*:80")
 #endif
                         .UseStartup<Startup>();
                 })
