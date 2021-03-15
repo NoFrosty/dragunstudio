@@ -110,7 +110,7 @@ namespace Evopeons.API
 
             app.UseCors(options =>
             {
-                options.WithOrigins("http://warp-dev.server.evorine.net:44357")
+                options.WithOrigins("http://warp-dev.server.evorine.net:44357", "http://localhost:8081", "http://localhost:8080")
                     .AllowAnyHeader()
                     .AllowAnyMethod();
             });
