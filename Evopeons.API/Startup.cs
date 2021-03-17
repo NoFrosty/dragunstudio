@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -85,6 +86,12 @@ namespace Evopeons.API
             {
             }).AddDefaultTokenProviders();
 
+            services.Configure<FormOptions>(options =>
+            {
+                options.MultipartBodyLengthLimit = 53687063712;
+
+            });
+
             services.AddCors(options =>
             {
                 options.AddPolicy(name: MyAllowSpecificOrigins,
@@ -113,11 +120,11 @@ namespace Evopeons.API
                 app.UseHsts();
                 logger.LogWarning("In Release environment");
             }
+            app.UseCors(MyAllowSpecificOrigins);
             app.UseHttpsRedirection();
 
             app.UseRouting();
             app.UseAuthentication();
-            app.UseCors(MyAllowSpecificOrigins);
             app.UseAuthorization();
 
             app.UseMvc();

@@ -143,11 +143,11 @@ namespace Evopeons.API.Controllers
         }
 
         [HttpPost("{applicationId}/version")]
-        public async Task<IActionResult> CreateVersion(Guid applicationId, [FromForm] string newVersion, [FromForm] OSType operatingSystem, IFormFile zip)
+        public async Task<IActionResult> CreateVersion(Guid applicationId, [FromForm] VersionCreateModel versionCreateModel)
         {
-            return Ok(await packageManager.CreateVersion(applicationId, newVersion, operatingSystem, zip.OpenReadStream()));
+            return Ok(await packageManager.CreateVersion(applicationId, versionCreateModel.NewVersion, versionCreateModel.OperatingSystem, versionCreateModel.ZipStream.OpenReadStream()));
         }
-
+        
         [HttpPut("{applicationId}/version/{versionId}")]
         public IActionResult UpdateVersion(VersionInfo version)
         {
