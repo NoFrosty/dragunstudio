@@ -515,7 +515,7 @@ namespace Evorine.EvoPackageManager
 
         private string GetMediaDirectoryPath(Guid applicationId)
         {
-            return Path.Combine(settings.RootPath, "Media", applicationId.ToString());
+            return Path.Combine(settings.RootPath, applicationId.ToString(), "Media");
         }
 
         private string GetPackagesFilePath(Guid applicationId, PackageFileInfo file)
