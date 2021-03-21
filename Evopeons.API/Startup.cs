@@ -14,6 +14,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using System;
 
 namespace Evopeons.API
@@ -101,6 +102,12 @@ namespace Evopeons.API
                     });
             });
 
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Evorine API", Version = "v1" });
+            });
+
+
             services.AddMvc(options => options.EnableEndpointRouting = false);
 
             services.AddControllers();
@@ -122,6 +129,15 @@ namespace Evopeons.API
             }
             app.UseCors(MyAllowSpecificOrigins);
             //app.UseHttpsRedirection();
+
+            // Enable middleware to serve generated Swagger as a JSON endpoint.
+            app.UseSwagger();
+            // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.),
+            // specifying the Swagger JSON endpoint.
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Evorine API V1");
+            });
 
             app.UseRouting();
             app.UseAuthentication();

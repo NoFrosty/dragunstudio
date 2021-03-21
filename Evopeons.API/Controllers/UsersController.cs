@@ -158,7 +158,7 @@ namespace Evopeons.API.Controllers
             return Ok(await userManager.UpdateAsync(userModel));
         }
 
-        public string NormalizeString(string value)
+        private string NormalizeString(string value)
         {
             return char.ToUpper(value[0]) + value.Substring(1).ToLower();
         }
@@ -188,7 +188,7 @@ namespace Evopeons.API.Controllers
             return Ok(x);
         }
 
-        public async Task SendConfirmationEmailAmazon(ApplicationUser user)
+        private async Task SendConfirmationEmailAmazon(ApplicationUser user)
         {
             string BODY = Resources.ConfirmEmail;
             string code = await userManager.GenerateEmailConfirmationTokenAsync(user);
