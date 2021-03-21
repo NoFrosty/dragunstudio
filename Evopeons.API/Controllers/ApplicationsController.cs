@@ -156,9 +156,9 @@ namespace Evopeons.API.Controllers
                 {
                     await versionCreateModel.ZipStream.CopyToAsync(stream);
                 }
-                await packageManager.CreateVersion(applicationId, versionCreateModel.NewVersion, versionCreateModel.OperatingSystem, filePath);
+                return Ok(await packageManager.CreateVersion(applicationId, versionCreateModel.NewVersion, versionCreateModel.OperatingSystem, filePath));
             }
-            return Ok(await packageManager.CreateVersion(applicationId, versionCreateModel.NewVersion, versionCreateModel.OperatingSystem, versionCreateModel.ZipStream.OpenReadStream()));
+            return Problem("Zip stream got a problem");
         }
         
         [HttpPut("{applicationId}/version/{versionId}")]
