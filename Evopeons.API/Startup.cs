@@ -121,7 +121,7 @@ namespace Evopeons.API
                 logger.LogWarning("In Release environment");
             }
             app.UseCors(MyAllowSpecificOrigins);
-            app.UseHttpsRedirection();
+            //app.UseHttpsRedirection();
 
             app.UseRouting();
             app.UseAuthentication();
