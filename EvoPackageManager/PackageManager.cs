@@ -181,6 +181,51 @@ namespace Evorine.EvoPackageManager
             return await dataAccess.GetFile(fileId);
         }
 
+        public async Task<VersionInfo> CreateVersion(Guid applicationId, string newVersion, OSType operatingSystem, string zipPath)
+        {
+            if (newVersion == null) throw new ArgumentNullException(nameof(newVersion));
+            if (zipPath == null) throw new ArgumentNullException(nameof(zipPath));
+            if (!File.Exists(zipPath)) throw new FileNotFoundException(nameof(zipPath));
+
+
+            ApplicationInfo applicationInfo = await GetApplication(applicationId);
+            if (applicationInfo == null) throw new ArgumentNullException(nameof(applicationId));
+            IEnumerable<VersionInfo> currentVersions = await GetVersions(applicationId);
+            if (currentVersions != null && currentVersions.Any(x => x.Version.Equals(newVersion, StringComparison.OrdinalIgnoreCase)))
+            {
+                throw new ArgumentException($"A release with version '{newVersion}' already exists!", nameof(newVersion));
+            }
+
+            var fromVersion = currentVersions.SingleOrDefault(x => x.VersionOrder == currentVersions.Max(y => y.VersionOrder));
+
+            VersionInfo newVersionInfo = new VersionInfo()
+            {
+                VersionId = Guid.NewGuid(),
+                Version = newVersion,
+                ApplicationId = applicationId,
+                IsReleased = false,
+                VersionOrder = (fromVersion?.VersionOrder ?? 0) + 1,
+                ReleaseDate = null,
+                OperatingSystem = operatingSystem
+            };
+
+            using(Stream stream = File.OpenRead(zipPath))
+            {
+                var versionFiles = StoreVersionFiles(applicationId, newVersionInfo, stream);
+                await dataAccess.AddFiles(versionFiles);
+            }
+
+            await dataAccess.AddVersion(newVersionInfo);
+            //UpdateManifest updateManifest = await CalculateUpdate(applicationInfo, fromVersion, newVersionInfo);
+            UpdateManifest freshInstallationManifest = await CalculateUpdate(applicationInfo, null, newVersionInfo);
+            //await StoreUpdateManifest(updateManifest);
+            await StoreUpdateManifest(freshInstallationManifest);
+
+            File.Delete(zipPath);
+
+            return newVersionInfo;
+        }
+
         public async Task<VersionInfo> CreateVersion(Guid applicationId, string newVersion, OSType operatingSystem, Stream zipStream)
         {
             if (newVersion == null) throw new ArgumentNullException(nameof(newVersion));

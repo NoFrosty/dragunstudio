@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -19,11 +20,13 @@ namespace Evopeons.API.Controllers
     {
         private readonly PackageManager packageManager;
         private readonly ArticleManager articleManager;
+        private readonly PackageManagerSettings settings;
 
-        public ApplicationsController(PackageManager packageManager, ArticleManager articleManager)
+        public ApplicationsController(PackageManager packageManager, ArticleManager articleManager, PackageManagerSettings settings)
         {
             this.packageManager = packageManager;
             this.articleManager = articleManager;
+            this.settings = settings;
         }
 
         [AllowAnonymous]
@@ -145,6 +148,16 @@ namespace Evopeons.API.Controllers
         [HttpPost("{applicationId}/version")]
         public async Task<IActionResult> CreateVersion(Guid applicationId, [FromForm] VersionCreateModel versionCreateModel)
         {
+            if (versionCreateModel.ZipStream.Length > 0)
+            {
+                var filePath = Path.Combine(GetTempDirectoryPath(), applicationId.ToString(), "_", Path.GetTempFileName());
+
+                using (FileStream stream = System.IO.File.Create(filePath))
+                {
+                    await versionCreateModel.ZipStream.CopyToAsync(stream);
+                }
+                await packageManager.CreateVersion(applicationId, versionCreateModel.NewVersion, versionCreateModel.OperatingSystem, filePath);
+            }
             return Ok(await packageManager.CreateVersion(applicationId, versionCreateModel.NewVersion, versionCreateModel.OperatingSystem, versionCreateModel.ZipStream.OpenReadStream()));
         }
         
@@ -164,5 +177,11 @@ namespace Evopeons.API.Controllers
             return await packageManager.GetApplications(inMaintenance);
         }
         */
+
+        private string GetTempDirectoryPath()
+        {
+            return Path.Combine(settings.RootPath, "TempUploadVersion");
+        }
+
     }
 }
