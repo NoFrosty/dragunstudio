@@ -104,7 +104,7 @@ namespace Evopeons.API
 
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Evorine API", Version = "v1" });
+                c.SwaggerDoc("v2", new OpenApiInfo { Title = "Evorine API", Version = "v2" });
             });
 
 
@@ -136,7 +136,7 @@ namespace Evopeons.API
             // specifying the Swagger JSON endpoint.
             app.UseSwaggerUI(c =>
             {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Evorine API V1");
+                c.SwaggerEndpoint("/swagger/v2/swagger.json", "Evorine API V2");
             });
 
             app.UseRouting();
