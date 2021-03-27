@@ -172,14 +172,34 @@ namespace Evopeons.API.Controllers
         /// <returns>Return the new user represented by <see cref="IdentityResult"/></returns>
         [HttpPut]
         [ProducesResponseType(typeof(IdentityResult), 200)]
-        public async Task<IActionResult> UpdateUser(ApplicationUser userModel)
+        public async Task<IActionResult> UpdateUser(UpdateUserModel userModel)
         {
-            if (string.IsNullOrWhiteSpace(userModel.UserId.ToString())) return Problem("A user without an UserId can't be updated.");
-            ApplicationUser user = await userManager.FindByIdAsync(userModel.UserId.ToString());
-            userModel.PasswordHash = user.PasswordHash;
-            userModel.UsernameNormalized = userManager.NormalizeName(userModel.Username);
-            userModel.EmailNormalized = userManager.NormalizeEmail(userModel.Email);
-            return Ok(await userManager.UpdateAsync(userModel));
+            ApplicationUser user = await userManager.FindByIdAsync(userModel.Email);
+            if (user == null) return Problem("User doesn't exist");
+            user.Username = userModel.Username;
+            user.Email = userModel.Email;
+            user.Username = userModel.Username;
+            user.FirstName = userModel.FirstName;
+            user.LastName = userModel.LastName;
+            user.Birthday = userModel.Birthday;
+            user.Country = userModel.Country;
+            user.UsernameNormalized = userManager.NormalizeName(userModel.Username);
+            user.EmailNormalized = userManager.NormalizeEmail(userModel.Email);
+            return Ok(await userManager.UpdateAsync(user));
+        }
+
+        /// <summary>
+        /// Update user password associated with specified <paramref name="updateUserPasswordModel"/>.UserId.
+        /// </summary>
+        /// <param name="updateUserPasswordModel">New user data</param>
+        /// <returns>Return the new user represented by <see cref="IdentityResult"/></returns>
+        [HttpPut]
+        [ProducesResponseType(typeof(IdentityResult), 200)]
+        public async Task<IActionResult> UpdateUserPassword(UpdateUserPasswordModel updateUserPasswordModel)
+        {
+            ApplicationUser user = await userManager.FindByIdAsync(updateUserPasswordModel.UserID.ToString());
+            if (user == null) return Problem("User doesn't exist");
+            return Ok(await userManager.ChangePasswordAsync(user, updateUserPasswordModel.CurrentPassword, updateUserPasswordModel.NewPassword));
         }
 
         private string NormalizeString(string value)
