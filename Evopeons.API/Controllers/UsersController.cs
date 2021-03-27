@@ -193,7 +193,7 @@ namespace Evopeons.API.Controllers
         /// </summary>
         /// <param name="updateUserPasswordModel">New user data</param>
         /// <returns>Return the new user represented by <see cref="IdentityResult"/></returns>
-        [HttpPut]
+        [HttpPut("password")]
         [ProducesResponseType(typeof(IdentityResult), 200)]
         public async Task<IActionResult> UpdateUserPassword(UpdateUserPasswordModel updateUserPasswordModel)
         {
