@@ -29,6 +29,10 @@ namespace Evopeons.API.Controllers
             this.applicationSettings = applicationSettings;
         }
 
+        /// <summary>
+        /// Gets all Users.
+        /// </summary>
+        /// <returns>Returns a collection of <see cref="GetUserAccountResult"/>.</returns>
         [AllowAnonymous]
         [HttpGet]
         public async Task<IEnumerable<GetUserAccountResult>> GetAllUsers()
@@ -48,14 +52,21 @@ namespace Evopeons.API.Controllers
                     CreationDate = user.CreationDate,
                     LastLoginDate = user.LastLoginDate,
                     UserId = user.UserId,
-                    AccountStatus = user.AccountStatus
+                    AccountStatus = user.AccountStatus,
                 };
                 users.Add(u);
             }
             return users;
         }
 
+        /// <summary>
+        /// Get the user associated with specified <paramref name="userId"/>.
+        /// </summary>
+        /// <param name="userId">The unique user ID.</param>
+        /// <returns>Return <see cref="GetUserAccountResult"/>.</returns>
         [HttpGet("{userId}")]
+        [ProducesResponseType(typeof(GetUserAccountResult), 200)]
+        [ProducesResponseType(404)]
         public async Task<ActionResult<GetUserAccountResult>> GetUser(Guid userId)
         {
             ApplicationUser user = await userManager.FindByIdAsync(userId.ToString());
@@ -82,9 +93,14 @@ namespace Evopeons.API.Controllers
             return Ok(userResult);
         }
 
+        /// <summary>
+        /// Create the specified user.
+        /// </summary>
+        /// <param name="userModel">Specified user to create.</param>
+        /// <returns>Return a <see cref="CreateUserResult"/> that represent the status of the operation.</returns>
         [AllowAnonymous]
-        // POST api/values
         [HttpPost]
+        [ProducesResponseType(typeof(CreateUserResult), 200)]
         public async Task<CreateUserResult> RegisterNewUser([FromBody] CreateUserModel userModel)
         {
             ApplicationUser userByEmail = await userManager.FindByEmailAsync(userModel.Email);
@@ -113,7 +129,6 @@ namespace Evopeons.API.Controllers
                 TwoFactorEnabled = false,
                 Country = userModel.Country
             };
-            await SendConfirmationEmailAmazon(user);
 
             IdentityResult result;
             if (userByEmail != null)
@@ -126,6 +141,9 @@ namespace Evopeons.API.Controllers
             {
                 result = await userManager.CreateAsync(user, userModel.Password);
             }
+
+            await SendConfirmationEmailAmazon(user);
+
             return new CreateUserResult()
             {
                 IsSuccessfull = result.Succeeded,
@@ -147,7 +165,13 @@ namespace Evopeons.API.Controllers
             return Ok(userManager.UpdateAsync(user));
         }
 
+        /// <summary>
+        /// Update user associated with specified <paramref name="userModel"/>.UserId.
+        /// </summary>
+        /// <param name="userModel">New user data</param>
+        /// <returns>Return the new user represented by <see cref="IdentityResult"/></returns>
         [HttpPut]
+        [ProducesResponseType(typeof(IdentityResult), 200)]
         public async Task<IActionResult> UpdateUser(ApplicationUser userModel)
         {
             if (string.IsNullOrWhiteSpace(userModel.UserId.ToString())) return Problem("A user without an UserId can't be updated.");
@@ -167,7 +191,7 @@ namespace Evopeons.API.Controllers
         [HttpGet("confirmation")]
         public async Task<ActionResult> ConfirmEmail(Guid userId, string code)
         {
-            if (userId == null || code == null)
+            if (userId == Guid.Empty || code == null)
             {
                 return BadRequest();
             }
