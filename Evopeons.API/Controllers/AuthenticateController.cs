@@ -39,7 +39,14 @@ namespace Evopeons.API.Controllers
             };
         }
 
+        /// <summary>
+        /// Sign in the user with specified user <paramref name="model"/>.
+        /// </summary>
+        /// <param name="model">The user email and password model.</param>
+        /// <returns>Return if sign in was succesfull, if it's succesfull, return also token and username.</returns>
         [HttpPost]
+        [ProducesResponseType(typeof(Models.SignInResult), 200)]
+        [ProducesResponseType(typeof(Models.SignInResult), 403)]
         public async Task<ObjectResult> SignIn(SignInModel model)
         {
             var user = await userManager.FindByEmailAsync(model.Email);
@@ -91,9 +98,12 @@ namespace Evopeons.API.Controllers
             });
         }
 
+        /// <summary>
+        /// Signs the current user out of the API.
+        /// </summary>
         [HttpPost]
         [Route("signout")]
-        public async Task SignOut()
+        public async void SignOut()
         {
             await signInManager.SignOutAsync();
             await HttpContext.SignOutAsync();
