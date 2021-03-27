@@ -1,4 +1,5 @@
-﻿using Evopeons.API.Articles;
+﻿using EvoPackageManager.Models;
+using Evopeons.API.Articles;
 using Evopeons.API.Models;
 using Evorine.EvoPackageManager;
 using Evorine.EvoPackageManager.DataObjects;
@@ -29,6 +30,12 @@ namespace Evopeons.API.Controllers
             this.settings = settings;
         }
 
+        /// <summary>
+        /// Gets all applications.
+        /// </summary>
+        /// <param name="includeHiddens">Determines if hidden applications will be included.</param>
+        /// <param name="extended">If <c>True</c> returns additional properties.</param>
+        /// <returns>Returns a collection of <see cref="ApplicationInfo"/> or <see cref="ApplicationViewModel"/> dependings on <paramref name="extended"/>.</returns>
         [AllowAnonymous]
         [HttpGet]
         public async Task<IActionResult> GetApplications([FromQuery] bool includeHiddens = false, [FromQuery] bool extended = false)
@@ -43,6 +50,12 @@ namespace Evopeons.API.Controllers
             }
         }
 
+        /// <summary>
+        /// Get the application associated with specified <paramref name="applicationId"/>.
+        /// </summary>
+        /// <param name="applicationId">The unique application ID.</param>
+        /// <param name="extended">If <c>True</c> returns additional properties.</param>
+        /// <returns>Return <see cref="ApplicationInfo"/> or <see cref="ApplicationViewModel"/> dependings on <paramref name="extended"/>.</returns>
         [AllowAnonymous]
         [HttpGet("{applicationId}")]
         public async Task<IActionResult> GetApplication(Guid applicationId, [FromQuery] bool extended = false)
@@ -57,6 +70,11 @@ namespace Evopeons.API.Controllers
             }
         }
 
+        /// <summary>
+        /// Get the application logo associated with specified <paramref name="applicationId"/>.
+        /// </summary>
+        /// <param name="applicationId">The unique application ID.</param>
+        /// <returns> Return the application Logo.</returns>
         [AllowAnonymous]
         [HttpGet("{applicationId}/icon")]
         public IActionResult GetApplicationLogo(Guid applicationId)
@@ -64,6 +82,13 @@ namespace Evopeons.API.Controllers
             return PhysicalFile(packageManager.GetApplicationLogoPath(applicationId), "image/png");
         }
 
+        /// <summary>
+        /// Update the application logo with specified <paramref name="applicationId"/>.
+        /// </summary>
+        /// <param name="applicationId">The unique application ID.</param>
+        /// <param name="icon"></param>
+        /// <returns>Returns ok.</returns>
+        /// <response code="200">Application logo succesfully updated.</response>
         [AllowAnonymous]
         [HttpPost("{applicationId}/icon")]
         public IActionResult UpdateApplicationLogo(Guid applicationId, IFormFile icon)
