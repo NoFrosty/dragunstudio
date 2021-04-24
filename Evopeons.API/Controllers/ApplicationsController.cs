@@ -176,7 +176,9 @@ namespace Evopeons.API.Controllers
         {
             if (versionCreateModel.ZipStream.Length > 0)
             {
-                var filePath = Path.Combine(GetTempDirectoryPath(), applicationId.ToString(), "_", Path.GetTempFileName());
+                string filePath = Path.Combine(GetTempDirectoryPath(), applicationId.ToString());
+                Directory.CreateDirectory(filePath);
+                filePath = Path.Combine(filePath, Path.GetTempFileName());
 
                 using (FileStream stream = System.IO.File.Create(filePath))
                 {
