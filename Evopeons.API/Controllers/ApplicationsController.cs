@@ -170,7 +170,6 @@ namespace Evopeons.API.Controllers
             return Ok(await packageManager.CreateVersion(applicationId, model.FromVersion, model.ToVersion));
         }
 
-        [DisableRequestSizeLimit]
         [HttpPost("{applicationId}/version")]
         public async Task<IActionResult> CreateVersion(Guid applicationId, [FromForm] VersionCreateModel versionCreateModel)
         {
