@@ -26,7 +26,7 @@ namespace Evopeons.API
 #if RELEASE
                         .UseKestrel(options =>
                         {
-                            options.Limits.MaxRequestBodySize = 53687063712; //50GB
+                            options.Limits.MaxRequestBodySize = int.MaxValue;
                         })
                         //.UseUrls("https://*:443", "http://*:80")
                         .UseUrls("http://*:80")
