@@ -171,6 +171,7 @@ namespace Evopeons.API.Controllers
         }
 
         [HttpPost("{applicationId}/version")]
+        [RequestSizeLimit(100_000_000_000)]
         public async Task<IActionResult> CreateVersion(Guid applicationId, [FromForm] VersionCreateModel versionCreateModel)
         {
             if (versionCreateModel.ZipStream.Length > 0)
