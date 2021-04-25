@@ -50,8 +50,9 @@ jobs:
         port: ${{ secrets.PORT }}
         script: echo ${{ secrets.PASSWORD }} | sudo -S systemctl start warp.service
         
-    - uses: actions/upload-artifact@v1
+    - uses: actions/upload-artifact@v2
       name: Publish Artifact
       with:
         name: launcher-server
         path: ./out
+        retention-days: 30
