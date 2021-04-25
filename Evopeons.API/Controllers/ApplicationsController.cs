@@ -174,7 +174,7 @@ namespace Evopeons.API.Controllers
         [HttpPost("{applicationId}/version")]
         [RequestSizeLimit(MaxFileSize)]
         [RequestFormLimits(MultipartBodyLengthLimit = MaxFileSize)]
-        public async Task<IActionResult> CreateVersion(Guid applicationId, [FromBody] VersionCreateModel versionCreateModel)
+        public async Task<IActionResult> CreateVersion(Guid applicationId, [FromForm] VersionCreateModel versionCreateModel)
         {
             if (versionCreateModel.ZipStream.Length > 0)
             {
