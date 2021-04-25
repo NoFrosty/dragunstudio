@@ -99,17 +99,14 @@ namespace Evopeons.API
                     });
             });
 
-#if RELEASE
             services.Configure<KestrelServerOptions>(options =>
             {
-                options.Limits.MaxRequestBodySize = int.MaxValue;
+                options.Limits.MaxRequestBodySize = 42949672940;
             });
-#else
             services.Configure<IISServerOptions>(options =>
             {
                 options.MaxRequestBodySize = 42949672940;
             });
-#endif
 
             services.Configure<FormOptions>(x =>
             {
