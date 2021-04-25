@@ -99,22 +99,6 @@ namespace Evopeons.API
                     });
             });
 
-            services.Configure<KestrelServerOptions>(options =>
-            {
-                options.Limits.MaxRequestBodySize = 42949672940;
-            });
-            services.Configure<IISServerOptions>(options =>
-            {
-                options.MaxRequestBodySize = 42949672940;
-            });
-
-            services.Configure<FormOptions>(x =>
-            {
-                x.ValueLengthLimit = int.MaxValue;
-                x.MultipartBodyLengthLimit = 42949672940;
-                x.MultipartHeadersLengthLimit = int.MaxValue;
-            });
-
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Evorine API", Version = "v1" });
@@ -143,8 +127,7 @@ namespace Evopeons.API
                 logger.LogWarning("In Release environment");
             }
             app.UseCors(MyAllowSpecificOrigins);
-            //app.UseHttpsRedirection();
-
+            app.UseHttpsRedirection();
             // Enable middleware to serve generated Swagger as a JSON endpoint.
             app.UseSwagger();
             // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.),
