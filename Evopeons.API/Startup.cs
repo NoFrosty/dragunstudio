@@ -90,6 +90,15 @@ namespace Evopeons.API
             {
             }).AddDefaultTokenProviders();
 
+            services.AddCors(options =>
+            {
+                options.AddPolicy(name: MyAllowSpecificOrigins,
+                    builder =>
+                    {
+                        builder.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin();
+                    });
+            });
+
 #if RELEASE
             services.Configure<KestrelServerOptions>(options =>
             {
@@ -98,24 +107,15 @@ namespace Evopeons.API
 #else
             services.Configure<IISServerOptions>(options =>
             {
-                options.MaxRequestBodySize = int.MaxValue;
+                options.MaxRequestBodySize = 42949672940;
             });
 #endif
 
             services.Configure<FormOptions>(x =>
             {
                 x.ValueLengthLimit = int.MaxValue;
-                x.MultipartBodyLengthLimit = int.MaxValue;
+                x.MultipartBodyLengthLimit = 42949672940;
                 x.MultipartHeadersLengthLimit = int.MaxValue;
-            });
-
-            services.AddCors(options =>
-            {
-                options.AddPolicy(name: MyAllowSpecificOrigins,
-                    builder =>
-                    {
-                        builder.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin();
-                    });
             });
 
             services.AddSwaggerGen(c =>

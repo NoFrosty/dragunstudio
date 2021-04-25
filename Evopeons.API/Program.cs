@@ -23,14 +23,12 @@ namespace Evopeons.API
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder
-#if RELEASE
                         .UseKestrel(options =>
                         {
-                            options.Limits.MaxRequestBodySize = int.MaxValue;
+                            options.Limits.MaxRequestBodySize = 42949672940;
                         })
                         //.UseUrls("https://*:443", "http://*:80")
                         .UseUrls("http://*:80")
-#endif
                         .UseStartup<Startup>();
                 })
                 .ConfigureAppConfiguration((hostingContext, config) =>
