@@ -39,6 +39,7 @@ jobs:
         overwrite: true
         source: "./out/*"
         target: "~/launcher-server"
+        strip_components: 1
 
     - name: Start Server Warp Service
       uses: appleboy/ssh-action@master
