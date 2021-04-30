@@ -1,10 +1,10 @@
-﻿using Evorine.EvoPackageManager;
+﻿using Evorine.Manager;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Linq;
 
-namespace Evopeons.API.Controllers
+namespace Evorine.API.Controllers
 {
     [Authorize]
     [Route("api/[controller]")]

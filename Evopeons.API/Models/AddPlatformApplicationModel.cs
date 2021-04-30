@@ -1,6 +1,6 @@
-﻿using Evorine.EvoPackageManager;
+﻿using Evorine.Manager;
 
-namespace Evopeons.API.Models
+namespace Evorine.API.Models
 {
     public class AddPlatformApplicationModel
     {

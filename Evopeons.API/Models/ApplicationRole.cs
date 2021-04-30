@@ -1,6 +1,6 @@
 ﻿using Dapper.Contrib.Extensions;
 
-namespace Evopeons.API.Models
+namespace Evorine.API.Models
 {
     [Table("ApplicationRole")]
     public class ApplicationRole

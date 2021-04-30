@@ -1,13 +1,13 @@
 ﻿using Dapper;
 using Dapper.Contrib.Extensions;
-using Evopeons.API.Models;
-using Evorine.EvoPackageManager;
+using Evorine.API.Models;
+using Evorine.Manager;
 using Microsoft.AspNetCore.Identity;
 using System.Data;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Evopeons.API.Identity
+namespace Evorine.API.Identity
 {
     public class RoleStore : IRoleStore<ApplicationRole>
     {

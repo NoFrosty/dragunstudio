@@ -1,5 +1,5 @@
-﻿using Evorine.EvoPackageManager;
-using Evorine.EvoPackageManager.DataObjects;
+﻿using Evorine.Manager;
+using Evorine.Manager.DataObjects;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Evopeons.API.Controllers
+namespace Evorine.API.Controllers
 {
     [Authorize]
     [Route("api/[controller]")]
@@ -61,25 +61,25 @@ namespace Evopeons.API.Controllers
         }
 
         [HttpGet("GetUpdateActionCopy/{actionId}")]
-        public Task<Evorine.EvoPackageManager.DataObjects.UpdateActionCopyFile> GetUpdateActionCopy(Guid actionId)
+        public Task<UpdateActionCopyFile> GetUpdateActionCopy(Guid actionId)
         {
             return packageManager.GetUpdateActionCopy(actionId);
         }
 
         [HttpGet("GetUpdateActionDelete/{actionId}")]
-        public Task<Evorine.EvoPackageManager.DataObjects.UpdateActionDeleteFile> GetUpdateActionDelete(Guid actionId)
+        public Task<UpdateActionDeleteFile> GetUpdateActionDelete(Guid actionId)
         {
             return packageManager.GetUpdateActionDelete(actionId);
         }
 
         [HttpGet("GetUpdateActionCreate/{actionId}")]
-        public Task<Evorine.EvoPackageManager.DataObjects.UpdateActionCreateFile> GetUpdateActionCreate(Guid actionId)
+        public Task<UpdateActionCreateFile> GetUpdateActionCreate(Guid actionId)
         {
             return packageManager.GetUpdateActionCreate(actionId);
         }
 
         [HttpGet("GetUpdateActionUpdate/{actionId}")]
-        public Task<Evorine.EvoPackageManager.DataObjects.UpdateActionUpdateFile> GetUpdateActionUpdate(Guid actionId)
+        public Task<UpdateActionUpdateFile> GetUpdateActionUpdate(Guid actionId)
         {
             return packageManager.GetUpdateActionUpdate(actionId);
         }
@@ -95,7 +95,7 @@ namespace Evopeons.API.Controllers
         {
             public Guid versionId { get; set; }
             public string Version { get; set; }
-            public IEnumerable<Evorine.EvoPackageManager.DataObjects.UpdateAction> UpdateActions { get; set; }
+            public IEnumerable<Evorine.Manager.DataObjects.UpdateAction> UpdateActions { get; set; }
         }
     }
 }

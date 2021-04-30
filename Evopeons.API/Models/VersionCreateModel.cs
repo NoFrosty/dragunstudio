@@ -1,8 +1,8 @@
-﻿using Evorine.EvoPackageManager;
+﻿using Evorine.Manager;
 using Microsoft.AspNetCore.Http;
 using System.IO;
 
-namespace Evopeons.API.Models
+namespace Evorine.API.Models
 {
     public class VersionCreateModel
     {

@@ -1,4 +1,4 @@
-﻿namespace Evopeons.Server.Models
+﻿namespace Evorine.Server.Models
 {
     public class GenericValue
     {

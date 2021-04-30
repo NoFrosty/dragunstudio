@@ -1,8 +1,8 @@
-﻿using Evopeons.API.Articles;
-using Evopeons.API.Entities;
-using Evopeons.API.Identity;
-using Evopeons.API.Models;
-using Evorine.EvoPackageManager;
+﻿using Evorine.API.Articles;
+using Evorine.API.Entities;
+using Evorine.API.Identity;
+using Evorine.API.Models;
+using Evorine.Manager;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
@@ -20,7 +20,7 @@ using System;
 using System.IO;
 using System.Reflection;
 
-namespace Evopeons.API
+namespace Evorine.API
 {
     public class Startup
     {

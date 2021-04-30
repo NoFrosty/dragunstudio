@@ -1,11 +1,11 @@
 ﻿using Dapper;
 using Dapper.Contrib.Extensions;
-using Evorine.EvoPackageManager;
+using Evorine.Manager;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Evopeons.API.Articles
+namespace Evorine.API.Articles
 {
     public class ArticleDataAccess
     {

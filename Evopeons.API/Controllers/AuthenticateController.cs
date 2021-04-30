@@ -1,5 +1,5 @@
-﻿using Evopeons.API.Entities;
-using Evopeons.API.Models;
+﻿using Evorine.API.Entities;
+using Evorine.API.Models;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -9,7 +9,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
-namespace Evopeons.API.Controllers
+namespace Evorine.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]

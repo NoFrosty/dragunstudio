@@ -1,7 +1,7 @@
 ﻿using Dapper.Contrib.Extensions;
 using System;
 
-namespace Evopeons.API.Entities
+namespace Evorine.API.Entities
 {
     [Table("User")]
     public class ApplicationUser

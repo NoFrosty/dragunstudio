@@ -1,6 +1,6 @@
-﻿using Evorine.EvoPackageManager;
+﻿using Evorine.Manager;
 
-namespace Evopeons.API
+namespace Evorine.API
 {
     public class ApplicationSettings
     {

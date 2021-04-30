@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
-namespace Evopeons.API.Controllers
+namespace Evorine.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]

@@ -1,7 +1,7 @@
 ﻿using Dapper.Contrib.Extensions;
 using System;
 
-namespace Evopeons.API.Articles
+namespace Evorine.API.Articles
 {
     [Table("Article")]
     public class Article

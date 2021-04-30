@@ -1,7 +1,7 @@
 ﻿using Dapper;
 using Dapper.Contrib.Extensions;
-using Evopeons.API.Entities;
-using Evorine.EvoPackageManager;
+using Evorine.API.Entities;
+using Evorine.Manager;
 using Microsoft.AspNetCore.Identity;
 using System.Collections.Generic;
 using System.Data;
@@ -9,7 +9,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Evopeons.API.Identity
+namespace Evorine.API.Identity
 {
     public class UserStore : IUserStore<ApplicationUser>, IUserEmailStore<ApplicationUser>,
     IUserTwoFactorStore<ApplicationUser>, IUserPasswordStore<ApplicationUser>, IQueryableUserStore<ApplicationUser>

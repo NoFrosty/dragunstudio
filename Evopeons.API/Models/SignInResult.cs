@@ -1,4 +1,4 @@
-﻿namespace Evopeons.API.Models
+﻿namespace Evorine.API.Models
 {
     public class SignInResult
     {

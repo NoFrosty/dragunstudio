@@ -575,7 +575,11 @@ namespace Evorine.EvoPackageManager
 
         private string GetPackagesFilePath(Guid applicationId, PackageFileInfo file)
         {
-            return Path.Combine(GetPackagesDirectoryPath(applicationId), file.VersionId.ToString(), file.RelativeFilename);
+            string path = GetPackagesDirectoryPath(applicationId);
+            path = Path.Combine(path, file.VersionId.ToString());
+            path = Path.Combine(path, file.RelativeFilename);
+            path = Path.Combine(path, file.VersionId.ToString(), file.RelativeFilename);
+            return path;
         }
 
         public string GetApplicationLogoPath(Guid applicationId)

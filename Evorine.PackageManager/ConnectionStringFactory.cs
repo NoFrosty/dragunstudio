@@ -1,0 +1,17 @@
+﻿namespace Evorine.Manager
+{
+    public class ConnectionStringFactory : IConnectionStringFactory
+    {
+        private readonly PackageManagerSettings packageManagerSettings;
+
+        public ConnectionStringFactory(PackageManagerSettings packageManagerSettings)
+        {
+            this.packageManagerSettings = packageManagerSettings;
+        }
+
+        public string GetConnectionString()
+        {
+            return packageManagerSettings.ConnectionString;
+        }
+    }
+}

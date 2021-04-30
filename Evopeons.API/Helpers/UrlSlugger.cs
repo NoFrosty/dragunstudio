@@ -2,7 +2,7 @@
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace Evopeons.API
+namespace Evorine.API
 {
     public class UrlSlugger
     {

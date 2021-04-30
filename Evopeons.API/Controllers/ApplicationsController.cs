@@ -1,8 +1,8 @@
-﻿using EvoPackageManager.Models;
-using Evopeons.API.Articles;
-using Evopeons.API.Models;
-using Evorine.EvoPackageManager;
-using Evorine.EvoPackageManager.DataObjects;
+﻿using Evorine.Manager.Models;
+using Evorine.API.Articles;
+using Evorine.API.Models;
+using Evorine.Manager;
+using Evorine.Manager.DataObjects;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -12,7 +12,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Evopeons.API.Controllers
+namespace Evorine.API.Controllers
 {
     [Authorize]
     [Route("api/[controller]")]

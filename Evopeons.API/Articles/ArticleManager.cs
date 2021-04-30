@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Evopeons.API.Articles
+namespace Evorine.API.Articles
 {
     public class ArticleManager
     {
