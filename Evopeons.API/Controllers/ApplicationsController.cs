@@ -199,6 +199,12 @@ namespace Evopeons.API.Controllers
             return Ok();
         }
 
+        [HttpGet("{applicationId}/size")]
+        public async Task<IActionResult> GetApplicationSizeInfo(Guid applicationId, [FromQuery] int operatingSystem)
+        {
+            return Ok(await packageManager.GetApplicationSizeInfo(applicationId, (OSType)operatingSystem));
+        }
+
         /*
         [AllowAnonymous]
         [HttpGet()]

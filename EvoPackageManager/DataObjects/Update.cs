@@ -9,6 +9,7 @@ namespace Evorine.EvoPackageManager.DataObjects
         public Guid UpdateId { get; set; }
         public Guid? FromVersionId { get; set; }
         public Guid ToVersionId { get; set; }
-        public long Size { get; set; }
+        public long DownloadSize { get; set; }
+        public long InstallationSize { get; set; }
     }
 }

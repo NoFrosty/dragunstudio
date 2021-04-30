@@ -3,6 +3,7 @@ using Dapper.Contrib.Extensions;
 using Evorine.EvoPackageManager.DataObjects;
 using System;
 using System.Collections.Generic;
+using System.Data.Common;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -40,6 +41,20 @@ namespace Evorine.EvoPackageManager
             {
                 string sql = "SELECT * FROM Application WHERE IsDeleted = 0 AND (@IncludeHidden = 1 OR (@IncludeHidden = 0 AND IsVisible = 1))";
                 return await connection.QueryAsync<ApplicationInfo>(sql, new { IncludeHidden = includeHidden });
+            }
+        }
+
+        public async Task<VersionSizeInfo> GetApplicationSizeInfo(Guid applicationId, OSType operatingSystem)
+        {
+            VersionInfo lastVersionId = await GetLastVersion(applicationId, operatingSystem);
+            VersionSizeInfo versionSizeInfo = new VersionSizeInfo();
+            using (DbConnection connection = connectionFactory.AcquireConnection())
+            {
+                string sql = "SELECT InstallationSize FROM Updates WHERE FromVersionId IS NULL AND ToVersionId = @ToVersionId";
+                versionSizeInfo.InstallationSize = await connection.QueryFirstOrDefaultAsync<long>(sql, new { ToVersionId = lastVersionId.VersionId });
+                sql = "SELECT DownloadSize FROM Updates WHERE FromVersionId IS NULL AND ToVersionId = @ToVersionId";
+                versionSizeInfo.DownloadSize = await connection.QueryFirstOrDefaultAsync<long>(sql, new { ToVersionId = lastVersionId.VersionId });
+                return versionSizeInfo;
             }
         }
 

@@ -31,6 +31,11 @@ namespace Evorine.EvoPackageManager
             return await dataAccess.GetApplications(includeHidden);
         }
 
+        public async Task<VersionSizeInfo> GetApplicationSizeInfo(Guid applicationId, OSType operatingSystem)
+        {
+            return await dataAccess.GetApplicationSizeInfo(applicationId, operatingSystem);
+        }
+
         public async Task<IEnumerable<ApplicationViewModel>> GetExtendedApplicationsData(bool isPublished)
         {
             var applications = (await GetApplications(isPublished));
@@ -367,7 +372,8 @@ namespace Evorine.EvoPackageManager
                 UpdateId = Guid.NewGuid(),
                 FromVersionId = updateManifest.FromVersionId,
                 ToVersionId = updateManifest.ToVersionId,
-                Size = 0,
+                DownloadSize = 0,
+                InstallationSize = 0
             };
             for (var i = 0; i < updateManifest.Actions.Length; i++)
             {
@@ -389,6 +395,7 @@ namespace Evorine.EvoPackageManager
                             DestinationFileId = action.DestinationFile.FileId
                         };
                         await dataAccess.AddUpdateActionCopy(copyDO);
+                        update.InstallationSize += action.DestinationFile.Size;
                         break;
 
                     case CreateFileAction action:
@@ -397,7 +404,8 @@ namespace Evorine.EvoPackageManager
                             ActionId = updateAction.ActionId,
                             FileId = action.NewFile.FileId
                         };
-                        update.Size += action.NewFile.CompressedSize;
+                        update.DownloadSize += action.NewFile.CompressedSize;
+                        update.InstallationSize += action.NewFile.Size;
                         await dataAccess.AddUpdateActionCreate(createDO);
                         break;
 
@@ -408,6 +416,7 @@ namespace Evorine.EvoPackageManager
                             FileId = action.File.FileId
                         };
                         await dataAccess.AddUpdateActionDelete(deleteDO);
+                        update.InstallationSize -= action.File.Size;
                         break;
 
                     case UpdateFileAction action:
@@ -419,7 +428,8 @@ namespace Evorine.EvoPackageManager
                             DiffId = action.DiffId,
                             DiffSize = action.DiffSize
                         };
-                        update.Size += action.DiffSize;
+                        update.DownloadSize += action.DiffSize;
+                        update.InstallationSize += action.NewFile.Size;
                         await dataAccess.AddUpdateActionUpdate(updateDO);
                         break;
 
