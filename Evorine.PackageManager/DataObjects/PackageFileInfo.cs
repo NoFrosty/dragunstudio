@@ -19,7 +19,7 @@ namespace Evorine.Manager.DataObjects
         public long CompressedSize { get; set; }
 
         [Computed]
-        public string RelativeFilename => Path.Combine(DirectoryPath, FileName);
+        public string RelativeFilename => Path.Join(DirectoryPath, FileName);
 
         public override bool Equals(object obj)
         {

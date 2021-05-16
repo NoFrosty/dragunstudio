@@ -80,12 +80,12 @@ namespace Evorine.Manager
 
         public Stream GetFileStream(Guid applicationId, string fileId)
         {
-            return File.OpenRead(Path.Combine(GetCompressedFilesDirectoryPath(applicationId), fileId));
+            return File.OpenRead(Path.Join(GetCompressedFilesDirectoryPath(applicationId), fileId));
         }
 
         public Stream GetDiffStream(Guid applicationId, string diffId)
         {
-            return File.OpenRead(Path.Combine(GetUpdatesDirectoryPath(applicationId), diffId));
+            return File.OpenRead(Path.Join(GetUpdatesDirectoryPath(applicationId), diffId));
         }
 
         public async Task<UpdateAction[]> GetUpdateAction(Guid? fromVersionId, Guid toVersionId)
@@ -290,7 +290,7 @@ namespace Evorine.Manager
         {
             List<PackageFileInfo> files = new List<PackageFileInfo>();
 
-            string versionDirectoryPath = Path.Combine(GetPackagesDirectoryPath(applicationId), versionInfo.VersionId.ToString());
+            string versionDirectoryPath = Path.Join(GetPackagesDirectoryPath(applicationId), versionInfo.VersionId.ToString());
             Directory.CreateDirectory(versionDirectoryPath);
 
             using (ZipArchive archive = new ZipArchive(zipStream))
@@ -299,7 +299,7 @@ namespace Evorine.Manager
                 {
                     if (!entry.FullName.Last().Equals('/'))
                     {
-                        string absoluteFilePath = Path.Combine(versionDirectoryPath, entry.FullName);
+                        string absoluteFilePath = Path.Join(versionDirectoryPath, entry.FullName);
                         string absoluteDirectoryPath = Path.GetDirectoryName(absoluteFilePath);
 
                         // Makes sure directory exists & extracts file
@@ -323,7 +323,7 @@ namespace Evorine.Manager
                         // Zip file back alone
                         string directory = GetCompressedFilesDirectoryPath(applicationId);
                         Directory.CreateDirectory(directory);
-                        string singleZipPath = Path.Combine(directory, file.FileId.ToString());
+                        string singleZipPath = Path.Join(directory, file.FileId.ToString());
                         using (Stream singleZipFileStream = File.Create(singleZipPath))
                         {
                             using (ZipArchive singleArchive = new ZipArchive(singleZipFileStream, ZipArchiveMode.Create, true))
@@ -508,7 +508,7 @@ namespace Evorine.Manager
             var newBuffer = File.ReadAllBytes(GetPackagesFilePath(applicationId, newFile));
             var diffId = Guid.NewGuid();
             var directoryPath = GetUpdatesDirectoryPath(applicationId);
-            var path = Path.Combine(directoryPath, diffId.ToString());
+            var path = Path.Join(directoryPath, diffId.ToString());
             Directory.CreateDirectory(directoryPath);
             using (FileStream outputFile = File.Create(path))
             {
@@ -555,32 +555,34 @@ namespace Evorine.Manager
 
         private string GetCompressedFilesDirectoryPath(Guid applicationId)
         {
-            return Path.Combine(settings.RootPath, applicationId.ToString(), "CompressedFiles");
+            return Path.Join(settings.RootPath, applicationId.ToString(), "CompressedFiles");
         }
 
         private string GetPackagesDirectoryPath(Guid applicationId)
         {
-            return Path.Combine(settings.RootPath, applicationId.ToString(), "Packages");
+            return Path.Join(settings.RootPath, applicationId.ToString(), "Packages");
         }
 
         private string GetUpdatesDirectoryPath(Guid applicationId)
         {
-            return Path.Combine(settings.RootPath, applicationId.ToString(), "Updates");
+            return Path.Join(settings.RootPath, applicationId.ToString(), "Updates");
         }
 
         private string GetMediaDirectoryPath(Guid applicationId)
         {
-            return Path.Combine(settings.RootPath, applicationId.ToString(), "Media");
+            return Path.Join(settings.RootPath, applicationId.ToString(), "Media");
         }
 
         private string GetPackagesFilePath(Guid applicationId, PackageFileInfo file)
         {
-            return Path.Join(GetPackagesDirectoryPath(applicationId), file.VersionId.ToString(), file.RelativeFilename);
+            string path = Path.Join(GetPackagesDirectoryPath(applicationId), file.VersionId.ToString());
+            path = Path.Join(path, file.RelativeFilename);  
+            return path;
         }
 
         public string GetApplicationLogoPath(Guid applicationId)
         {
-            return Path.Combine(GetMediaDirectoryPath(applicationId), "icon.png");
+            return Path.Join(GetMediaDirectoryPath(applicationId), "icon.png");
         }
     }
 }
