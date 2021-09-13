@@ -13,9 +13,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EvoPackageManagerDemo", "Ev
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EvoPackageManager.Common", "EvoPackageManager.Common\EvoPackageManager.Common.csproj", "{0FAACCF5-2E42-4B92-8D8E-AE61133CE3EC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Evorine.Manager", "Evorine.PackageManager\Evorine.Manager.csproj", "{5D39F37D-DAFB-4423-B1DD-23711E058E33}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Evorine.Manager", "Evorine.PackageManager\Evorine.Manager.csproj", "{5D39F37D-DAFB-4423-B1DD-23711E058E33}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Evorine.PackageManager.Common", "Evorine.PackageManager.Common\Evorine.PackageManager.Common.csproj", "{F1D1C2A0-76BE-4635-A075-E661263AAEBB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Evorine.Manager.Common", "Evorine.PackageManager.Common\Evorine.Manager.Common.csproj", "{F1D1C2A0-76BE-4635-A075-E661263AAEBB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Evorine.Manager.Issues", "Evorine.BugManager\Evorine.Manager.Issues.csproj", "{9173E804-5689-49F5-ACDB-6B539601D747}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -51,6 +53,10 @@ Global
 		{F1D1C2A0-76BE-4635-A075-E661263AAEBB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F1D1C2A0-76BE-4635-A075-E661263AAEBB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F1D1C2A0-76BE-4635-A075-E661263AAEBB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9173E804-5689-49F5-ACDB-6B539601D747}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9173E804-5689-49F5-ACDB-6B539601D747}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9173E804-5689-49F5-ACDB-6B539601D747}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9173E804-5689-49F5-ACDB-6B539601D747}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

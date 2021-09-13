@@ -35,7 +35,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Evorine.PackageManager.Common\Evorine.PackageManager.Common.csproj" />
+    <ProjectReference Include="..\Evorine.PackageManager.Common\Evorine.Manager.Common.csproj" />
     <ProjectReference Include="..\Evorine.PackageManager\Evorine.Manager.csproj" />
   </ItemGroup>
 

@@ -1,0 +1,44 @@
+﻿using Dapper.Contrib.Extensions;
+using Evorine.Manager.Issues.DataObjects;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Evorine.Manager.Issues
+{
+    class DataAccess
+    {
+        private readonly ConnectionFactory connectionFactory;
+
+        public DataAccess(ConnectionFactory connectionFactory)
+        {
+            this.connectionFactory = connectionFactory;
+        }
+
+        public async virtual Task AddIssue(IssueInfo issueInfo)
+        {
+            using (var connection = connectionFactory.AcquireConnection())
+            {
+                await connection.InsertAsync(issueInfo);
+            }
+        }
+
+        public async Task<IssueInfo> GetIssueInfoAsync(Guid issueInfoId)
+        {
+            using (var connection = connectionFactory.AcquireConnection())
+            {
+                return await connection.GetAsync<IssueInfo>(issueInfoId);
+            }
+        }
+
+        public async Task<IEnumerable<IssueInfo>> GetAllIssueInfosAsync()
+        {
+            using (var connection = connectionFactory.AcquireConnection())
+            {
+                return await connection.GetAllAsync<IssueInfo>();
+            }
+        }
+    }
+}
