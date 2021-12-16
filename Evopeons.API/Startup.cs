@@ -1,6 +1,7 @@
 ﻿using Evorine.API.Articles;
 using Evorine.API.Entities;
 using Evorine.API.Identity;
+using Evorine.API.JwtFeatures;
 using Evorine.API.Models;
 using Evorine.Manager;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -39,7 +40,7 @@ namespace Evorine.API
             var applicationSettings = Configuration.Get<ApplicationSettings>();
             applicationSettings.PackageManager.ConnectionString = applicationSettings.ConnectionString;
             services.AddSingleton(applicationSettings);
-            services.AddTransient<IUserStore<ApplicationUser>, UserStore>();
+            services.AddTransient<IUserStore<User>, UserStore>();
             services.AddTransient<IRoleStore<ApplicationRole>, RoleStore>();
 
             services.AddSingleton(applicationSettings.PackageManager);
@@ -49,6 +50,7 @@ namespace Evorine.API
             services.AddSingleton<PackageManager>();
             services.AddSingleton<ArticleManager>();
             services.AddSingleton<ArticleDataAccess>();
+            services.AddScoped<JwtHandler>();
 
             services.Configure<IdentityOptions>(options =>
             {
@@ -86,7 +88,7 @@ namespace Evorine.API
                 options.DefaultPolicy = defaultAuthorizationPolicyBuilder.RequireAuthenticatedUser().Build();
             });
 
-            services.AddIdentity<ApplicationUser, ApplicationRole>(options =>
+            services.AddIdentity<User, ApplicationRole>(options =>
             {
             }).AddDefaultTokenProviders();
 

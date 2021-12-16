@@ -16,13 +16,13 @@ namespace Evorine.API.Controllers
     [Authorize]
     [Route("api/[controller]")]
     [ApiController]
-    public class UsersController : ControllerBase
+    public class AccountsController : ControllerBase
     {
-        private readonly UserManager<ApplicationUser> userManager;
+        private readonly UserManager<User> userManager;
         private readonly ApplicationSettings applicationSettings;
 
-        public UsersController(
-            UserManager<ApplicationUser> userManager,
+        public AccountsController(
+            UserManager<User> userManager,
             ApplicationSettings applicationSettings)
         {
             this.userManager = userManager;
@@ -38,7 +38,7 @@ namespace Evorine.API.Controllers
         public async Task<IEnumerable<GetUserAccountResult>> GetAllUsers()
         {
             List<GetUserAccountResult> users = new List<GetUserAccountResult>();
-            foreach (ApplicationUser user in userManager.Users)
+            foreach (User user in userManager.Users)
             {
                 GetUserAccountResult u = new GetUserAccountResult()
                 {
@@ -69,7 +69,7 @@ namespace Evorine.API.Controllers
         [ProducesResponseType(404)]
         public async Task<ActionResult<GetUserAccountResult>> GetUser(Guid userId)
         {
-            ApplicationUser user = await userManager.FindByIdAsync(userId.ToString());
+            User user = await userManager.FindByIdAsync(userId.ToString());
             if (user == null)
             {
                 return NotFound();
@@ -101,10 +101,10 @@ namespace Evorine.API.Controllers
         [AllowAnonymous]
         [HttpPost]
         [ProducesResponseType(typeof(CreateUserResult), 200)]
-        public async Task<CreateUserResult> RegisterNewUser([FromBody] CreateUserModel userModel)
+        public async Task<CreateUserResult> RegisterUser([FromBody] CreateUserModel userModel)
         {
-            ApplicationUser userByEmail = await userManager.FindByEmailAsync(userModel.Email);
-            ApplicationUser userByUserName = await userManager.FindByNameAsync(userModel.Username);
+            User userByEmail = await userManager.FindByEmailAsync(userModel.Email);
+            User userByUserName = await userManager.FindByNameAsync(userModel.Username);
 
             if ((userByEmail != null && userByEmail.AccountStatus != AccountStatus.Deleted) || userByUserName != null)
                 return new CreateUserResult()
@@ -114,7 +114,7 @@ namespace Evorine.API.Controllers
                     IsUsernameTaken = userByUserName != null
                 };
 
-            ApplicationUser user = new ApplicationUser()
+            User user = new User()
             {
                 UserId = Guid.NewGuid(),
                 Email = userModel.Email,
@@ -157,7 +157,7 @@ namespace Evorine.API.Controllers
         {
             if (string.IsNullOrWhiteSpace(userId.ToString())) return Problem("An userId is necessary !");
 
-            ApplicationUser user = await userManager.FindByIdAsync(userId.ToString());
+            User user = await userManager.FindByIdAsync(userId.ToString());
 
             user.AccountStatus = AccountStatus.Deleted;
             user.Username = Guid.NewGuid().ToString().Substring(0, 20);
@@ -174,7 +174,7 @@ namespace Evorine.API.Controllers
         [ProducesResponseType(typeof(IdentityResult), 200)]
         public async Task<IActionResult> UpdateUser(UpdateUserModel userModel)
         {
-            ApplicationUser user = await userManager.FindByIdAsync(userModel.Email);
+            User user = await userManager.FindByIdAsync(userModel.Email);
             if (user == null) return Problem("User doesn't exist");
             user.Username = userModel.Username;
             user.Email = userModel.Email;
@@ -197,7 +197,7 @@ namespace Evorine.API.Controllers
         [ProducesResponseType(typeof(IdentityResult), 200)]
         public async Task<IActionResult> UpdateUserPassword(UpdateUserPasswordModel updateUserPasswordModel)
         {
-            ApplicationUser user = await userManager.FindByIdAsync(updateUserPasswordModel.UserID.ToString());
+            User user = await userManager.FindByIdAsync(updateUserPasswordModel.UserID.ToString());
             if (user == null) return Problem("User doesn't exist");
             return Ok(await userManager.ChangePasswordAsync(user, updateUserPasswordModel.CurrentPassword, updateUserPasswordModel.NewPassword));
         }
@@ -232,7 +232,7 @@ namespace Evorine.API.Controllers
             return Ok(x);
         }
 
-        private async Task SendConfirmationEmailAmazon(ApplicationUser user)
+        private async Task SendConfirmationEmailAmazon(User user)
         {
             string BODY = Resources.ConfirmEmail;
             string code = await userManager.GenerateEmailConfirmationTokenAsync(user);

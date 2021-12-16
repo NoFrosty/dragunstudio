@@ -1,10 +1,12 @@
 ﻿using Dapper.Contrib.Extensions;
+using Microsoft.AspNetCore.Identity;
 using System;
 
 namespace Evorine.API.Entities
 {
     [Table("User")]
-    public class ApplicationUser
+    //public class User : IdentityUser
+    public class User
     {
         [ExplicitKey]
         public Guid UserId { get; set; }

@@ -1,10 +1,13 @@
 ﻿using Evorine.API.Entities;
+using Evorine.API.JwtFeatures;
 using Evorine.API.Models;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using System;
+using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -15,18 +18,21 @@ namespace Evorine.API.Controllers
     [ApiController]
     public class AuthenticateController : ControllerBase
     {
-        private readonly SignInManager<ApplicationUser> signInManager;
-        private readonly UserManager<ApplicationUser> userManager;
+        private readonly SignInManager<User> signInManager;
+        private readonly UserManager<User> userManager;
         private readonly ApplicationSettings applicationSettings;
+        private readonly JwtHandler jwtHandler;
 
         public AuthenticateController(
-            SignInManager<ApplicationUser> signInManager,
-            UserManager<ApplicationUser> userManager,
-            ApplicationSettings applicationSettings)
+            SignInManager<User> signInManager,
+            UserManager<User> userManager,
+            ApplicationSettings applicationSettings,
+            JwtHandler jwtHandler)
         {
             this.signInManager = signInManager;
             this.userManager = userManager;
             this.applicationSettings = applicationSettings;
+            this.jwtHandler = jwtHandler;
         }
 
         [HttpGet]
@@ -50,42 +56,23 @@ namespace Evorine.API.Controllers
         public async Task<ObjectResult> SignIn(SignInModel model)
         {
             var user = await userManager.FindByEmailAsync(model.Email);
-            if (user == null)
+            if (user == null || !await userManager.CheckPasswordAsync(user, model.Password))
             {
                 return StatusCode(403, new Models.SignInResult()
                 {
                     IsSuccessfull = false
                 });
             }
-
-            var result = await signInManager.CheckPasswordSignInAsync(user, model.Password, false);
-
-            if (!result.Succeeded)
+            /*
+            if (result.RequiresTwoFactor)
             {
-                return StatusCode(403, new Models.SignInResult()
-                {
-                    IsSuccessfull = false
-                });
+                RedirectToAction("LoginTwoStep", new { user.Email, model });
             }
-
-            var claims = new Claim[]
-            {
-                new Claim(ClaimTypes.NameIdentifier, user.UserId.ToString()),
-                new Claim(ClaimTypes.Email, user.Email),
-                new Claim(ClaimTypes.Name, user.FirstName),
-                new Claim(ClaimTypes.Surname, user.LastName),
-            };
-            var claimsIdentity = new ClaimsIdentity(claims);
-
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var key = System.Text.Encoding.ASCII.GetBytes(applicationSettings.ApplicationSecretKey);
-            var tokenDescriptor = new SecurityTokenDescriptor
-            {
-                Subject = claimsIdentity,
-                Expires = DateTime.UtcNow.AddDays(7),
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
-            };
-            var token = tokenHandler.CreateToken(tokenDescriptor);
+            */
+            SigningCredentials signingCredentials = jwtHandler.GetSigningCredentials();
+            List<Claim> claims = jwtHandler.GetClaims(user);
+            JwtSecurityToken tokenOptions = jwtHandler.GenerateTokenOptions(signingCredentials, claims);
+            string token = new JwtSecurityTokenHandler().WriteToken(tokenOptions);
 
             user.LastLoginDate = DateTime.UtcNow;
             await userManager.UpdateAsync(user);
@@ -93,10 +80,16 @@ namespace Evorine.API.Controllers
             return StatusCode(200, new Models.SignInResult()
             {
                 IsSuccessfull = true,
-                Token = tokenHandler.WriteToken(token),
+                Token = token,
                 Username = user.Username
             });
         }
+
+
+
+
+
+
 
         /// <summary>
         /// Signs the current user out of the API.
