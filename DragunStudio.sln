@@ -5,13 +5,13 @@ VisualStudioVersion = 17.1.32228.430
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DragunStudio.API", "DragunStudio.API\DragunStudio.API.csproj", "{2997F4F3-9AC2-4A53-8C69-ED22B7B6E2E6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DragunStudio.Managers.Package", "DragunStudio.Managers.Package\DragunStudio.Managers.Package.csproj", "{E8E68B95-E24B-4412-82B3-46F277D0972E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DragunStudio.Managers.Package", "DragunStudio.Managers.Package\DragunStudio.Managers.Package.csproj", "{E8E68B95-E24B-4412-82B3-46F277D0972E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DragunStudio.Managers.Common", "DragunStudio.Managers.Common\DragunStudio.Managers.Common.csproj", "{508055E7-161F-44DE-8FDB-A212F9ECC6A1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DragunStudio.Managers.Common", "DragunStudio.Managers.Common\DragunStudio.Managers.Common.csproj", "{508055E7-161F-44DE-8FDB-A212F9ECC6A1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DragunStudio.Common", "DragunStudio.Common\DragunStudio.Common.csproj", "{A16F7182-DB39-48A3-9D11-89BCDBB9BF9E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DragunStudio.Common", "DragunStudio.Common\DragunStudio.Common.csproj", "{A16F7182-DB39-48A3-9D11-89BCDBB9BF9E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DragunStudio.Managers.Bug", "DragunStudio.Managers.Bug\DragunStudio.Managers.Bug.csproj", "{19477FC8-5B52-4472-8F10-27FC99488986}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DragunStudio.Managers.Issue", "DragunStudio.Managers.Issue\DragunStudio.Managers.Issue.csproj", "{19477FC8-5B52-4472-8F10-27FC99488986}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

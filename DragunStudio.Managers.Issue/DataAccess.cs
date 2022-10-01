@@ -1,13 +1,13 @@
 ﻿using Dapper.Contrib.Extensions;
 using DragunStudio.Common;
-using DragunStudio.Managers.Bug.Models;
+using DragunStudio.Managers.Issue.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DragunStudio.Managers.Bug
+namespace DragunStudio.Managers.Issue
 {
     class DataAccess
     {

@@ -1,10 +1,10 @@
 ﻿using Dapper.Contrib.Extensions;
 using System;
 
-namespace DragunStudio.Managers.Bug.Models
+namespace DragunStudio.Managers.Issue.Models
 {
     [Table("StepsInfo")]
-    class IssueStepInfo
+    public class IssueStepInfo
     {
         public string Step { get; set; }
 

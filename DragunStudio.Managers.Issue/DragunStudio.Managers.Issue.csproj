@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\DragunStudio.Common\DragunStudio.Common.csproj" />
+    <ProjectReference Include="..\DragunStudio.Managers.Common\DragunStudio.Managers.Common.csproj" />
   </ItemGroup>
 
   <ItemGroup>

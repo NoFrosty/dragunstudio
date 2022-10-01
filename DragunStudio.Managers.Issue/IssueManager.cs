@@ -1,19 +1,19 @@
 ﻿using DragunStudio.Common;
-using DragunStudio.Managers.Bug.Models;
+using DragunStudio.Managers.Issue.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DragunStudio.Managers.Bug
+namespace DragunStudio.Managers.Issue
 {
-    class BugManager
+    class IssueManager
     {
         private readonly ApplicationSettings applicationSettings;
         private readonly DataAccess dataAccess;
 
-        public BugManager(ApplicationSettings applicationSettings, DataAccess dataAccess)
+        public IssueManager(ApplicationSettings applicationSettings, DataAccess dataAccess)
         {
             this.applicationSettings = applicationSettings;
             this.dataAccess = dataAccess;

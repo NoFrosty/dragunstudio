@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DragunStudio.Managers.Bug.Enums
+namespace DragunStudio.Managers.Issue.Enums
 {
-    enum SeverityType
+    public enum SeverityType
     {
         Cosmetic,
         Playable,

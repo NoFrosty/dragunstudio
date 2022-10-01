@@ -1,9 +1,9 @@
 ﻿using Dapper.Contrib.Extensions;
-using DragunStudio.Managers.Bug.Enums;
+using DragunStudio.Managers.Issue.Enums;
 using System;
 using System.Collections.Generic;
 
-namespace DragunStudio.Managers.Bug.Models
+namespace DragunStudio.Managers.Issue.Models
 {
     [Table("Bug")]
     class IssueInfo
