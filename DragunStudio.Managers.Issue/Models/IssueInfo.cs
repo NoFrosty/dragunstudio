@@ -2,40 +2,33 @@
 using DragunStudio.Managers.Issue.Enums;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace DragunStudio.Managers.Issue.Models
 {
-    [Table("Bug")]
-    class IssueInfo
+    [Table("Issue")]
+    public class IssueInfo
     {
         [ExplicitKey]
         public Guid IssueId { get; set; }
 
-        public bool Solved { get; set; }
+        public Guid ReporterUserId { get; set; }
 
-        public bool Verified { get; set; }
+        public Guid ApplicationVersionId { get; set; }
 
-        public int Votes { get; set; }
+        public IssueCategory Category { get; set; }
+
+        public IssueStatus Status { get; set; }
 
         public string Title { get; set; }
 
         public string Description { get; set; }
 
-        public string DescriptionShouldHappen { get; set; }
+        public List<IssueComment>? Comments { get; set; }
 
-        //Images
-
-        public Guid ReporterUserId { get; set; }
-
-        public SeverityType Severity { get; set; }
-
-        public Guid GameVersionId { get; set; }
-
-        public IssueCategory Category { get; set; }
-
-        public List<IssueStepInfo> Steps { get; set; }
-
-        public List<IssueComment> Comments { get; set; }
+        public List<IssueVote>? Votes { get; set; }
 
     }
 }

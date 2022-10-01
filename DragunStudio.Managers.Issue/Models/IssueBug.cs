@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace DragunStudio.Managers.Issue.Models
 {
-    public class IssueBug : Issue
+    public class IssueBug : IssueInfo
     {
         public string DescriptionShouldHappen { get; set; }
         public SeverityType Severity { get; set; }
