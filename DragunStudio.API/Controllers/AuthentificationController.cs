@@ -1,5 +1,4 @@
-﻿using DragunStudio.API.Enums;
-using DragunStudio.API.Models;
+﻿using DragunStudio.API.Models;
 using DragunStudio.API.Models.AccountViewModels;
 using DragunStudio.API.Services;
 using Microsoft.AspNetCore.Authentication;

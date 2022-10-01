@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace DragunStudio.Managers.Package.Models
+﻿namespace DragunStudio.Managers.Package.Models
 {
     public class VersionSizeInfo
     {

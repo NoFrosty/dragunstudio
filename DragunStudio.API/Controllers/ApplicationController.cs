@@ -1,5 +1,4 @@
-﻿using DragunStudio.API.Models.AccountViewModels;
-using DragunStudio.API.Models.ApplicationViewModels;
+﻿using DragunStudio.API.Models.ApplicationViewModels;
 using DragunStudio.Common;
 using DragunStudio.Managers.Package;
 using DragunStudio.Managers.Package.Enums;

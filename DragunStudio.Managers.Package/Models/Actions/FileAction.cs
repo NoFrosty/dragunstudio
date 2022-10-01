@@ -1,5 +1,4 @@
-﻿using Dapper.Contrib.Extensions;
-using DragunStudio.Managers.Package.Enums;
+﻿using DragunStudio.Managers.Package.Enums;
 
 namespace DragunStudio.Managers.Package.Models.Actions
 {

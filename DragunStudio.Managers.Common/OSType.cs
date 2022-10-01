@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace DragunStudio.Managers.Package.Enums
+﻿namespace DragunStudio.Managers.Package.Enums
 {
     [Flags]
     public enum OSType

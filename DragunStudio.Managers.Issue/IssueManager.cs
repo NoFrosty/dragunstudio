@@ -3,11 +3,6 @@ using DragunStudio.Managers.Issue.Enums;
 using DragunStudio.Managers.Issue.Models;
 using DragunStudio.Managers.Issue.Models.Game;
 using DragunStudio.Managers.Package.Enums;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DragunStudio.Managers.Issue
 {
@@ -53,6 +48,7 @@ namespace DragunStudio.Managers.Issue
             }
 
             throw new NotImplementedException();
+            //DataAccess
 
             return issue;
         }
@@ -62,6 +58,7 @@ namespace DragunStudio.Managers.Issue
             IssueBug issue = new IssueBug();
 
             throw new NotImplementedException();
+            //DataAccess
 
             return issue;
         }
@@ -71,6 +68,7 @@ namespace DragunStudio.Managers.Issue
             IssueInfo issue = new IssueInfo();
 
             throw new NotImplementedException();
+            //DataAccess
 
             return issue;
         }
@@ -80,6 +78,7 @@ namespace DragunStudio.Managers.Issue
             IssueVote vote = new IssueVote();
 
             throw new NotImplementedException();
+            //DataAccess
 
             return vote;
         }
@@ -89,6 +88,7 @@ namespace DragunStudio.Managers.Issue
             IssueComment iComment = new IssueComment();
 
             throw new NotImplementedException();
+            //DataAccess
 
             return iComment;
         }

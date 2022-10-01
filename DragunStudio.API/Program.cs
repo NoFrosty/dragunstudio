@@ -1,13 +1,9 @@
-using DragunStudio.API;
 using DragunStudio.API.Helpers;
 using DragunStudio.API.Models;
 using DragunStudio.API.Services;
 using DragunStudio.Common;
-using DragunStudio.Managers.Common;
 using DragunStudio.Managers.Package;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using Swashbuckle.AspNetCore.Newtonsoft;
 using System.Reflection;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
