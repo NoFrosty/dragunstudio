@@ -7,6 +7,8 @@ namespace DragunStudio.Managers.Issue.Models
     public class IssueVote
     {
         [ExplicitKey]
+        public Guid VoteId { get; set; }
+
         public Guid UserId { get; set; }
 
         public Guid IssueId { get; set; }
