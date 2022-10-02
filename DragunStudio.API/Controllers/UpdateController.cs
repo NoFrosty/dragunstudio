@@ -1,6 +1,6 @@
 ﻿using DragunStudio.API.Models.ApplicationViewModels;
 using DragunStudio.Managers.Package;
-using DragunStudio.Managers.Package.Enums;
+using DragunStudio.Managers.Common;
 using DragunStudio.Managers.Package.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
