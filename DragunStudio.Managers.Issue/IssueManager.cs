@@ -7,7 +7,7 @@ using DragunStudio.Managers.Package.Enums;
 
 namespace DragunStudio.Managers.Issue
 {
-    class IssueManager
+    public class IssueManager
     {
         private readonly ApplicationSettings applicationSettings;
         private readonly DataAccess dataAccess;

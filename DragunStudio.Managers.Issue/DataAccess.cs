@@ -6,7 +6,7 @@ using DragunStudio.Managers.Issue.Models.Game;
 
 namespace DragunStudio.Managers.Issue
 {
-    class DataAccess
+    public class DataAccess
     {
         private readonly ConnectionFactory connectionFactory;
 
