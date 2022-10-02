@@ -1,4 +1,4 @@
-﻿using DragunStudio.Managers.Package.Enums;
+﻿using DragunStudio.Managers.Common;
 
 namespace DragunStudio.API.Models.ApplicationViewModels
 {
