@@ -3,7 +3,7 @@ using DragunStudio.Common;
 using DragunStudio.Managers.Issue.Enums;
 using DragunStudio.Managers.Issue.Models;
 using DragunStudio.Managers.Issue.Models.Game;
-using DragunStudio.Managers.Package.Enums;
+using DragunStudio.Managers.Common;
 
 namespace DragunStudio.Managers.Issue
 {
