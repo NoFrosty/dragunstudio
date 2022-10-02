@@ -37,7 +37,7 @@ namespace DragunStudio.Managers.Issue
                 return await connection.GetAllAsync<IssueInfo>();
             }
         }
-        public async void InsertComment(IssueComment iComment)
+        public async Task InsertComment(IssueComment iComment)
         {
             using (var connection = connectionFactory.AcquireConnection())
             {
@@ -62,7 +62,7 @@ namespace DragunStudio.Managers.Issue
             }
         }
 
-        public async void InsertVote(IssueVote vote)
+        public async Task InsertVote(IssueVote vote)
         {
             using (var connection = connectionFactory.AcquireConnection())
             {
