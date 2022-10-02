@@ -20,7 +20,12 @@
 
   <ItemGroup>
     <ProjectReference Include="..\DragunStudio.Common\DragunStudio.Common.csproj" />
+    <ProjectReference Include="..\DragunStudio.Managers.Issue\DragunStudio.Managers.Issue.csproj" />
     <ProjectReference Include="..\DragunStudio.Managers.Package\DragunStudio.Managers.Package.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Models\IssueViewModels\" />
   </ItemGroup>
 
 </Project>

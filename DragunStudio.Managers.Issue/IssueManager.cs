@@ -137,7 +137,6 @@ namespace DragunStudio.Managers.Issue
             };
 
             await dataAccess.InsertComment(iComment);
-            //DataAccess
 
             return iComment;
         }
