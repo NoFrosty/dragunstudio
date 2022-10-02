@@ -7,12 +7,12 @@ namespace DragunStudio.Managers.Package.Helpers
     {
         private static readonly SHA256 sha256Hash = SHA256.Create();
 
-        internal static string CalculateHash(Stream stream)
+        public static string CalculateHash(Stream stream)
         {
             return ByteArrayToString(sha256Hash.ComputeHash(stream));
         }
 
-        internal static string ByteArrayToString(byte[] ba)
+        public static string ByteArrayToString(byte[] ba)
         {
             var hex = new StringBuilder(ba.Length * 2);
             foreach (byte b in ba)
@@ -20,7 +20,7 @@ namespace DragunStudio.Managers.Package.Helpers
             return hex.ToString();
         }
 
-        internal static string MakeRelative(string absolutePath, string filePath)
+        public static string MakeRelative(string absolutePath, string filePath)
         {
             if (absolutePath.StartsWith(filePath))
             {
